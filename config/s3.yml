@@ -1,0 +1,17 @@
+development:
+  associate_tag: giftblog06-20
+  bucket: storage.production.ticketacular.me
+  access_key_id: AKIAJ5FRHVJPQUZQPPAQ
+  secret_access_key: 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
+
+test:
+  associate_tag: giftblog06-20
+  bucket: storage.production.ticketacular.me
+  access_key_id: AKIAJ5FRHVJPQUZQPPAQ
+  secret_access_key: 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
+
+production:
+  associate_tag: giftblog06-20
+  bucket: storage.production.ticketacular.me
+  access_key_id: AKIAJ5FRHVJPQUZQPPAQ
+  secret_access_key: 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

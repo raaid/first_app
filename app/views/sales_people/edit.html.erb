@@ -1,0 +1,49 @@
+<div id="content_outter" class="main_content_pane_outter">
+<div id="content_inner" class="main_content_pane">
+<h1 style="font-size: 25pt;">Update Your Profile</h1>
+<div class="clearfloat"></div>
+  <br>
+
+<%= simple_form_for @sales_person, html: {multipart:true} do |f| %>
+  <% if @sales_person.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@sales_person.errors.count, "error") %> prohibited this sales_person from being saved:</h2>
+
+      <ul>
+      <% @sales_person.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+  <center>
+    <div style="position:relative;width:200px">
+      <img src="<%=@sales_person.avatar_url(:profile)%>" />
+      <%= f.file_field :avatar %>
+    </div>
+  <div style="position:relative;display:inline-block">
+    <%= f.label :fname, "First Name" %>
+    <%= f.text_field :fname  %>
+  </div>
+  <div style="position:relative;display:inline-block">
+    <%= f.label :lname, "Last Name" %>
+    <%= f.text_field :lname %>
+  </div>
+  <br>
+  <div style="position:relative;display:inline-block">
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+  </div>
+    <%= hidden_field_tag :pass, @pass %>
+  <br>
+
+  	<%= f.submit "Update", class: "btn btn-success", style: "font-size:14pt;width:200px"%>
+
+  </center>
+  
+
+<% end %>
+</div>
+</div>

@@ -1,0 +1,39 @@
+<h1>Profile</h1>
+
+<p>
+  <%= image_tag @user.avatar_url(:avatar) %>
+</p>
+
+<p>
+  <b>Name:</b>
+  <%= "#{@user.display_name}" %>
+</p>
+
+<p>
+  <b>Email:</b>
+  <%= @user.email %>
+</p>
+<p>
+  <b>Gender:</b>
+  <%= @user.gender %>
+</p>
+<p>
+  <b>Birthday:</b>
+  <%= @user.birthday %>
+</p>
+<p>
+  <b>Anniversary:</b>
+  <%= @user.anniversary %>
+</p>
+
+<p>
+  <b>Address:</b>
+  <div><%= @user.address %></div>
+  <div><%= @user.city %></div>
+  <div><%= @user.province %></div>
+  <div><%= @user.country %></div>
+  <div><%= @user.postal %></div>
+</p>
+
+<h3>Sizes</h3>
+<%= render partial: 'sizes/size', object: @user.user_size %>

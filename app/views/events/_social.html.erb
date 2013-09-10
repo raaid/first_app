@@ -1,0 +1,17 @@
+<% if @event.has_social_message %> <p><%= @event.social_message %></p><br/>
+    <% end %>
+    <% if @event.has_social_facebook %>Facebook: <%= @event.social_facebook %> <br/>
+    <% end %>
+    <% if @event.has_social_twitter %>Twitter: <%= @event.social_twitter %> <br/>
+    <% end %>
+    <% if @event.has_social_pinterest %>Pinterest: <%= @event.social_pinterest %> <br/>
+    <% end %>
+    <% if @event.has_social_youtube %>Youtube: <%= @event.social_youtube %> <br/>
+    <% end %>
+    <% if @event.has_social_website %>Website: <%= @event.social_website %> <br/>
+    <% end %>
+    <% if @event.has_social_email %>Email: <%= @event.social_email %> <br/>
+    <% end %>
+    <% if @event.has_social_hastag %>Hashtag: <%= @event.social_hastag %>
+        <br/>
+    <% end %>

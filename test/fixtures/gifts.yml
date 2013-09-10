@@ -1,0 +1,30 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  id: 1
+  list: johns_public_list
+  name: String
+#  upc: MyString     no UPC, so it won't get added to trending in the create test
+  status: available
+  description: MyString
+  price: MyString
+  url: MyString
+  photo_file_name: MyString
+  photo_content_type: MyString
+  photo_file_size: MyString
+  photourl: MyString
+  rating: 1
+
+two:
+  list: johns_public_list
+  name: MyString
+  upc: MyString
+  status: MyString
+  description: MyString
+  price: MyString
+  url: MyString
+  photo_file_name: MyString
+  photo_content_type: MyString
+  photo_file_size: MyString
+  photourl: MyString
+  rating: 1

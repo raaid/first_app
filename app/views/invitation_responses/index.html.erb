@@ -1,0 +1,71 @@
+<div id="content_outter" class="main_content_pane_outter">
+<div id="content_inner" class="main_content_pane">
+<h1 style="font-size: 25pt;float:left;">RSVPs Sent <span style="font-size: 20pt;">(Total = <%= @invitations.count%>)</span></h1>
+<input type="button" value="Back To Promotion Management Panel"  onclick="window.location='<%=rsvp_path(:id => @event.id)%>'" class="btn btn-success" style="float:right;"></input>
+<div class="clearfloat"></div>
+<br>
+<div class="contentarea">
+<center>
+  <div style="width:95%">
+  <h3>RSVP Responses (<%= @invitations_responses.count %>)</h3><hr /><br />
+  <table width="90%">
+    <tr>
+      <th align="center">Guest Name</th>
+      <th align="center">Guest Email</th>
+      <th align="center">Response</th>
+      <th align="center">Status</th>
+      <!-- <th align="center">Show Details</th> -->
+    </tr>
+  <% @invitations_responses.each do |invitation| %>
+    <tr>
+      <td align="center"><%= invitation.name %></td>
+      <td align="center"><%= invitation.email %></td>
+      <% i =  InvitationResponse.where(:invitation_id=> invitation.id).first%>
+      <% unless i.status.blank?%>
+      <td align="center"><%= i.description%></td>
+      <td align="center"><%= i.status%></td>
+      <!-- <td align="center"><%= link_to 'Show', i%></td> -->
+      <% else %>
+      <td align="center">Awaiting Response</td>
+      <td align="center">Awaiting Response</td>
+      <td align="center">Awaiting Response</td>
+     <% end %>
+    </tr>
+  <% end %>
+  </table>
+</div>
+<br />
+<br />
+  <div style="width:95%">
+<h3>RSVPs Awaiting Response (<%= @invitations_sent.count %>)</h3><hr /><br />
+<table width="90%">
+  <tr>
+    <th align="center">Guest Name</th>
+    <th align="center">Guest Email</th>
+    <th align="center">Status</th>
+  </tr>
+<% @invitations_sent.each do |invitation| %>
+  <tr>
+    <td align="center"><%= invitation.name %></td>
+    <td align="center"><%= invitation.email %></td>
+    <% i =  InvitationResponse.where(:invitation_id=> invitation.id).first%>
+    <% unless i.status.blank? %>
+    <td align="center"><%= i.description%></td>
+    <td align="center"><%= i.status%></td>
+    <td align="center"><%= link_to 'Show', i%></td>
+    <% else %>
+    <td align="center">Awaiting Response</td>
+   <% end %>
+  </tr>
+<% end %>
+</table>
+</div>
+</center>
+<br />
+  <br />
+  <br />
+    <br />
+<%#= link_to 'New Invitation response', new_invitation_response_path %>
+ </div>
+    </div>
+    </div>

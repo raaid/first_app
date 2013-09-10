@@ -1,0 +1,72 @@
+<section>
+  <div class="container">
+<h1>Dashboard</h1>
+<br/>
+
+<%if current_user.try(:approve) == 1%>
+<div style="font-size:12pt;padding-left: 10px;padding-bottom: 15px;">
+    <h3 style="font-size:18px">
+      <div style="display:inline-block;width:30%;margin-left:17px"><u>Event</u></div>
+      <div style="display:inline-block;width:12%"><u>Date</u></div>
+      <div style="display:inline-block;width:18%"><u>Pending Payout</u></div>
+      <div style="display:inline-block;width:19%"><u>Previous Payout</u></div>
+      <div style="display:inline-block;width:16%"><u>Total Payout</u></div>
+    </h3>
+
+    <% @data.each_with_index do |event, i| %>
+      <div style="width:100%;color:#000;cursor:pointer;cursor:hand;margin-top:8px" onclick="slideout('<%=event[:id]%>')">
+        <div style="position:relative;display:inline-block;width:17px;top:4px">
+          <img id="right<%=event[:id]%>" src="/images/right.png" style="width:17px;position:absolute;<%if i==0%>display:none<%end%>"/>
+          <img id="down<%=event[:id]%>" src="/images/next.png" style="width:17px;position:absolute;<%if i>0%>display:none<%end%>"/>
+        </div>
+        <div style="display:inline-block;width:29%"><%=event[:name]%></div>
+        <div style="display:inline-block;width:12%"><%=event[:date]%></div>
+        <div style="display:inline-block;width:18%">$<%=number_with_precision(event[:to_be_cashed], :precision => 2)%></div>
+        <div style="display:inline-block;width:19%">$<%=number_with_precision(event[:total_amount] - event[:to_be_cashed], :precision => 2)%></div>
+        <div style="display:inline-block;width:16%">$<%=number_with_precision(event[:total_amount], :precision => 2)%></div>
+      </div>
+
+
+      <div id="hide<%=event[:id]%>" class="hideContract" <%if i>0%>style="display:none"<%end%> >
+        <div style="display:inline-block;width:60%"><u>Ticket</u></div>
+        <div style="display:inline-block;width:20%"><u>Amount</u></div>
+        <div style="display:inline-block"><u>Tickets Sold</u></div>
+        <br>
+
+        <% event[:ticket_types].each do |type| %>
+          <div style="display:inline-block;width:60%"><%= type[:name]%>($<%=type[:price]%>)</div>
+          <div style="display:inline-block;width:20%">$<%=number_with_precision(type[:amount], :precision => 2)%></div>
+          <div style="display:inline-block"><%= type[:count]%></div>
+          <br>
+        <% end %>
+      </div>
+
+    <%end%>
+    <hr>
+    <div style="width:100%;color:#000;margin-top:8px;font-weight:bold">
+        <div style="position:relative;display:inline-block;width:17px;top:4px"%></div>
+    	<div style="display:inline-block;width:29%">Total</div>
+        <div style="display:inline-block;width:12%"></div>
+        <div style="display:inline-block;width:18%">$<%=number_with_precision(@grand_total_to_be_cashed, :precision => 2)%></div>
+        <div style="display:inline-block;width:19%">$<%=number_with_precision(@grand_total_amount - @grand_total_to_be_cashed, :precision => 2)%></div>
+        <div style="display:inline-block;width:10%">$<%=number_with_precision(@grand_total_amount, :precision => 2)%></div>
+    </div>
+</div>
+
+<%else%>
+
+<h1>This section will be unlocked once your affiliate application has been approved</h1>
+
+<%end%>
+
+</div>
+</section>
+
+
+<script>
+function slideout(ID) {
+  $('#hide' + ID).slideToggle(600);
+  $("#right" + ID).fadeToggle(400);
+  $("#down" + ID).fadeToggle(400);
+}
+</script>

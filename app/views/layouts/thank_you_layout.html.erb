@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>The Wedding Registry</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/png"/>
+
+  <meta name="title" content="The Wedding Registry"/>
+  <meta name="description" content="The Wedding Registry is the worlds premier free personal wedding registry"/>
+  <meta name="author" content="TheWeddingRegistry"/>
+  <meta name="keywords" content="Gift registry, gift list, birthdays, anniversaries, weddings, christmas, android, iPhone, blackberry, gift giving, receive, gifts, bar code"/>
+  <meta name="robots" content="index,follow"/>
+  <meta name="googlebot" content="archive,snippet,index,follow"/>
+  <meta name="alexaVerifyID" content="y3lVzQKlRt5LZS8FKU3As6sjdf0"/>
+  <meta name="google-site-verification" content="viSVHC1VpUj6wAFaK0c6VLeSUrpm6iP9P7qMlh0ekzY"/>
+  <meta name="msvalidate.01" content="DC3C5575F95018699BBE0A58852DC1E1"/>
+  <link href='http://fonts.googleapis.com/css?family=Ruthie|Niconne|Sail|Aguafina+Script|Mrs+Saint+Delafield|Rouge+Script|Great+Vibes|PT+Sans+Narrow:400,700|Yesteryear|Aguafina+Script' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Mr+Dafoe|Kaushan+Script|Ruthie|Arizonia|Italianno|Lovers+Quarrel|Bilbo+Swash+Caps|Pinyon+Script|Meie+Script' rel='stylesheet' type='text/css'>
+  <%= stylesheet_link_tag 'default.css' %>
+  <%= stylesheet_link_tag 'style.css' %>
+  <%= stylesheet_link_tag 'jquery.alerts.css' %>
+  <%= stylesheet_link_tag 'jquery.fancybox.css' %>
+  <%= stylesheet_link_tag 'jquery-ui-date.css' %>
+  <%= stylesheet_link_tag 'template/template.css' %>
+  <%= stylesheet_link_tag 'jMenu.jquery.css' %>
+  <%= stylesheet_link_tag 'wedding.css' %>
+
+  <%= javascript_include_tag 'jquery.min.js' %>
+  <%= javascript_include_tag 'jquery-ui.min.js' %>
+  <%= javascript_include_tag 'jquery.cycle.all.js' %>
+  <%= javascript_include_tag 'rails.js' %>
+  <%= javascript_include_tag 'jquery.alerts.js' %>
+  <%= javascript_include_tag 'jquery.fancybox.pack.js' %>
+  <%= javascript_include_tag 'jMenu.jquery.js' %>
+  <%= javascript_include_tag 'flash_detect_min.js' %>
+
+  <%= javascript_include_tag 'tms-0.4.1.js' %>
+
+  <%= javascript_include_tag 'application.js' %>
+
+  <script src="http://static.opentok.com/v0.91/js/TB.min.js" type="text/javascript" charset="utf-8"></script>
+
+  <script type="text/javascript" src="http://cdn.sublimevideo.net/js/krstgd22.js"></script>
+
+  <%= csrf_meta_tag %>
+
+  <script>
+      $(document).ready(function () {
+          <% @browserString = request.env['HTTP_USER_AGENT'].downcase %>
+          if ("<%= @browserString =~ /msie/ %>" != "") {
+	      // Clears placeholder text when you click in the textbox.
+              $('[placeholder]').focus(function () {
+                  var input = $(this);
+                  if (input.val() == input.attr('placeholder')) {
+                      input.val('');
+                      input.removeClass('placeholder');
+                  }
+              }).blur(function () {
+	      // Remove placeholder text when you click in the textbox.
+                          var input = $(this);
+                          if (input.val() == '' || input.val() == input.attr('placeholder')) {
+                              input.addClass('placeholder');
+                              input.val(input.attr('placeholder'));
+                          }
+                      }).blur();
+          }
+      });
+  </script>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  		<style type="text/css" media="screen">
+  				/**
+  				 * @tab Page
+  				 * @section background color
+  				 * @tip Choose a color for your HTML email's background. You might choose one to match your company's branding.
+  				 * @theme page
+  				 */
+  				body, #wrap {
+  						   /*@editable*/ background-color: #d2efef;
+  						   text-align:center;
+  						}
+
+  					    #layout {
+  				            margin: 10px auto;
+  							text-align:left;
+  					    }
+
+  						/**
+  						 * @tab Top Bar
+  						 * @section topbar bar
+  						 * @tip Choose a set of colors that look good with the colors of your logo image or text topbar.
+  						 */
+  						#topbar {
+  							background-color: transparent;
+  							padding: 10px 0 20px;
+  							/*@editable*/ color: #70728c;
+  							/*@editable*/ font-size: 11px;
+  							/*@editable*/ font-family: Georgia;
+  							/*@editable*/ font-weight: normal;
+  							/*@editable*/ text-align: center;
+  					    }
+
+  						/**
+  						 * @tab Top Bar
+  						 * @section topbar links
+  						 * @tip Choose a set of colors that look good with the colors of your logo image or text topbar.
+  						 */
+  						#topbar{
+  					        /*@editable*/ color: #70728c;
+  						    /*@editable*/ text-decoration: underline;
+  					        /*@editable*/ font-weight: normal;
+  						}
+
+  					    #content {
+  							background:#ffffff;
+  							line-height: 1.25em;
+  							padding: 10px 20px 30px 40px;
+  							vertical-align:top;
+  					    }
+
+  					    /**
+  					     * @tab Body
+  					     * @section title style
+  					     * @tip Titles and headlines in your message body. Make them big and easy to read.
+  					     * @theme title
+  					     */
+  					    .primary-heading {
+  					        /*@editable*/ font-size: 22px;
+  					        /*@editable*/ font-weight: normal;
+  					        /*@editable*/ color: #70728c;
+  					        /*@editable*/ font-family: Georgia;
+  					        /*@editable*/ line-height: 150%;
+  							text-align:center;
+  					    }
+
+  					    /**
+  					     * @tab Body
+  					     * @section button style
+  					     * @tip This is the byline text that appears immediately underneath your titles/headlines.
+  					     * @theme subtitle
+  					     */
+
+  						p.btn {
+  							/*@editable*/ background: #89c8be;
+  							/*@editable*/ border: 3px solid #ebebeb;
+  							width: auto;
+  							/*@editable*/ color: #70728c;
+  							text-align: center;
+  							margin: 5px 3%;
+  							/*@editable*/ font-size: 20px;
+  							/*@editable*/ font-family: Georgia;
+  							padding: .7em 0;
+  						}
+
+  					    /**
+  					     * @tab Body
+  					     * @section lower text style
+  					     * @tip This is the byline text that appears immediately underneath your titles/headlines.
+  					     * @theme subtitle
+  					     */
+  						p.note {
+  							/*@editable*/ font-family: Georgia;
+  							/*@editable*/ color: #70728c;
+  							margin: 0 3%;
+  							/*@editable*/ font-size: 16px;
+  							/*@editable*/ line-height: 1.4em;
+  							/*text-align: center;*/
+  						}
+
+  					    /**
+  					     * @tab Footer
+  					     * @section footer
+  					     * @tip You might give your footer a light background color and separate it with a top border
+  					     * @theme footer
+  					     */
+  					    #footer {
+  					        background-color: transparent;
+  					        padding: 20px;
+  							/*@editable*/ font-size: 10px;
+  					        /*@editable*/ color: #70728c;
+  					        /*@editable*/ line-height: 100%;
+  					        /*@editable*/ font-family: Georgia;
+  							text-align:center;
+  					    }
+
+  					    /**
+  					     * @tab Footer
+  					     * @section link style
+  					     * @tip Specify a color for your footer hyperlinks.
+  					     * @theme link_footer
+  					     */
+  					    #footer a {
+  					        /*@editable*/ color: #70728c;
+  						    /*@editable*/ text-decoration: underline;
+  					        /*@editable*/ font-weight: normal;
+  					    }
+
+  					    /**
+  					     * @tab Page
+  					     * @section link style
+  					     * @tip Specify a color for all the hyperlinks in your email.
+  					     * @theme link
+  					     */
+  					    a, a:link, a:visited {
+  					        /*@editable*/ color: #70728c;
+  						    /*@editable*/ text-decoration: underline;
+  					        /*@editable*/ font-weight: normal;
+  					    }
+
+  		</style>
+</head>
+<body>
+    <%= yield %>
+</body>
+</html>

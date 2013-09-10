@@ -1,0 +1,236 @@
+<span class="main_content_partial" style="display:inline-block;width:90%;">
+   <div style="display:inline-block;">
+<%#= simple_form_for :event, html: { multipart: true }, url: events_path, method: :post do |f| %>
+<%= simple_form_for(@event) do |f| %>
+
+
+         <%= f.input :name, label: "Event Name",:input_html => {:style => "width:200px"} %>
+            <%= f.input :category, priority: Event::CATEGORY_PERSONAL, collection: [ Event::CATEGORY_PERSONAL, Event::CATEGORY_ENTERTAINMENT, Event::CATEGORY_CHARITY, Event::CATEGORY_BUSINESS],label: "Event Category",include_blank: false,:input_html => {:style => "width:200px"}  %>
+                    <%= f.input :venue_name, label: "Venue Name (Optional)",:input_html => {:style => "width:200px"} %>
+
+       <%= f.input :address, label: "Event Address",:input_html => {:style => "width:200px"} %>
+                <%= f.input :city, label: "Event City",:input_html => {:style => "width:200px"} %>
+                <%= f.input :province, label: "Event Province/State",:input_html => {:style => "width:200px"} %>
+                <%= f.input :postal, label: "Event Postal/Zip",:input_html => {:style => "width:200px"} %>
+                <%= f.input :country, label: "Event Country",:input_html => {:style => "width:200px"} %>
+   <br />
+           <!-- </div> -->
+             <div style="display:inline-block;">
+               <center>
+     <p style="color:#000;font-size: 9pt">Select a display photo for your event page (Recommended: 500x500)</p>
+   <div class="profile_avatar" style="width:150px;"><%= image_tag @event.event_image.url(:feed), :style=>"height:150px;width:150px;", id: "profile_avatar" %></div>
+   <%= f.file_field :event_image, label: false, onchange: "readAvatar(this)", required: false%><br /><br />
+
+   <div id="wallpaperContainer" style="width:200px;">
+     <% if @all_wallpapers %>
+   <% if @all_wallpapers.length > 0 %>
+      <% @all_wallpapers.each_with_index do |paper, i| %>
+        <div id="paperContainer<%=i%>" style="position:relative;width:200px">
+          <img src="/images/cross.png" style="position:absolute;right:-16px;top:-10px;cursor:pointer;cursor:hand;" onclick="deletePaper(<%= i %>, <%=paper.id%>)"/>
+          <%= image_tag paper.wallpaper.url(:preview), class: "profile_avatar", :style=>"height:90px;width:195px;margin-top:13px" %>
+        </div>
+      <% end %>
+    <% end %>
+   <% end %>
+  </div>
+       <p style="color:#000;font-size: 9pt;">Select a cover photo photo for your event page (Recommended: 1950x900)</p>
+        <img id="missingPaper" src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/theme0.jpg" class="profile_avatar", style="height:90px;width:195px;margin-top:13px;<% if @all_wallpapers %><% if @all_wallpapers.length > 0 %>display:none<%end%><% end %>" />
+       <!-- <div class="profile_avatar" style="width:195px;"><%= image_tag @event.event_poster.url(:preview), :style=>"height:90px;width:195px;" %></div> -->
+       <div id="fileContainer">
+        <%= file_field_tag :custom0, label: false, onchange: onchange="readURL(this)", required: false%>
+      </div>
+               </center>
+           </div>
+             <div style="display:inline-block;">
+               <label for="event_description">Description</label>
+               <%= f.text_area :description, class: 'bio', style:"height:175px;" %>
+               <label for="event_details">Details</label>
+               <%= f.text_area :details, class: 'bio', style:"height:175px;" %>
+             </div>
+     <div class="clearfloat"></div>
+            <center><div class="dateTitle">Event Start Time</div>
+                      <div class="datetime"><%= f.datetime_select :startTime, :ampm => true %></div>
+                      <div class="dateTitle">Event End Time</div>
+                      <div class="datetime"><%= f.datetime_select :endTime, :ampm => true %></div> </center>
+            <br />
+            <div style="display:inline-block;margin-left: 10px;">
+           <table width="90%;">
+           <tr>
+             <td width="33%"><%= f.input :allow_comments,as: :boolean, label: "Allow Comments",:input_html => {:style => "float:left;"} %></td>
+             <td width="33%"><%= f.input :show_promotor,as: :boolean, label: "Show Planner",:input_html => {:style => "float:left;"} %></td>
+             <td width="34%"><%= f.input :show_attendees,as: :boolean, label: "Display Attendees",:input_html => {:style => "float:left;"} %></td>
+           </tr>
+         </table>
+         </div>
+              <br />
+              <div style="margin-left: 7px;">
+                <td width="25%"><%= f.input :is_private,as: :boolean, label: "This Event Will Be Private And Not Searchable Through Eventastic",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+                <td width="25%"><%= f.input :allow_photo_sharing,as: :boolean, label: "This Event Will Allow Photo Sharing",:input_html => {:id=> "photo_check",:style => "float:left;margin-left:3px;"} %></td>
+                <div id="auto_approve" style="display:none;">
+                <td width="25%"><%= f.input :auto_approve_photos,as: :boolean, label: "Auto Approve Submitted Photos",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+                </div>
+                <td width="25%"><%= f.input :has_registration,as: :boolean, label: "This Event Will Provide A Registration Tool On It's Page",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+                <td width="25%"><%= f.input :has_ticketing,as: :boolean, label: "This Event Will Sell Tickets",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+                <td width="25%"><%= f.input :has_donations,as: :boolean, label: "This Event Will Accept Cash Donations",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+                <td width="25%"><%= f.input :has_cash_gifting,as: :boolean, label: "This Event Will Have Cash Gifting",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+                <td width="25%"><%= f.input :include_fees,as: :boolean, label: "Charge Processing Fees To Customer Instead Of Covering It Yourself (2.9% + $0.30/transaction)",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+
+
+                <br />
+                             <span>I would Like To Have:  </span>
+                <div class="selectContainer">
+                                     <select id="theSelect" style="width:270px;">
+                                         <option value="Nada">No Video On My Event Page</option>
+                                         <option value="Youtube">A Youtube Video On My Event Page</option>
+                                         <option value="Self">A Self Recorded, Personal, Video From My Webcam On My Event Page!</option>
+                                     </select>
+                                 </div>
+                              <div class="hidden isNada"></div>
+                  <div class="hidden isYoutube"><%= f.input :has_youtube,as: :boolean,label: "Include A Youtube Video",:input_html => {:id=> "video_check2", :style => "float:left;margin-left:3px;"} %></td>
+                    <div id="video_message_panel2"  style="display:inline-block;margin-left: 13px;"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/youtube_ind.png"><br /><p style="color:#000;"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="Specify Your Youtube Embed Link Here!">*Youtube Embed Link</p><%= f.input :youtube, label: false,:input_html => {:style => "width:300px"}, :required => false %></div></div>
+                                 <div class="hidden isSelf">
+                                   <td width="25%"><%= f.input :show_video_message,as: :boolean,label: "Include A Video Message",:input_html => {:id=> "video_check", :style => "float:left;margin-left:3px;"} %></td>
+                                   <div id="video_message_panel"  style="display:inline-block;margin-left: 13px;"><p>Recording personal videos can only be performed via a computer.  Please try this action again, no from a mobile device.</p></div>
+                                 </div>
+
+
+              </div>
+            <%= f.hidden_field :video %>
+            <%= f.hidden_field :first_view %>
+            <%= f.hidden_field :has_been_deleted %>
+        <br />
+        <br />
+        <br />
+         <center><%= f.submit "Update Event", class: "btn btn-large btn-success"%></center>
+<% end %>
+</span>
+<br />
+
+<script>
+
+function readAvatar(input) {
+
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      document.getElementById("profile_avatar").setAttribute("src", e.target.result);
+    }
+
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function readURL(input) {
+  index = input.name.charAt(input.name.length - 1);
+  index = parseInt(index) + 1;
+  input.style.display = "none";
+
+  divs = document.getElementById("wallpaperContainer").getElementsByTagName("div");
+  if (divs.length > 0) {
+    lastDiv = divs[divs.length - 1];
+    idindex = lastDiv.id.charAt(lastDiv.id.length - 1);
+    idindex = parseInt(idindex) + 1;
+  } else {
+    idindex = 0
+  }
+
+
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      document.getElementById("missingPaper").style.display = "none";
+      $("#wallpaperContainer").append("<div id='paperContainer" + idindex + "' style='position:relative;width:200px'><img src='/images/cross.png' style='position:absolute;right:-16px;top:-10px;cursor:pointer;cursor:hand;' onclick='deleteFile(" + idindex + ", " + index + ")'><img class='profile_avatar' src='" + e.target.result + "' style='height:90px;width:195px;margin-top:13px'></div>");
+      $("#fileContainer").append("<input id='custom" + index + "' label='false' name='custom" + index + "' onchange='readURL(this)' type='file'>");
+    }
+
+    reader.readAsDataURL(input.files[0]);
+    
+  } else {
+    console.log("else");
+    //internet explorer < 10 no preview img
+    filename = input.value.replace(/^.*[\\\/]/, '');
+    console.log(filename);
+    $("#wallpaperContainer").append("<div style='text-align:left;width:200px;word-wrap:break-word;position:relative'><img src='/images/checkmark2.png' /><span style='margin-left:8px;top:3px;position:relative;''>" + filename + "</span><img src='/images/cross.png' style='position:absolute;right:-30px;top:-3px;cursor:pointer;cursor:hand' onclick='deleteIE(\"" + input.id + "\", this.parentNode)'></div><br>");
+    document.getElementById("themeimg0").style.display = "none";
+
+  }
+}
+
+function deleteFile(index, id) {
+  console.log(id);
+  paper = document.getElementById("paperContainer" + index);
+  paper.parentNode.removeChild(paper);
+
+  num = document.getElementById("wallpaperContainer").getElementsByTagName("div").length;
+  if (num == 0) {
+    document.getElementById("missingPaper").style.display = "block";
+  }
+
+  el = document.getElementById("custom" + id);
+  el.parentNode.removeChild(el);
+  
+}
+
+function deletePaper(index, id) {
+  paper = document.getElementById("paperContainer" + index);
+  paper.parentNode.removeChild(paper);
+
+  num = document.getElementById("wallpaperContainer").getElementsByTagName("div").length;
+  console.log(num == 0);
+  if (num == 0) {
+    document.getElementById("missingPaper").style.display = "block";
+  }
+  $.ajax({
+        url: "/wallpapers/" + id,
+        type: "DELETE",
+        "dataType":"json",
+        processData: false,
+        contentType: false,
+        success: function (res) {
+          //console.log("deleted: " + id);
+        }
+      });
+}
+    var MyCheck2=$("#photo_check");
+    MyCheck2.change(function() {
+      $("#auto_approve").toggle(MyCheck2.is(":checked"));
+    });
+
+    var MyCheck3=$("#video_check2");
+
+    MyCheck3.change(function() {
+      $("#video_message_panel2").toggle(MyCheck3.is(":checked"));
+    });
+
+    var MyCheck=$("#video_check");
+
+    MyCheck.change(function() {
+      $("#video_message_panel").toggle(MyCheck.is(":checked"));
+    });
+
+    $('[class^=is]').hide();
+
+    $("#theSelect").change(function(){
+        var value = $("#theSelect option:selected").val();
+        var theDiv = $(".is" + value);
+
+        if (value == "Youtube" ){
+            document.getElementById("video_check2").checked = true;
+            document.getElementById("video_check").checked = false;
+        }
+
+        if (value == "Self" ){
+            document.getElementById("video_check2").checked = false;
+            document.getElementById("video_check").checked = true;
+        }
+
+        if (value == "Nada" ){
+            document.getElementById("video_check2").checked = false;
+            document.getElementById("video_check").checked = false;
+        }
+        theDiv.slideDown().removeClass("hidden");
+        theDiv.siblings('[class*=is]').slideUp(function() { $(this).addClass("hidden"); });
+    });
+</script>

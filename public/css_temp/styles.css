@@ -1,0 +1,860 @@
+/* CSS Document for SimpleDownload */
+
+body{
+	 padding-top: 64px;
+     font-size: 12px;
+}
+
+h2{
+	font-size: 26px;
+	font-weight: normal;
+	line-height: 30px;
+}
+
+h3{
+	font-size: 18px;
+	margin-bottom: 0;
+}
+
+hr{
+	margin: 40px 0 52px 0;
+	border: 1px solid #dadada;
+}
+
+.bold{
+	font-weight: bold;
+}
+
+.normal{
+	font-weight: normal;
+}
+
+.center{
+	text-align: center;
+}
+
+/* Font-Colors 
+----------------------------------- */
+.blue{
+	color: #2496b4;
+}
+
+.red{
+	color: #a40042;
+}
+
+.green{
+	color: #55b00d;
+}
+
+.gray{
+	color: #3d3d3d;
+}
+
+.hideEvent {
+  position:relative;
+  width:90%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    /* This adds the border */
+    border:solid;
+    border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+    border-width: 1px 2px 2px 1px;
+    background-color:white;
+        vertical-align:middle;
+  padding:10px;
+    -webkit-box-shadow:rgba(0,0,0,0.6) 0 2px 5px;
+    -moz-box-shadow:rgba(0,0,0,0.6) 0 2px 5px;
+    box-shadow:rgba(0,0,0,0.6) 0 2px 5px;
+}
+
+.event_thumb{
+/* This centers the image */
+display: block;
+margin-left: auto;
+margin-right: auto;
+/* This adds the border */
+padding:8px;
+border:solid;
+border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+border-width: 1px 2px 2px 1px;
+background-color:white;
+    vertical-align:middle;
+    -webkit-box-shadow:rgba(0,0,0,0.6) 0 2px 5px;
+    -moz-box-shadow:rgba(0,0,0,0.6) 0 2px 5px;
+    box-shadow:rgba(0,0,0,0.6) 0 2px 5px;
+}
+
+.back_button{
+    position:absolute;
+    top:80px;
+    right:25px;
+}
+
+.title_header{
+    margin-top: 25px;
+}
+
+.home_scroll{
+    opacity:0.0;
+}
+.home_scroll:hover{
+    opacity:0.0;
+}
+.home_scroll:active{
+    opacity:0.0;
+}
+
+/* Scrollup Button
+----------------------------------- */
+.scrollup{
+    width:44px;
+    height:44px;
+    position:fixed;
+    bottom:44px;
+    right:64px;
+    display:none;
+    text-indent:-9999px;
+    background: url('../img/icon_top.png') no-repeat;
+}
+
+
+/* Navbar 
+----------------------------------- */
+
+.navbar-sd .navbar-inner{
+	background: none;
+	background-color: #000;
+	padding: 9px 0 8px 0;
+	font-size: 16px;
+	-webkit-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 10px rgba(0, 0, 0, 0.3);
+}
+
+.navbar-sd .nav{
+	margin-top: 3px;
+}
+
+.navbar-sd .nav li a{
+	padding: 10px 12px;
+}
+
+.navbar .btn-navbar{
+	margin-top: 8px;
+}
+
+
+/* Top-Slider 
+----------------------------------- */
+.top-slider{
+	background: #f2f8f9 url('../img/teaser-bg.png') top center;
+}
+
+.top-slider .slides li{
+	height: 325px;
+}
+
+
+/* Slide 1 */
+.product-img.slide1{
+	margin: 75px 0px 0 55px; 
+	max-width:290px;
+}
+
+.product-content.slide1{
+	margin: 75px 15px 0 0; 
+	width: 575px;
+	float: right;
+}
+
+/* Slide 2 */
+.product-img.slide2{
+		max-width: 400px;
+		float: right;
+/* This centers the image */
+display: block;
+/*margin-left: auto;
+margin-right: auto;*/
+margin: 60px 25px 0 25px;
+/* This adds the border */
+padding:8px;
+border:solid;
+border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+border-width: 1px 2px 2px 1px;
+background-color:white;
+}
+
+.event_poster{
+max-width: 90%;
+/* This centers the image */
+margin-top: 20px;
+/* This adds the border */
+padding:8px;
+border:solid;
+border-color: #dddddd #aaaaaa #aaaaaa #dddddd;
+border-width: 1px 2px 2px 1px;
+background-color:white;
+}
+
+.product-content.slide2{
+	margin: 60px 0 0 45px;
+	max-width: 485px;
+}
+
+
+
+/* Top-Download 
+----------------------------------- */
+.top-download{
+	height: 10px;
+	background: #fff url('../img/teaser-border.png') repeat-x;
+}
+
+.button-container-top{
+	background: transparent url('../img/teaser-border-dark.png') no-repeat center;
+	height: 10px;
+}
+
+.top-download-button{
+	position: relative;
+	top: -33px;
+	width: 391px;
+	display: block;
+	margin: 0 auto;
+}
+
+
+/* FlexSlider 
+----------------------------------- */
+
+.flexslider{
+	border:none;
+	/*border-radius*/
+	-webkit-border-radius:none;
+	   -moz-border-radius:none;
+	        border-radius:none;
+	/*box-shadow*/
+	-webkit-box-shadow:none;
+	   -moz-box-shadow:none;
+	        box-shadow:none;
+	margin-bottom:0px;
+	background: none;
+}
+
+.flexslider .slides img {
+	width: 100%;
+	display: block;
+	}
+
+.left{
+	float: left;
+}
+
+.right{
+	float: right;
+}
+
+.flexslider p{
+	font-size: 1.143em;
+	line-height: 1.5;
+}
+
+.flexslider .downloads{
+	/*border-radius*/
+	-webkit-border-radius:3px;
+	   -moz-border-radius:3px;
+	        border-radius:3px;
+	background: #d685ad url('../img/download-icon.png') no-repeat 11px 5px;
+	padding:5px 10px 5px 35px;
+	color: #fff;
+}
+.flexslider .downloads img{
+	float: left;
+	position: relative;
+	top: 2px;
+    display:none;
+}
+
+
+/* Highlights 
+----------------------------------- */
+.highlights{
+	margin-top: 80px;
+}
+
+
+.highlights .icon{
+	height: 128px;
+	width: 128px;
+	background-color: #f8eaf0;
+	margin: 0 auto;
+	/*border-radius*/
+	-webkit-border-radius:64px;
+	   -moz-border-radius:64px;
+	        border-radius:64px;
+	text-align: center;
+}
+
+.highlights .icon i{
+	font-size: 78px;
+	line-height: 128px;
+}
+
+.highlights p{
+	line-height: 1.8;
+}
+
+
+/* How it Works 
+----------------------------------- */
+iframe{
+	width: 100%;
+	height: 319px;
+}
+
+.how-it-works .video{
+	border: 1px solid #ccc;
+	/*border-radius*/
+	-webkit-border-radius:2px;
+	   -moz-border-radius:2px;
+	        border-radius:2px;
+	padding: 6px;
+}
+
+.how-it-works h3{
+	background: #f8eaf0 url('../img/highlights-title-bg.png') no-repeat top right;
+	height: 41px;
+	padding: 4px 0 0 7px;
+	margin-top: 3px;
+}
+
+.how-it-works p{
+	line-height: 1.8;
+	padding: 0 7px;
+}
+
+.how-it-works ul{
+	list-style: none;
+	padding: 0 0 0 4px;
+	margin: 27px 0 0 0;
+}
+
+.how-it-works ul li {
+	font-size: 13px;
+	color: #636363;
+	font-weight: bold;
+	margin-bottom: 25px;
+}
+
+.how-it-works ul li i{
+	font-size: 25px;
+	margin-right: 8px;
+	line-height: 11px;
+}
+
+
+/* How it Works 
+----------------------------------- */
+
+.screenshots{
+	margin-top:20px;
+}
+
+.screenshots .thumbnail {
+	margin-bottom: 20px;
+}
+
+
+.screenshots a{
+	padding: 6px;
+	border: 1px solid #ccc;
+	/*border-radius*/
+	-webkit-border-radius:0;
+	   -moz-border-radius:0;
+	        border-radius:0;
+}
+
+.thumbnail {
+margin-bottom: 20px;
+}
+
+
+/* Testimonial 
+----------------------------------- */
+.testimonials .flexslider{
+   margin-bottom: 30px;
+}
+
+.testimonial .flex-direction-nav a {
+width: 31px;
+height: 50px;
+background-image: url('../img/testimonial-nav.png');
+}
+
+.testimonial .flex-prev {
+    opacity: 0.8;
+    left: 5px;
+}
+
+.testimonial .flex-next {
+    opacity: 0.8;
+    right: 5px;
+}
+
+.testimonial .testimonial-slides {
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+    padding: 0 100px;
+}
+
+.testimonial .slides img {
+    float: left;
+    /*border-radius*/
+	-webkit-border-radius:50px;
+	   -moz-border-radius:50px;
+	        border-radius:50px;
+    padding: 4px;
+    border: 2px solid #ccc;
+    margin-right: 32px;
+    width: auto !important;
+}
+
+.testimonial blockquote{
+	border: none;
+	color: #a7a7a7;
+	font-size: 1.286em;
+	font-style: italic;
+	line-height: 1.5;
+	margin: 5px 0 10px 114px;
+	padding: 3px 0 0 0;
+}
+
+.testimonial .testimonial-footer{
+	font-size: 1.143em;
+	margin-left: 128px;
+}
+
+.testimonial-border{
+	margin: 0 auto;
+	display: block;
+}
+
+
+/* Download 
+----------------------------------- */
+
+.download{
+	text-align: center;
+	margin-top: 40px;
+}
+
+.download .download-button{
+	max-width: 310px;
+	margin:14px 0 15px 0;
+}
+
+
+/* Newsletter 
+----------------------------------- */
+.newsletter{
+	background-color: #a40042;
+	margin-top: 40px;
+	padding: 32px 0 35px 0;
+}
+
+.newsletter h3{
+	color: #fff;
+}
+ 
+.newsletter form{
+	background-color: #fff;
+	/*border-radius*/
+	-webkit-border-radius:6px;
+	   -moz-border-radius:6px;
+	        border-radius:6px;
+	padding: 3px 3px 3px 5px;
+	margin: 6px 0 0 0;
+	height: 40px;
+}
+
+.newsletter form .email-field{
+	width: 57%;
+}
+
+.newsletter form .submit-field{
+	float: right;
+}
+
+.newsletter form .email{
+	padding: 9px;
+	width: 100%;
+	border: none;
+	margin-bottom: 2px;
+}
+
+.newsletter form .submit{
+	background-color: #3f3f3f;
+	border: none;
+	/*border-radius*/
+	-webkit-border-radius:6px;
+	   -moz-border-radius:6px;
+	        border-radius:6px;
+	color: #fff;
+	font-weight: bold;
+	font-size: 1.286em;
+	padding: 1px 15px 0 15px;
+	height:40px;
+}
+
+.validation-error{
+	background-color: #ffd4e1 !important;
+}
+
+
+/* Footer
+----------------------------------- */
+.footer{
+	background-color: #3f3f3f;
+	border-top: 2px solid #fff;
+	padding: 18px 0 14px 0;
+}
+
+.footer p{
+	color: #fff;
+	margin: 4px 0 0 0;
+}
+
+.footer ul{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	float: right;
+}
+
+.footer ul li{
+	display: inline;
+	list-style: none;
+	margin-left: 10px;
+}
+
+.footer ul li a{
+	opacity: 0.5;
+}
+
+.footer ul li a:hover{
+	opacity: 0.8;
+}
+
+
+
+/*  Magnific Popup CSS overwrite
+----------------------------------- */
+.mfp-bg {
+	z-index: 1040 !important;
+}
+
+.mfp-wrap {
+	z-index: 1041 !important;
+}
+
+
+
+/* Image Fadehover
+----------------------------------- */
+div.fadehover {
+  position: relative;
+  }
+
+img.a {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 10;
+        }
+  
+img.b {
+  position: absolute;
+  left: 0;
+  top: 0;
+  }
+
+
+
+
+/* Media Queries
+----------------------------------- */
+
+/* Large desktop */
+@media (min-width: 1200px) {
+	
+	.top-slider .slides li{
+		height: 538px;
+	}
+
+	/* Slide 1 */
+	.product-img.slide1{
+		margin: 85px 694px 0 60px; 
+		max-width: 400px;
+	}
+
+	.product-content.slide1{
+		margin: 95px 45px 0 0; 
+		width: 660px;
+	}
+
+	/* Slide 2 */
+	.product-img.slide2{
+		margin: 60px 25px 0 25px;
+		max-width: 770px;
+	}
+
+	.product-content.slide2{
+		margin: 100px 0 0 70px;
+		max-width: 330px;
+	}
+
+
+	body{
+     font-size: 14px;
+	}
+
+	h2{
+	font-size: 30px;
+	line-height: 40px;
+	}
+
+	h3{
+	font-size: 24px;
+	margin-bottom: 10px;
+	}
+	
+	.how-it-works ul li {
+		font-size: 16px;
+	}
+
+}
+ 
+/* Portrait tablet to landscape and desktop */
+@media (min-width: 768px) and (max-width: 979px) {
+
+	.navbar-fixed-top {
+		margin-bottom: 0px !important;
+	}
+	
+	.top-slider .slides li{
+		height: 275px;
+	}
+
+	/* Slide 1 */
+	.product-img.slide1{
+		margin: 45px 0px 0 40px; 
+		max-width: 240px;
+	}
+
+	.product-content.slide1{
+		margin: 45px 40px 0 0; 
+		width: 400px;
+	}
+
+	/* Slide 2 */
+	.product-img.slide2{
+		margin: 60px 25px 0 25px;
+		max-width: 255px;
+	}
+
+	.product-content.slide2{
+		margin: 50px 0 0 30px;
+		max-width: 430px;
+	}
+
+
+	body{
+     font-size: 11px;
+	}
+
+	h2{
+	font-size: 18px;
+	line-height: 25px;
+	}
+
+	h3{
+	font-size: 14px;
+	margin-bottom: 5px;
+	}
+	
+	
+	.top-download-button{
+		width: 300px;
+	}
+
+	.top-download-button img{
+		width: 300px;
+	}
+
+
+
+}
+ 
+/* Landscape phone to portrait tablet */
+@media (max-width: 767px) {
+
+	.row{
+		margin-left: -20px !important;
+		margin-right: -20px !important;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.top-download{
+		padding: 0;
+	}
+
+	.navbar-fixed-top {
+		margin-bottom: 0px !important;
+	}
+	
+	.top-slider .slides li{
+		height: 325px;
+	}
+	
+
+	/* Slide 1 */
+	.product-img.slide1{
+		margin: 35px auto 0 auto; 
+		max-width: 400px;
+	}
+
+
+	/* Slide 2 */
+	.product-img.slide2{
+		margin: 60px 25px 0 25px;
+		max-width: 400px !important;
+		float: none;
+	}
+
+	.product-content .slide2{
+
+	}
+
+	.top-download-button{
+		width: 300px;
+	}
+
+	.top-download-button img{
+		width: 300px;
+	}
+
+	
+	.highlights .box{
+		margin-bottom: 40px;
+	}
+
+	.how-it-works h3 {
+		margin-bottom: 10px;
+	}
+
+	.testimonial .testimonial-slides {
+	    padding: 0 60px;
+	}
+
+	.testimonial .slides img {
+	    float: none;
+	    margin: 0 auto 0 auto;
+	}
+
+	.testimonial blockquote{
+		margin: 0;
+		text-align: center;
+	}
+
+	.testimonial .testimonial-footer{
+		margin: 0;
+		text-align: center;
+	}
+
+	.newsletter{
+		padding: 10px 20px 35px 20px;
+	}
+
+	.newsletter h3{
+		text-align: center;
+	}
+
+	.footer p{
+	text-align: center;
+	margin: 10px 0 0 0;
+}
+
+.footer ul{
+	text-align: center;
+	float: none;
+}
+
+}
+ 
+/* Landscape phones and down */
+@media (max-width: 480px) {
+
+	.row{
+		margin-left: -20px !important;
+		margin-right: -20px !important;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+
+	.top-download{
+		padding: 0;
+	}
+
+
+	.navbar-fixed-top {
+		margin-bottom: 0px !important;
+	}
+
+	
+	.top-slider .slides li{
+		height: 325px;
+	}
+
+	/* Slide 1 */
+	.product-img.slide1{
+		margin: 35px 30px 0 30px; 
+		max-width: 100%;
+	}
+
+	.product-content.slide1{
+		margin: 45px 40px 0 0; 
+		width: 400px;
+	}
+
+	/* Slide 2 */
+	.product-img.slide2{
+
+	}
+
+	.product-content .slide2{
+
+	}
+	
+	.top-download-button{
+		width: 300px;
+	}
+
+	.top-download-button img{		
+		width: 300px;
+	}
+
+	.how-it-works ul li {
+		font-size: 12px;
+	}
+
+	.newsletter h3{
+		font-size: 16px;
+	}
+	
+	.scrollup{
+		display: none !important;
+	}
+
+}

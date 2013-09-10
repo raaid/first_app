@@ -1,0 +1,24 @@
+<h1>My Contacts <%#= current_user.contacts.count %></h1>
+<% if @users.nil? || @users.empty? %>
+  <div>You have nobody in your contact list.</div>
+<% else %>
+  <% @users.each do |user| %>
+    <% @association = @user.forward_associations.find_by_contact_id(user) %>
+    <%= render({layout: 'users/user_with_avatar', locals: {user_with_avatar: user}}) do %>
+      <% if @association.status.eql?('pending') %>
+        contact pending |
+        <%= link_to "cancel", association_path(@association.id), method: :delete, confirm: "Are you sure?" %>
+      <% else %>
+        <div>
+          <%= link_to "gift lists", lists_user_path(user) %> | 
+          <%= link_to "remove contact", association_path(@association.id), method: :delete, confirm: "Are you sure?" %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+<br />
+<div><%= link_to "Search", search_path %> for people to add to your contacts.</div>
+<div>TODO: Add contacts through Facebook.</div>
+<div>TODO: Add contacts through Twitter.</div>
+<%#= link_to 'Back', root_path %>

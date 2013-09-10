@@ -1,0 +1,197 @@
+
+<section>
+  <div class="container">
+ <br />
+<h1>Manage & Upload Files</h1>
+<div class="clearfloat"></div>
+  <br>
+
+  <center>
+  <div class="filesCurrent">Current Files</div>
+  <br>  
+  <div class="filesTable">
+    <table id="filesTable">
+      <% @attacheds.each do |doc| %>
+        <tr id="attached<%=doc.id%>">
+          <td style="width:430px"><%= link_to doc.name, attached_path(doc.id), target: "_blank", class: "fileOpen" %></td>
+          <td onclick="deleteFile(<%=doc.id%>)" class="btn btn-danger"><%#= button_to "Delete", doc, :method => :delete, class: "fileDeletebtn" %>Delete</td>
+        </tr>
+      <% end %>
+    </table>
+    <img src="/images/loading.gif" id="loading" style="margin-top:14px;display:none"/>
+
+    <%= form_for @attached, :html => {:multipart => true} do |f| %>
+      <%= f.hidden_field :event_id, :value => @event.id %>
+      <div class="btn btn-success" id="flashUpload" style="height:22px;z-index:0">
+        <a style="color:#fff;z-index:0">Upload New File</a>
+        <div class="UploadifyObjectWrapper">
+          <%= f.file_field :attached, label: false, required: true%>
+        </div>
+      </div>
+      <input type="button" class="btn btn-success" value="Upload New File" id="noflashbtn" style="display:none" onclick="$('#noflashUpload').click()"/>
+      <input type="file" id="noflashUpload" style="display:none" />
+      
+      <br />
+      <%= f.submit "Upload Files", style: "display:none"%>
+    <% end %>
+  </div>
+  </center>  
+
+</div>
+</section>
+
+<%= javascript_include_tag "swfobject.js", "jquery.uploadify.v2.1.0.js", "flash_detect_min.js" %>
+
+<script>
+  <% if @attached %>
+    <% if @attached.errors.any? %>
+      <% errors = "" %>
+      <% @attached.errors.full_messages.each do |msg| %>
+        <% errors = errors + msg %>
+      <% end %>
+      flash_notice("<%= errors.gsub('\\', '\\\\').gsub('\"', '\"') %>")
+    <% end %>
+  <% end %>
+
+    if (!FlashDetect.installed) {
+      $(document).ready(function() {
+        document.getElementById("flashUpload").style.display = "none";
+        document.getElementById("noflashbtn").style.display = "block";
+        document.getElementById("noflashUpload").onchange = uploadFile;
+      })
+    } else {      
+      $(document).ready(function() {
+
+  $('#attached_attached').click(function(event){ 
+    event.preventDefault();
+  }); 
+  
+  $('#attached_attached').uploadify({
+    'wmode' : 'transparent',
+    hideButton: true,
+    buttonImage : " ",
+    width : 155,
+    height : 30,
+    uploader : '/uploadify/uploadify.swf',
+    cancelImg : '/uploadify/cancel.png',
+    multi : false,
+    auto : true,
+    script : '/attacheds',
+    onComplete : function(event, queueID, fileObj, response, data) { 
+      obj = JSON.parse(response);
+      addFile(obj);
+    },
+    scriptData : {
+          '_http_accept': 'application/javascript',
+          'format'   : 'json',
+          '_method'  : 'post',
+          'event_id' : '<%= @event.id %>',
+          'flash'    : 'true'
+        }
+  });
+    
+}); 
+    }
+
+
+    function deleteFile(id) {
+      $.ajax({
+            url: "/attacheds/" + id,
+            type: "DELETE",
+            "dataType":"json",
+            processData: false,
+            contentType: false,
+            success: function (res) {
+              row = document.getElementById("attached" + id);
+              row.parentNode.removeChild(row);
+            }
+          });
+    }
+
+    function addToTable(filename) {
+      lastIndex = filename.lastIndexOf("\\");
+      if (lastIndex >= 0) {
+        filename = filename.substring(lastIndex + 1);
+      }
+
+      uploadTable = document.getElementById("filesTable");
+      row = document.createElement("tr");
+      cell = document.createElement("td");
+      cell.style.width = "430px";
+      cell.innerHTML = filename;
+      del = document.createElement("td");
+      del.setAttribute("class", "btn btn-danger");
+      //del.setAttribute("onclick", "cancelUpload(" + id + ")");
+      del.innerHTML = "Delete";
+
+      uploadTable.appendChild(row);
+      row.appendChild(cell);
+      row.appendChild(del);
+    } 
+
+    function uploadFile(evt) {
+      //filename = this.value;
+      //addToTable(filename);
+      file = this.files[0];
+
+      if (file != undefined) {
+
+        document.getElementById("loading").style.display = "block";
+        var formdata = new FormData();
+
+        if (formdata) {
+          formdata.append("attached", file);
+          formdata.append("event_id", "<%=@event.id%>");
+        }     
+  
+        if (formdata) {
+          $.ajax({
+            url: "/attacheds",
+            type: "POST",
+            data: formdata,
+            "dataType":"json",
+            processData: false,
+            contentType: false,
+            success: function (res) {
+              document.getElementById("loading").style.display = "none";
+              addFile(res);
+              
+            },
+            error: function(res) {
+              document.getElementById("loading").style.display = "none";          
+              response = JSON.parse(res.responseText);
+
+              if (response["attached_file_size"]) {
+                flash_notice("File is larger than 5MB");
+              } else {
+                flash_notice("There was a problem uploading the file");
+              }
+            }
+          });
+        }
+      }
+    }
+
+    function addFile(res) {
+      filesTable = document.getElementById("filesTable");
+      row = document.createElement("tr");
+      row.id = "attached" + res.id;
+      cell = document.createElement("td");
+      link = document.createElement("a");
+      link.setAttribute("href", "/attacheds/" + res.id);
+      link.setAttribute("class", "fileOpen");
+      link.setAttribute("target", "_blank");
+      link.innerHTML = res.name;
+
+      del = document.createElement("td");
+      del.innerHTML = "Delete";
+      del.setAttribute("onclick", "deleteFile(" + res.id + ")");
+      del.setAttribute("class", "btn btn-danger");
+
+      filesTable.appendChild(row);
+      row.appendChild(cell);
+      row.appendChild(del);
+      cell.appendChild(link);
+    }
+    
+</script>

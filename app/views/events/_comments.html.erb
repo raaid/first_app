@@ -1,0 +1,44 @@
+<div style="min-width:300px;float:left;padding:10px;width:100%;margin-top:-35px">
+
+        <center>
+          <%= simple_form_for(@comment) do |form| %>
+              <%= form.hidden_field :user %>
+              <%= form.hidden_field :event_id %>
+              <br />
+              <div style="max-width:298px;">
+                <%= form.input :name, required:true, maxlength:50, label:false, placeholder:"*Name",  :input_html  => {:style => "width:125px; float:left; margin-right: 20px"} %>
+                <%= form.input :email, required:true, maxlength:50, label:false, placeholder:"*Email", :input_html => {:style => "width:125px; float:left"} %>
+                <%= form.input :message, maxlength:256, label:false, placeholder:"Message", :input_html => {:style => "height:60px; width:286px"} %>
+                <div class="round_btn_container" style="max-width:85px">
+                  <div class="round_btn" style="" onclick="ajaxSubmit()">
+                    <span style="top:22px"><center>Add Comment</center></span>
+                  </div>
+                </div>
+                <!-- <input type="button" value="Add Comment" class="btn btn-success" style="float:right;right:12px;position:relative" onclick="ajaxSubmit()"/> -->
+              </div>
+              <br>
+
+          <% end %>
+        </center>
+
+          <div id="commentContainer">
+                    <% @comments.reverse_each do |comment| %>
+                    <br />
+                    <div class="container" style="box-shadow: -10px 10px 5px #888888; max-width:950px;border:2px solid #29378c;border-radius:10px;-moz-border-radius: 10px;-webkit-border-radius: 10px;">
+                      <div style="float:left; margin-right:10px;border-right:1px solid #29378c;border-bottom:1px solid #29378c;">
+                        <img src="http://www.gravatar.com/avatar/<%= comment.md5 %>.jpg?d=mm" >
+                      </div>
+                      <div style="margin-top:0px; display:inline">
+                        <p align="left" style ="color:#29378c !important; font-weight:bold"  ><%unless comment.name.blank?%>"<%= comment.name %>" Said,<% end%></p>
+                        <p align="left"  style ="color:#d1572c !important; font-size:8pt !important;margin-top: -5px;"><i>@<%= comment.created_at.strftime("%Y-%m-%d %-I:%M %P") %></i></p>
+                      </div>
+                      <div class="container" style="max-width:500px; margin-left:90px;margin-top: -5px;font-size:9pt" >
+                        <p align="left"><%= comment.message %></p>
+                      </div>
+                      <br />
+                    </div>
+                    <br />
+                    <% end %>
+                  </div>
+        </div>
+      </div>

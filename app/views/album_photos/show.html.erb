@@ -1,0 +1,6 @@
+<%= button_to 'View Album', '/albums/' + @album_photo.album_id.to_s, class: "weddingbutton19", style: "margin-left:-10px", method: :get %>
+
+<div style="text-align:center">
+  <img src="<%= @album_photo.photo_url(:zoomed) %>" style="margin-left:-210px"/>
+</div>
+

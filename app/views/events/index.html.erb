@@ -1,0 +1,98 @@
+<section>
+  <div class="container">
+<div class="title_header">
+<h1>Manage and Create Your Events</h1>
+
+<br/>
+</div>
+
+
+<section>
+<h4> Your Upcoming Events: </h4>
+<div class="container" style="margin-bottom:30px">
+  <% @events.each_with_index do |event, i| %>
+      <% if Time.now < event.startTime %>
+      <div style="width:250px;margin-left:4%;color:#000;cursor:pointer;cursor:hand;margin-top:8px;display:inline-block">
+        <div style="box-shadow: -10px 10px 5px #888888; border: 2px solid #29378c; border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px; display:inline-block; padding: 10px; width:100%">
+          <center><h4 onclick="slideout('<%=event[:id]%>')"><%= event.name %></h4>
+            <% if event.name.length < 21 %>
+              <p style="font-size: 24px;line-height: 18px; color: #FFFFFF !important;"> &nbsp; </p>
+              <p style="font-size: 24px;line-height: 18px; color: #FFFFFF !important;"> &nbsp; </p>
+            <% elsif event.name.length > 21 && event.name.length < 42 %>
+              <p style="font-size: 24px;line-height: 19px; color: #FFFFFF !important;"> &nbsp; </p>
+            <% end %>
+            <img src="<%if event.event_image_file_name %><%=event.event_image.url(:feed)%><%else%>/images/event_image/feed/missing.jpg<%end%>" width="100px" class="event_thumb" onclick="slideout('<%=event[:id]%>')" style="margin-bottom:10px">
+              <div style="display:inline-block;max-width:550px;">
+
+                <div style="max-width:170px;">
+                  <%= button_to "Manage", edit_event_path(event), :method=>"get",:class=>"btn btn-success", :style=>"width:140px;margin:-15px"%>
+                </div>
+                <div style="max-width:170px;">
+                  <%= button_to "View Event", event_path(event), :method=>"get",:class=>"btn btn-success", :style=>"width:140px;margin:-15px"%>
+                </div>
+                 <div style="max-width:170px;">
+                  <%= button_to "Clone Event", event_path(event), :method=>"get",:class=>"btn btn-success", :style=>"width:140px;margin:-15px"%>
+                </div>
+                <div style="max-width:170px;">
+                  <%= button_to "Delete This Event", delete_event_path(:id => event.id), method: :delete, confirm: "Are you sure you want to delete this event?", id: "delete" + event.id.to_s, class:"btn btn-danger", :style=>"width:140px;margin:-15px;" %>
+                </div>
+              </div>
+            </center>
+        </div>
+      </div>
+    <%end%>
+  <% end %>
+
+  </div>
+  </section>
+
+  <section>
+<h4> Your Past Events: </h4>
+<div class="container" style="margin-bottom:30px">
+  <% @events.each_with_index do |event, i| %>
+      <% if Time.now > event.startTime %>
+      <div style="width:250px;margin-left:4%;color:#000;cursor:pointer;cursor:hand;margin-top:8px;display:inline-block">
+        <div style="box-shadow: -10px 10px 5px #888888; border: 2px solid #29378c; border-radius: 10px; -moz-border-radius: 10px; -webkit-border-radius: 10px; display:inline-block; padding: 10px; width:100%">
+          <center><h4 onclick="slideout('<%=event[:id]%>')"><%= event.name %></h4>
+            <% if event.name.length < 21 %>
+              <p style="font-size: 24px;line-height: 18px; color: #FFFFFF !important;"> &nbsp; </p>
+              <p style="font-size: 24px;line-height: 18px; color: #FFFFFF !important;"> &nbsp; </p>
+            <% elsif event.name.length > 21 && event.name.length < 42 %>
+              <p style="font-size: 24px;line-height: 19px; color: #FFFFFF !important;"> &nbsp; </p>
+            <% end %>
+            <img src="<%if event.event_image_file_name %><%=event.event_image.url(:feed)%><%else%>/images/event_image/feed/missing.jpg<%end%>" width="100px" class="event_thumb" onclick="slideout('<%=event[:id]%>')">
+              <div style="display:inline-block;max-width:550px;">
+
+                <div style="max-width:170px;">
+                  <%= button_to "Manage", edit_event_path(event), :method=>"get",:class=>"btn btn-success", :style=>"width:140px;margin:-15px"%>
+                </div>
+                <div style="max-width:170px;">
+                  <%= button_to "View Event", event_path(event), :method=>"get",:class=>"btn btn-success", :style=>"width:140px;margin:-15px"%>
+                </div>
+                 <div style="max-width:170px;">
+                  <%= button_to "clone", event_path(event), :method=>"get",:class=>"btn btn-success", :style=>"width:140px;margin:-15px"%>
+                </div>
+                <div style="max-width:170px;">
+                  <%= button_to "Delete This Event", delete_event_path(:id => event.id), method: :delete, confirm: "Are you sure you want to delete this event?", id: "delete" + event.id.to_s, class:"btn btn-danger", :style=>"width:140px;margin:-15px;" %>
+                </div>
+              </div>
+            </center>
+        </div>
+      </div>
+    <%end%>
+  <% end %>
+
+  </div>
+  </section>
+
+</div>
+</section>
+
+
+<script>
+function slideout(ID) {
+  $('#hide' + ID).slideToggle(600);
+  $("#right" + ID).fadeToggle(400);
+  $("#down" + ID).fadeToggle(400);
+}
+</script>

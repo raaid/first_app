@@ -1,0 +1,104 @@
+<style>
+  .linked:hover{color:#000;}
+</style>
+<section>
+  <div class="container">
+<h1>Sales For: <%= @event.name %></h1>
+<input type="button" onclick="history.go(-1);" value="Back" class="btn btn-primary" style="position:absolute;top:75px;right:25px;" />
+<br/>
+
+<% if current_user %>
+<center>
+
+             <div class="purchaseTickets" style="width:75%">
+                     <center>
+                     <p style="font-size: 14pt;">
+
+                     <% if @event.has_cash_gifting %><%= button_to_function 'Add A Cash Gift Option', "", class: "btn btn-large btn-success", :onclick => 'addType()' %><% end %>
+                         <% if @event.has_cash_gifting and @event.has_donations %><br /><span style="color:#fff;"><b>Or</b></span><br /><% end %>
+                         <% if @event.has_donations %><%= button_to_function 'Add A Donation Option', "", class: "btn btn-large btn-success", :onclick => 'addType2()' %><% end %>
+                     </center>
+               <br />
+               <br />
+               <hr/>
+                     <br/>
+
+                     <% if @cashgifttypes.size <= 0 %>
+                         <p>You have not created any "Cash Gift or Donation Options" for you guests to give to as of yet.</p>
+                     <% else %>
+                                  <div class="ticketBar" style="width:120px">Include As Option?</div>
+                                  <div class="ticketBar" style="width:50px">Image</div>
+                                  <div class="ticketBar" style="width:150px">Title</div>
+                                  <div class="ticketBar" style="width:50px">Goal</div>
+                                  <div class="ticketBar" style="width:50px">Description</div>
+                                  <div class="ticketBar" style="width:50px"></div>
+                                <br />
+                                <% @cashgifttypes.each do |cgt| %>
+                                        <div class="ticketBar" style="width:120px"><% if cgt.shown %><i class="icon-check green"></i><% end %></div>
+                                        <div class="ticketBar" style="width:50px"><%= image_tag cgt.cgp_url(:thumb) %></div>
+                                        <div class="ticketBar" style="width:150px"><%= cgt.title %></div>
+                                        <div class="ticketBar" style="width:50px"><% unless cgt.title == "Cash"%><%= cgt.goal %>0<% else %> N/A<%end%></div>
+                                        <div class="ticketBar" style="width:50px"><%= cgt.description[0,18] if cgt.description %><% if cgt.description %>...<% end %></div>
+                                        <div class="ticketBar" style="width:50px"><%= link_to 'Edit', edit_cashgifttype_path(cgt), class: "btn btn-success" %></div>
+                                    <br>
+                                <% end %>
+                     <% end %>
+                   </div>
+                   <br />
+           </center>
+<% else %>
+
+<% end %>
+
+<br />
+ <% if current_user %>
+      <h1 style="font-size: 25pt;float:left;">Cash Gifting & Donations Received</h1>
+      <div class="clearfloat"></div>
+        <hr />
+
+      <center>
+      <div style="width:75%">
+        <div class="">
+                      <table width="95%">
+                        <tr>
+                          <td width="55%">From</td>
+                          <td width="17%">Date</td>
+                          <td width="10%">Message</td>
+                          <td width="18%">Amount</td>
+                        </tr>
+                      </table>
+                    </div>
+                     <br />
+        <% @cashgifts.each do |cg| %>
+            <table width="95%">
+              <tr>
+                <td width="55%"><% unless cg.privacy%><%= cg.guest_name %> (<%= cg.guest_email %>)<% else %>Anonymously Made<% end %></td>
+                <td width="17%"><%= cg.created_at.to_date %></td>
+                <td width="10%"><% if cg.message %><%= link_to 'Show',cg, :class=>"linked" %><% end %></td>
+                <td width="18%"><%= cg.amount %>0</td>
+              </tr>
+            </table>
+        <% end %>
+
+        <% if @cashgifts.count > 0 %>
+             <!-- <p>Cash me out</p> -->
+            <div class="clearfloat"></div>
+            <br />
+            <br />
+            <%=button_to 'Request Cash Out!',giftcashout_path, :class => 'btn btn-success',:style=>"width:200px;" %>
+        <% end %>
+      </div>
+      </center>
+          <hr />
+ <% end %>
+</div>
+</section>
+
+<script>
+    function addType() {
+        window.location.href = "/cashgifttypes/new?id=<%= @event.id%>&cg=1";
+    }
+    function addType2() {
+        window.location.href = "/cashgifttypes/new?id=<%= @event.id%>&cg=0";
+    }
+</script>

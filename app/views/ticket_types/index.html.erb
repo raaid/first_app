@@ -1,0 +1,168 @@
+<section>
+  <div class="container">
+<h1>Sales For: <%= @event.name %></h1>
+<input type="button" onclick="history.go(-1);" value="Back" class="btn btn-primary" style="position:absolute;top:75px;right:25px;" />
+<br/>
+
+  <% if @event then %>
+    <center><%= button_to 'Add A New Ticket To Sell', ticket_type_new_path(event_id: params[:event_id]), :method => "post", :class=>"btn btn-success", :style=>"width:300px;"%></center>
+     <% else %>
+    You are viewing all ticket types as an admin. You cannot create a new ticket type from this interface.
+  <% end %>
+  <br />
+  <hr />
+
+<center>
+  <% if @event.ticket_types.length > 0 then %>
+ <% overalltotal = 0 %>
+<% @ticket_types.each do |ticket_type| %>
+<table width="95%">
+  <tr>
+    <td width="31%"><%= ticket_type.name %> (<%= ticket_type.price %> <%= ticket_type.currency %>)</td>
+    <td width="40%">From: <%= ticket_type.sell_from %> - <%= ticket_type.sell_to %></td>
+    <td width="10%"><%= "(Groupable)" if ticket_type.groupable? %></td>
+    <td width="12%">Total Sold: <%= TicketInstance.where(:ticket_type_id => ticket_type.id, :status => ["paid", "redeemed"]).count %></td>
+    <td width="7%"><span class="btn btn-success" onclick="window.location='<%=edit_ticket_type_path(ticket_type) %>'">Edit Ticket Details</span></td>
+  </tr>
+</table>
+<hr />
+   <% instances = TicketInstance.where(:ticket_type_id => ticket_type.id, :status => ["paid", "redeemed"]) %>
+   <% total = 0 %>
+
+   <% instances.each do |ticket| %>
+          <table width="95%">
+            <tr>
+              <td width="60%"><%= ticket.guest_name %> (<%= ticket.guest_email %>) X <%= ticket.quantity %></td>
+              <td width="5%"></td>
+              <td width="10%">Paid: $</td>
+              <td width="7%"><%= ticket.price_paid %></td>
+              <td width="13%"><%= link_to 'Resend Ticket', resend_path(ticket.id), class: "btn btn-success", id: ticket.id %></td>
+            </tr>
+          </table>
+                <br />
+                <% total = total+ ticket.price_paid%>
+   <% end %>
+            <br />
+            <table width="95%">
+             <tr>
+               <td width="60%"></td>
+               <td width="10%"></td>
+               <% overalltotal = overalltotal + total %>
+               <td width="30%">Total: $<%= total %></td>
+             </tr>
+           </table>
+            <br />
+            <br />
+            <br />
+            <br />
+
+<% end %>
+        <br />
+        <center>Event Total: $<%= overalltotal %></center>
+        <br />
+        <!--<input class="btn btn-success" style="width:275px;" value="Test Cash Out" onclick="testPopup()"> -->
+        <br><br>
+        <%#=button_to 'Request Event Cash Out!',cashout_path(:id => @event.id), :class => 'btn btn-success', :style=>"width:300px;"%>
+        <input value="Request Event Cash Out!" type="button" class="btn btn-success" style="width:300px" onclick="$('#securityBox').toggle(500)" />
+        <br />
+     <center><p style="color:#000;font-size: 8pt;">*Organizers & Guests are subject to the fees outlined in Eventastics <a href="/terms_of_service#fees"><u>Terms Of Service</u></a></p></center>
+      <br />
+      <% end %>
+</center>
+<br />
+
+
+<div id="testCashout" class="side_panel3" style="z-index:9999;display:none">
+  <div onclick="closePopup()" class="testcashoutclose">X</div>
+  <center>
+    <div class="testCashout">
+      <h1 style="font-size:30pt;font-weight:bold;color:#fff;float:none">Test Cash Out</h1>
+      <br>
+      <p>An e-mail has been sent to <%= @user.email %></p>
+      <p>blah blah blah... stuff about stuff..</p>
+      <input class="btn btn-success" style="width:200px;" value="ok" onclick="closePopup()">
+    </div>
+  </center>
+</div>
+  </div>
+  </section>
+
+
+
+  <div id="securityBox" class="side_panel3" style="width:650px;right:-325px;padding:15px;color:#000;top:130px;height:250px;display:none">
+    <div onclick="closeCashout()" class="testcashoutclose" style="top:7px">X</div>
+    <center>
+    <% if @user.cg_key2 and @user.cg_key2 != '' %>
+      <%= simple_form_for :cashout, html: { multipart: true }, url: cashout_path, method: :put do |f| %>
+        <div style="font-size:17pt;font-weight:bold">Please answer the security question</div>
+        <hr><br>
+        <div style="font-size:15pt"><%= @user.cg_key1 %></div>
+        <br>
+        <%= f.input :cg_key2, label: false, :input_html => {onkeyup: 'checkAnswer(this)'} %>
+        <img id="red" src='/images/minus.png' style="position:relative;top:-37px;left:-124px;display:block;opacity:0"/>
+        <img id="green" src='/images/checkmark2.png' style="position:relative;top:-37px;left:-124px;display:none"/>
+        <%= f.hidden_field :id, :value => @event.id %>
+        <br>
+        <%= f.submit 'Request Event Cash Out!', id: "requestCash", :class => 'btn btn-success', :style=>"width:300px;", disabled: true%>
+      <% end %>
+    <% else %>
+      <div style="font-size:17pt;font-weight:bold">Please create a security question to cash out</div>
+      <hr><br>
+      <p>With a security question set, you can allow your friends and family to log into your account, without fear of anyone cashing out on your events.  Once set, keep the answer secret.</p>
+      <input class="btn btn-success" style="width:150px;left:50%;display:inline-block" value="Later" onclick="closeCashout();">
+      <input class="btn btn-success" style="width:150px;left:50%;display:inline-block" value="Set Question Now" onclick="window.location='<%=edit_user_path(:id => @user.id)%>'"> 
+    <% end %>
+    <img id="securitycloser" onclick="closeSecurityBox()" src="/images/cross.png" class="securityCross" style="display:none" />
+  </center>
+  </div>
+
+
+
+
+<script>
+    function closePopup() {
+      $('#testCashout').toggle(500);
+    }
+
+    function closeCashout() {
+      $('#securityBox').toggle(500);
+    }
+
+    function testPopup() {
+      $.ajax({ 
+        "url":"/test_cashout",
+        "type":"post",
+        "data": {"id": "<%= @event.id %>"},
+        "dataType":"json",
+        "success":function () {
+          $('#testCashout').toggle(500);
+        },
+        "failure":function () {
+          console.log("error occured");
+      }});
+    }
+
+    function checkAnswer(e) {
+      answer = e.value;
+
+      $.ajax({ "url":"<%=checkSecurityAnswer_path%>",
+           "dataType":"json",
+           "data": {'answer': answer, 'id': '<%= @user.id %>'},
+           "success": function (data) {
+              if (data) {
+                document.getElementById("red").style.display = "none";
+                document.getElementById("green").style.display = "block";
+                document.getElementById("requestCash").removeAttribute("disabled");
+              } else {
+                red = document.getElementById("red");
+                red.style.display = "block";
+                red.style.opacity = 1;
+                document.getElementById("green").style.display = "none";
+                document.getElementById("requestCash").setAttribute("disabled", "disabled");
+              }
+            },
+           "failure":function () {
+             console.log("The code did not submit successfully! It is safe to retry.");
+        }});
+    }
+</script>

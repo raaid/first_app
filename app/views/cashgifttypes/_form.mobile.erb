@@ -1,0 +1,43 @@
+<br />
+<span class="main_content_partial" style="display:inline-block;width:90%;">
+   <div style="display:inline-block;">
+<%= form_for(@cashgifttype) do |f| %>
+        <div class="purchaseTicketContainer">
+  <% if @cashgifttype.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@cashgifttype.errors.count, "error") %> prohibited this cashgifttype from being saved:</h2>
+      <ul>
+      <% @cashgifttype.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+    <center>
+      <br />
+      <%= f.select :is_donation,{ 'This Is A Donation'=>true, 'This Is A Cash Gift'=>false }%>
+      <br />
+      <center><p>*Title</p><%= f.text_field :title, :class=>"loginFormSize" %></center><br />
+      <center><p>*Goal</p><%= f.text_field :goal, :class=>"loginFormSize" %></center><br />
+      <center><p>*Currency</p><%= f.select(:currency, options_for_select([["US Dollars", "USD"], ["Canadian Dollars", "CAD"]], selected: @cashgifttype.currency)) %></center>
+<br />
+      <p>Description</p>
+    <%= f.text_area :description, :size => "75x2" %><br />
+    <!--<% f.check_box :shown %><br />-->
+    </center>
+    <center>
+    <br />
+      <%= f.hidden_field :event_id %>
+    <%= image_tag @cashgifttype.cgp_url(:newsfeed), style: "-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;width:100px;height:100px;" %>
+    <div class="clearfloat"></div>
+      <br />
+    <p>Upload A Photo</p>
+    <%= f.file_field :cgp %><br />
+          <br />
+    <%= f.submit "Add This Cash Gift", :class => 'btn btn-success',:style=>"width:200px;"%>
+    </center>
+    </div>
+<% end %>
+<br />
+</div>
+</span>

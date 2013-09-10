@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  month: MyString
+  accumulated_points: 1
+  goal: 1
+
+two:
+  name: MyString
+  month: MyString
+  accumulated_points: 1
+  goal: 1

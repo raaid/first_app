@@ -1,0 +1,138 @@
+<div id="content_outter" class="main_content_pane_outter">
+<div id="content_inner" class="main_content_pane">
+<h1 style="font-size: 25pt;float:left;">Add/Manage Contact Lists</h1>
+<input type="button" value="Back To Promotion Management Panel"  onclick="window.location='<%=rsvp_path(id: @event.id)%>'" class="btn btn-success" style="float:right;"></input>
+<div class="clearfloat"></div>
+  <br>
+<div class="contentarea">
+<center>
+<div id='new_element_container'>
+  <br />
+  <p style="color:#474747;">Create a new contact list by specifying a name and clicking create!</p>
+    <br />
+    <input type='text' style='line-height: 20px;height:20px;padding:5px;' id='new_element_name' placeholder="Contact List Name">
+    <br >
+    <input type="button" value="Create A New Contact List" onclick='create_new_element_click();' class="btn btn-success" style="margin-top: 5px;"></input>
+</div>
+</center>
+<br />
+<hr />
+  <h1 style="font-size: 25pt;float:left;">Current Lists</h1>
+  <div class="clearfloat"></div>
+    <hr />
+<div id='list_elements'></div>
+
+<script>
+var existing_elements = {};
+
+function add_existing_element(element) {
+    $('#list_elements').append(existing_element_html(element));
+    existing_elements[element['id']] = element;
+}
+
+function existing_element_html(element) {
+    return "<div id='existing_element_" + element['id'] + "_container'>"
+	+ " <span style='position:relative;top:8px;'><b>List Name:</b></span> <input style='line-height: 20px;height:20px;padding:5px;' id='existing_element_" + element['id'] + "_name' value= '" + element['name']
+	+ "' onchange='save_element(refresh_existing_element(" + element['id'] + "));'/>"
+   // + "<input type='button' class='btn btn-success' style='float:right;margin-left:5px;' value='Delete' onclick='delete_element(existing_elements[" + element['id'] + "])'></input>"
+	+ "<input type='button' class='btn btn-success' style='float:right;' value='Add/Edit Contacts In List' onclick='editList("+ element['id']+ ")'></input>"
+	+ "<br>"
+	+ "</div><div class='clearfloat'></div><br />";
+}
+
+function editList(id){
+    window.location = "/contact_lists/" + id + "?event_id=<%=@event.id%>";
+    //"<%=contact_lists_path%>?id=" + id + "&event_id=<%=@event.id%>";
+}
+function create_new_element_click() {
+    create_new_element({"name": $("#new_element_name").val(), "event_id": <%= @event.id %>});
+}
+
+function refresh_existing_element(element_id) {
+    var existing_element = existing_elements[element_id];
+
+    existing_element['name'] = $('#existing_element_' + element_id + '_name').val();
+    existing_elements[element_id] = existing_element;
+
+    return existing_element;
+}
+
+function create_new_element(element) {
+    start_pending('#new_element_container');
+
+    $.ajax({ "url":"/contact_lists",
+	     "type":"post",
+	     "data": {"contact_list": element},
+	     "dataType":"json",
+	     "success":function (data) {
+		 add_existing_element(data);
+		 // Redisplay the element.
+		 stop_pending('#new_element_container');
+	     },
+	     "failure":function () {
+                 alert("The contact list failed to save! It is a safe to retry.");
+
+		 // Redisplay the element.
+		 stop_pending('#new_element_container');
+	     }});
+}
+
+function save_element(element) {
+    // Disable the element once it has been clicked.
+    start_pending('#existing_element_' + element['id'] + '_container');
+
+    // Get the latest from the web forms.
+    element = refresh_existing_element(element['id']);
+
+    $.ajax({ "url":"/contact_lists/" + element['id'],
+	     "type":"put",
+	     "data": {"contact_list": element},
+	     "dataType":"json",
+	     "success":function () {
+	     },
+	     "failure":function () {
+                 alert("The contact list failed to save! It is a safe to retry.");
+	     },
+	     "complete":function() {
+		 // Redisplay the element.
+		 stop_pending('#existing_element_' + element['id'] + '_container');
+	     }});
+}
+
+function delete_element(element) {
+    // Disable the element once it has been clicked.
+    start_pending('#existing_element_' + element['id'] + '_container');
+
+    $.ajax({ "url":"/contact_lists/" + element['id'],
+             "type":"delete",
+             "dataType":"json",
+             "success":function () {
+		 delete existing_elements[element['id']];
+		 $('#existing_element_' + element['id'] + '_container').html("");
+             },
+             "failure":function () {
+                 alert("The contact list failed to delete! It is still saved, and it is a safe to retry.");
+
+		 // Redisplay the element, since it failed.
+		 stop_pending('#existing_element_' + element['id'] + '_container');
+             }});
+}
+
+function start_pending(container_name) {
+    $(container_name).attr('disabled', 'disabled');
+}
+
+function stop_pending(container_name) {
+    $(container_name).removeAttr('disabled');
+}
+</script>
+ <br />
+  <br />
+    <br />
+</div>
+</div>
+</div>
+
+<% @contact_lists.each do |element| %>
+   <script> add_existing_element({"name": "<%= element.name %>", "id": <%= element.id %>});</script>
+<% end %>

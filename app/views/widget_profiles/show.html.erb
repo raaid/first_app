@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Tickets background:</b>
+  <%= @widget_profile.tickets_background %>
+</p>
+
+<p>
+  <b>Events background:</b>
+  <%= @widget_profile.events_background %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%= @widget_profile.user_id %>
+</p>
+
+
+<%= link_to 'Edit', edit_widget_profile_path(@widget_profile) %> |
+<%= link_to 'Back', widget_profiles_path %>

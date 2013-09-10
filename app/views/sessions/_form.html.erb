@@ -1,0 +1,25 @@
+<%= form_for(@session, :as => :session, :url => { :action => "create" }) do |f| %>
+  <% if @session.errors.any? %>
+    <div id="error_explanation">
+      <h1><%= pluralize(@session.errors.count, "error") %> prohibited this session from being saved:</h1>
+
+      <ul>
+      <% @session.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :email %><br />
+    <%= f.text_field :email %>
+  </div>
+  <div class="field">
+    <%= f.label :password %><br />
+    <%= f.password_field :password %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

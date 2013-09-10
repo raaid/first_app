@@ -1,0 +1,51 @@
+<%= javascript_include_tag "swfobject.js", "jquery.uploadify.v2.1.0.js" %>
+<script type="text/javascript" charset="utf-8">
+<%- session_key = Rails.application.config.session_options[:key] -%> 
+$(document).ready(function() {
+  console.log("ready");
+  $('#wallpaper_wallpaper').click(function(event){ 
+    event.preventDefault();
+  }); 
+  
+  $('#wallpaper_wallpaper').uploadify({
+    uploader : '/uploadify/uploadify.swf',
+    cancelImg : '/uploadify/cancel.png',
+    multi : true,
+    auto : true,
+    script : '/wallpapers',
+    onComplete : function(event, queueID, fileObj, response, data) { 
+      //var dat = eval('(' + response + ')');
+      //$.getScript(dat.upload);
+      obj = JSON.parse(response);
+      console.log(obj["url"]);
+      console.log(obj.url);
+
+    },
+    scriptData : {
+          '_http_accept': 'application/javascript',
+          'format' : 'json',
+          '_method': 'post',
+          '<%= session_key %>' : encodeURIComponent('<%= u cookies[session_key] %>'),
+          'authenticity_token': encodeURIComponent('<%= u form_authenticity_token %>'),
+          'event_id' : '<%= @event.id %>'
+        }
+  });
+  
+  $('#upload_submit').click(function(event){ 
+      event.preventDefault(); 
+      $('#upload_photo').uploadifyUpload(); 
+    });
+    
+}); 
+</script>
+<!-- 
+<h3>Upload a Photo</h3> 
+<%= form_for Wallpaper.new(:event_id => @event.id), :html => {:multipart => true} do |f| %> 
+  <%= f.hidden_field :event_id, "value" => @event.id %>
+<p>
+<%= f.file_field :wallpaper %> </p>
+<p><%= f.submit "Upload", id: "upload_submit" %></p> <% end %>
+ -->
+<input type='file' id="wallpaper_wallpaper" />
+
+

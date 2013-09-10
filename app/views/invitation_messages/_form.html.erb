@@ -1,0 +1,102 @@
+<center>
+  <div style="width:95%">
+<%= form_for(@invitation_message) do |f| %>
+  <div style="display: inline-block;">
+    <div style="float:left;">
+   <b><%= f.label :name, 'Name Of Your Video Message Here:' %></b>
+    <%= f.text_field :name , :style=>'line-height: 20px;height:20px;padding:5px;'%><br /> <br />
+      <b><%= f.label :text,'Add A Custom Message For Your Guests Here. Or, specify whether you would like your guests to include any particular information in their RSVP response, such as a dinner choice (eg. Steak or Chicken)' ,:style=>"width:350px;margin-bottom:4px;"%></b>
+        <%= f.text_area :text, rows: 7 %><br />
+      <%= button_to_function 'Preview Your Recorded Video Message', '', onclick: 'showPreview($("#invitation_message_video").val())' ,:class=>"btn btn-success", :style=>"margin-top:10px;width:335px"%>
+  </div>
+    <div style="float:right;">
+    <div id="recorderContainer" style="height:265px; width: 300px;margin-top: 5px;margin-bottom: 15px;margin-left: 20px;"></div>
+    <%= f.hidden_field :video %>
+    <%= f.hidden_field :owner_id %>
+    <%= f.hidden_field :event_id, :value => @event.id %>
+  </div>
+  </div>
+   <br /><center>
+    <div class="actions">
+      <br />
+      <%= f.submit :class=>"btn btn-success", style: "margin-top: -89px;margin-left: 400px;" %>
+    </div></center>
+<% end %>
+</div>
+</center>
+<!-- Playback preview -->
+<div id="playerContainer" style="position:absolute; height:340px; top:20px;width 350px;margin-left: 50%;left:-210px;z-index:9999999999;background:#000;padding:25px;border:1px solid #fff; display:none"><%= button_to_function 'Close Preview', "", :onclick => 'hidePreview()', :class => 'weddingbutton2', :style => 'position:absolute;bottom:25px;left:60px;' %></div>
+
+<%= javascript_include_tag "flash_detect_min.js" %>
+<script src="http://static.opentok.com/v0.91/js/TB.min.js" type="text/javascript" charset="utf-8"></script>
+<script>
+
+if (!FlashDetect.installed) {
+    alert("We're sorry! Flash is required to use this feature. Please download the newest version of Adobe Flash to continue!");
+} else {
+    if (FlashDetect.major < 11) {
+        alert("Please upgrade your version of flash to at least version 11!");
+    }
+}
+</script>
+
+<script>
+var API_KEY = "<%= OPENTOK_API_KEY %>";
+var TOKEN = "<%= OPENTOK_MODERATOR_TOKEN %>";
+var VIDEO_HEIGHT = 240;
+var VIDEO_WIDTH = 320;
+
+var player;
+var recImgData;
+
+function init() {
+    initRecorder();
+}
+
+function initRecorder() {
+    recorderManager = TB.initRecorderManager(API_KEY);
+    createRecorder();
+}
+
+function createRecorder() {
+    var recDiv = document.createElement('div');
+    recDiv.setAttribute('id', 'recorderElement');
+    document.getElementById('recorderContainer').appendChild(recDiv);
+    recorder = recorderManager.displayRecorder(TOKEN, recDiv.id);
+    recorder.addEventListener('recordingStarted', recStartedHandler);
+    recorder.addEventListener('archiveSaved', archiveSavedHandler);
+}
+
+function recStartedHandler(revent) {
+    //recImgData = recorder.getImgData();
+}
+
+function archiveSavedHandler(event) {
+    $("#invitation_message_video").val(event.archives[0].archiveId);
+}
+
+function showPreview(opentok_video_id) {
+    if (opentok_video_id == undefined || opentok_video_id == null || opentok_video_id == "") {
+	alert("A video has not been saved yet!");
+    } else {
+	loadArchiveInPlayer(opentok_video_id);
+    }
+}
+
+function loadArchiveInPlayer(archiveId) {
+    if (!player) {
+	$("#playerContainer").append("<div id='playerElement'></div>");
+        player = recorderManager.displayPlayer(archiveId, TOKEN, 'playerElement');
+        document.getElementById('playerContainer').style.display = 'block';
+    } else {
+        player.loadArchive(archiveId);
+    }
+    $('#playerContainer').show();
+}
+
+function hidePreview() {
+    $('#playerContainer').hide();
+}
+
+//init();
+</script>

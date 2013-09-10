@@ -1,111 +1,306 @@
+GIT
+  remote: git://github.com/camdez/wkhtmltopdf-heroku.git
+  revision: 09f42e0fd9cf98361343738ccd7fdf6395df7dd0
+  specs:
+    wkhtmltopdf-heroku (0.2.0)
+
+GIT
+  remote: git://github.com/jamillion/vpim-rails.git
+  revision: 590fc98df1217fa16da130606444f324f482fc6d
+  specs:
+    vpim-rails (0.665)
+
+GIT
+  remote: https://github.com/hone/resque.git
+  revision: f8f105461d5b622d391e092cc594621b4dd98ef6
+  branch: heroku
+  specs:
+    resque (1.19.0)
+      multi_json (~> 1.0)
+      redis-namespace (~> 1.0.2)
+      sinatra (>= 0.9.2)
+      vegas (~> 0.1.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
-    actionmailer (3.2.13)
-      actionpack (= 3.2.13)
-      mail (~> 2.5.3)
-    actionpack (3.2.13)
-      activemodel (= 3.2.13)
-      activesupport (= 3.2.13)
+    actionmailer (3.2.11)
+      actionpack (= 3.2.11)
+      mail (~> 2.4.4)
+    actionpack (3.2.11)
+      activemodel (= 3.2.11)
+      activesupport (= 3.2.11)
       builder (~> 3.0.0)
       erubis (~> 2.7.0)
       journey (~> 1.0.4)
-      rack (~> 1.4.5)
+      rack (~> 1.4.0)
       rack-cache (~> 1.2)
       rack-test (~> 0.6.1)
       sprockets (~> 2.2.1)
-    activemodel (3.2.13)
-      activesupport (= 3.2.13)
+    active_utils (2.0.0)
+      activesupport (>= 2.3.11)
+      i18n
+    activemerchant (1.37.0)
+      active_utils (>= 1.0.2)
+      activesupport (>= 2.3.14)
+      builder (>= 2.0.0)
+      i18n
+      json (>= 1.5.1)
+      money
+      nokogiri (< 1.6.0)
+    activemodel (3.2.11)
+      activesupport (= 3.2.11)
       builder (~> 3.0.0)
-    activerecord (3.2.13)
-      activemodel (= 3.2.13)
-      activesupport (= 3.2.13)
+    activerecord (3.2.11)
+      activemodel (= 3.2.11)
+      activesupport (= 3.2.11)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
-    activeresource (3.2.13)
-      activemodel (= 3.2.13)
-      activesupport (= 3.2.13)
-    activesupport (3.2.13)
-      i18n (= 0.6.1)
+    activeresource (3.2.11)
+      activemodel (= 3.2.11)
+      activesupport (= 3.2.11)
+    activesupport (3.2.11)
+      i18n (~> 0.6)
       multi_json (~> 1.0)
+    addressable (2.3.5)
     arel (3.0.2)
+    attr_required (0.0.5)
+    authlogic (3.3.0)
+      activerecord (>= 3.2)
+      activesupport (>= 3.2)
+    aws-s3 (0.6.3)
+      builder
+      mime-types
+      xml-simple
+    aws-sdk (1.15.0)
+      json (~> 1.4)
+      nokogiri (< 1.6.0)
+      uuidtools (~> 2.1)
+    barby (0.5.1)
     builder (3.0.4)
+    chronic (0.9.1)
+    chunky_png (1.2.8)
+    climate_control (0.0.3)
+      activesupport (>= 3.0)
+    cocaine (0.5.0)
+      climate_control (>= 0.0.3, < 1.0)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
       railties (~> 3.2.0)
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.6.2)
+    coffee-script-source (1.6.3)
+    country-select (1.1.1)
+    dalli (2.6.4)
     erubis (2.7.0)
-    execjs (1.4.0)
-      multi_json (~> 1.0)
+    excon (0.25.3)
+    execjs (2.0.0)
+    faraday (0.8.8)
+      multipart-post (~> 1.2.0)
+    fastercsv (1.5.5)
+    fb_graph (2.3.0)
+      httpclient (>= 2.2.0.2)
+      rack-oauth2 (>= 0.9.4)
+    geocoder (1.1.8)
+    hashie (1.2.0)
+    heroku (2.40.0)
+      heroku-api (~> 0.3.7)
+      launchy (>= 0.3.2)
+      netrc (~> 0.7.7)
+      rest-client (~> 1.6.1)
+      rubyzip
+    heroku-api (0.3.15)
+      excon (~> 0.25.1)
     hike (1.2.3)
-    i18n (0.6.1)
+    httpauth (0.2.0)
+    httpclient (2.3.4.1)
+    i18n (0.6.5)
     journey (1.0.4)
-    jquery-rails (2.0.2)
-      railties (>= 3.2.0, < 5.0)
-      thor (~> 0.14)
+    jquery-fileupload-rails (0.4.1)
+      actionpack (>= 3.1)
+      railties (>= 3.1)
+    jquery-rails (3.0.4)
+      railties (>= 3.0, < 5.0)
+      thor (>= 0.14, < 2.0)
     json (1.8.0)
-    mail (2.5.4)
+    jwt (0.1.8)
+      multi_json (>= 1.5)
+    kaminari (0.14.1)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
+    kgio (2.8.0)
+    launchy (2.3.0)
+      addressable (~> 2.3)
+    mail (2.4.4)
+      i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mime-types (1.23)
-    multi_json (1.7.7)
+    mime-types (1.24)
+    money (5.1.1)
+      i18n (~> 0.6.0)
+    multi_json (1.7.9)
+    multipart-post (1.2.0)
+    netrc (0.7.7)
+    newrelic_rpm (3.5.5.38)
+    nokogiri (1.5.10)
+    oauth2 (0.8.1)
+      faraday (~> 0.8)
+      httpauth (~> 0.1)
+      jwt (~> 0.1.4)
+      multi_json (~> 1.0)
+      rack (~> 1.2)
+    omniauth (1.0.2)
+      hashie (~> 1.2)
+      rack
+    omniauth-facebook (1.2.0)
+      omniauth-oauth2 (~> 1.0.0)
+    omniauth-oauth2 (1.0.3)
+      oauth2 (~> 0.8.0)
+      omniauth (~> 1.0)
+    paperclip (3.4.2)
+      activemodel (>= 3.0.0)
+      activerecord (>= 3.0.0)
+      activesupport (>= 3.0.0)
+      cocaine (~> 0.5.0)
+      mime-types
+    pdfkit (0.5.4)
+    pg (0.16.0)
     polyglot (0.3.3)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
+    rack-oauth2 (1.0.5)
+      activesupport (>= 2.3)
+      attr_required (>= 0.0.5)
+      httpclient (>= 2.2.0.2)
+      multi_json (>= 1.3.6)
+      rack (>= 1.1)
     rack-ssl (1.3.3)
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
-    rails (3.2.13)
-      actionmailer (= 3.2.13)
-      actionpack (= 3.2.13)
-      activerecord (= 3.2.13)
-      activeresource (= 3.2.13)
-      activesupport (= 3.2.13)
+    rack-timeout (0.0.4)
+    rails (3.2.11)
+      actionmailer (= 3.2.11)
+      actionpack (= 3.2.11)
+      activerecord (= 3.2.11)
+      activeresource (= 3.2.11)
+      activesupport (= 3.2.11)
       bundler (~> 1.0)
-      railties (= 3.2.13)
-    railties (3.2.13)
-      actionpack (= 3.2.13)
-      activesupport (= 3.2.13)
+      railties (= 3.2.11)
+    rails3-generators (1.0.0)
+      railties (>= 3.0.0)
+    railties (3.2.11)
+      actionpack (= 3.2.11)
+      activesupport (= 3.2.11)
       rack-ssl (~> 1.3.2)
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (>= 0.14.6, < 2.0)
+    raindrops (0.11.0)
     rake (10.1.0)
     rdoc (3.12.2)
       json (~> 1.4)
-    sass (3.2.9)
+    recurrence (1.2.0)
+      activesupport (>= 2.3.0)
+      i18n
+    redis (2.2.2)
+    redis-namespace (1.0.4)
+      redis (< 3.0.0)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
+    rubyzip (0.9.9)
+    sass (3.2.10)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
+    sequel (3.20.0)
+    simple_form (2.1.0)
+      actionpack (~> 3.0)
+      activemodel (~> 3.0)
+    sinatra (1.0)
+      rack (>= 1.0)
     sprockets (2.2.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    sqlite3 (1.3.7)
+    sqlite3 (1.3.8)
+    taps (0.3.24)
+      rack (>= 1.0.1)
+      rest-client (>= 1.4.0, < 1.7.0)
+      sequel (~> 3.20.0)
+      sinatra (~> 1.0.0)
     thor (0.18.1)
     tilt (1.4.1)
-    treetop (1.4.14)
+    transloadit (1.1.1)
+      multi_json
+      rest-client
+    treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.37)
-    uglifier (2.1.1)
+    uglifier (2.1.2)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    ui_datepicker-rails3 (1.2.0)
+    unicode (0.4.4)
+    unicorn (4.6.3)
+      kgio (~> 2.6)
+      rack
+      raindrops (~> 0.7)
+    uuidtools (2.1.4)
+    vegas (0.1.11)
+      rack (>= 1.0.0)
+    wicked_pdf (0.9.6)
+      rails
+    xml-simple (1.1.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  activemerchant
+  authlogic
+  aws-s3
+  aws-sdk
+  barby
+  chronic
+  chunky_png
+  cocaine (= 0.5.0)
   coffee-rails (~> 3.2.1)
-  jquery-rails (= 2.0.2)
-  rails (= 3.2.13)
+  country-select
+  dalli
+  fastercsv
+  fb_graph (= 2.3.0)
+  geocoder
+  heroku
+  jquery-fileupload-rails
+  jquery-rails
+  kaminari
+  newrelic_rpm (~> 3.5.5.38)
+  omniauth (= 1.0.2)
+  omniauth-facebook (= 1.2.0)
+  paperclip (~> 3.4.2)
+  pdfkit
+  pg
+  rack-timeout
+  rails (= 3.2.11)
+  rails3-generators
+  recurrence (= 1.2.0)
+  resque!
+  rubyzip
   sass-rails (~> 3.2.3)
+  simple_form
   sqlite3
+  taps
+  transloadit
   uglifier (>= 1.0.3)
+  ui_datepicker-rails3
+  unicode
+  unicorn
+  vpim-rails!
+  wicked_pdf
+  wkhtmltopdf-heroku!

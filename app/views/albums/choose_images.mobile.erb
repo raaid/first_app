@@ -1,0 +1,147 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner" style="background:#333;">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="<%=root_path%>">Eventastic</a>
+
+      <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="">
+                  <%= link_to "Home", root_path %>
+                </li>
+                <li class=""><%= link_to "Search Events", mobile_search_path %></li>
+                <% if authenticated? %><li class=""><%= link_to "Manage Events", events_path %></li><% end %>
+                <% if authenticated? %><li class=""><%= link_to "Edit Profile", edit_user_path %></li><% end %>
+                <li class="">
+                  <% unless authenticated? %><li class=""><%= link_to "Login/Register", new_user_path %></li><% else %><li><%= link_to "Logout", logout_path, :method=>"get" %></li><% end %>
+                </li>
+                <li class="">
+                  <%= link_to "Contact Us", contact_path %>
+                </li>
+              </ul>
+            </div>
+    </div>
+  </div>
+</div>
+
+<div class="jumbotron masthead" style="padding: 15px 0px 80px;padding-bottom: 10px;background:#000 url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/newbgsmall.png);background-size: 100% 100%;">
+  <div class="container">
+    <h1>Select Images</h1>
+  </div>
+</div>
+<br>
+<center>
+<div style="position:relative;width:100%;margin-left:8px">
+    <span class="btn btn-primary" onclick="selectAll()" style="float:left;width:130px;font-size:15pt">Select All</span>
+    <span class="btn btn-primary" onclick="deselect()" style="float:right;width:130px;font-size:15pt">Deselect All</span>    
+</div>
+</center>
+<div class="imgSelectorContainer">
+<% @photos.each do |photo| %>
+    <% if photo.approved == 1%>
+	<div class="downContainer" id="<%=photo.id%>" onclick="setImg(this, <%=photo.id%>)">
+		<div class="downOverlay" style="display:block"></div>
+		<img src="/images/checkmark2.png" class="downCheck"/>
+		<img src="<%=photo.photo_url(:cover)%>"/>
+	</div>
+    <%end%>
+<% end %>
+</div>
+
+<center>
+<input id="downbtn" type="button" class="btn btn-primary" value="Download" onclick="download()" style="position:relative;top:25px;width:150px;font-size:15pt;font-weight:bolder"/>
+<div id="load" style="position:relative;top:25px;display:none"><img src="/images/loading.gif" /><span style="margin-left:10px;top:8px;position:relative;color:#000;">Preparing Your Images</span></div>
+</center>
+<script>
+    $('#slider-wrapper2').hide();
+    $('#landing_tag').hide();
+    ele = $('#content_outter');
+    $('#mainContentAnchor').append(ele);
+
+    var theInterval = self.setInterval("checkCompleteCookie()", 3000);
+
+    function checkCompleteCookie() {
+        val = getCookie("download_finished");
+        if (val!=null && val!="") {
+            document.getElementById("downbtn").style.display = "inline-block";
+            document.getElementById("load").style.display = "none";
+            delete_cookie('download_finished');
+        }
+    }
+
+    downloadArray = [];
+
+    function setImg(input, id) {
+    	overlay = input.getElementsByClassName("downOverlay")[0];
+    	if (overlay.style.display == "block") {
+    		overlay.style.display = "none";
+    		input.getElementsByClassName("downCheck")[0].style.display = "block";
+
+    		downloadArray.push(id);    		
+    	} else {
+    		overlay.style.display = "block";
+    		input.getElementsByClassName("downCheck")[0].style.display = "none";
+
+    		index = downloadArray.indexOf(id);
+    		downloadArray.splice(index, 1);
+    	}
+    }
+
+    function selectAll() {
+    	all = document.getElementsByClassName("downContainer");
+
+    	for (i = 0; i < all.length; i++) {
+    		overlay = all[i].getElementsByClassName("downOverlay")[0];
+
+    		if (overlay.style.display == "block") {
+    			overlay.style.display = "none";
+    			all[i].getElementsByClassName("downCheck")[0].style.display = "block";
+    			id = all[i].id;
+    			downloadArray.push(id);    		
+    		}
+    	}
+    }
+
+    function deselect() {
+        all = document.getElementsByClassName("downContainer");
+        downloadArray.length = 0;
+
+        for (i = 0; i < all.length; i++) {
+            all[i].getElementsByClassName("downOverlay")[0].style.display = "block";
+            all[i].getElementsByClassName("downCheck")[0].style.display = "none";
+        }
+    }
+
+    function download() { 	
+        document.getElementById("downbtn").style.display = "none";
+        document.getElementById("load").style.display = "inline-block";
+    	window.location="<%=download_zip_path%>?ids=" + downloadArray;
+    }
+
+    function getCookie(c_name) {
+        var c_value = document.cookie;
+        var c_start = c_value.indexOf(" " + c_name + "=");
+        if (c_start == -1) {
+            c_start = c_value.indexOf(c_name + "=");
+        }
+        if (c_start == -1) {
+            c_value = null;
+        } else {
+            c_start = c_value.indexOf("=", c_start) + 1;
+            var c_end = c_value.indexOf(";", c_start);
+            if (c_end == -1) {
+                c_end = c_value.length;
+            }
+            c_value = unescape(c_value.substring(c_start,c_end));
+        }
+        return c_value;
+    }
+
+    var delete_cookie = function(name) {
+        document.cookie = name + '=;expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    };
+</script>

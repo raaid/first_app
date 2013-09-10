@@ -1,0 +1,10 @@
+<span class="main_content_partial" style="display:inline-block;width:90%;">
+   <div style="display:inline-block;">
+<% @registration_members.each do |rm| %>
+    <p style="color:#000"><%= rm.name %> - <%= rm.email %></p><br />
+<% end %>
+  <% if @registration_members.count < 1 %>
+         <p style="color:#000">There are currently no registrants.</p><br />
+  <% end %>
+   </div>
+    </span>

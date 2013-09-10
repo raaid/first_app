@@ -1,0 +1,11 @@
+.body_inner{
+    background: url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/content-bg.jpg) center -196px repeat-y #f4f5f7;
+    -webkit-box-shadow: rgba(0, 0, 0, 0.6) 0 6px 15px;
+    -moz-box-shadow: rgba(0, 0, 0, 0.6) 0 6px 15px;
+    box-shadow: rgba(0, 0, 0, 0.6) 0 6px 15px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    border: 2px solid rgba(255, 255, 255, 1.0);
+    padding:10px;
+}

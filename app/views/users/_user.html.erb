@@ -1,0 +1,131 @@
+<%# TODO: Refactor this code... %>
+<%= render({layout: 'users/user_with_avatar', locals: {user_with_avatar: user}}) do end %>
+
+<%# Basic user info displayed if current_user is friends with user %>
+<% if current_user.friends_with?(user) && current_user != user %>
+<p>
+  <b>Email:</b>
+  <%= user.email %>
+</p>
+<p>
+  <b>Gender:</b>
+  <%= user.gender %>
+</p>
+<p>
+  <b>Birthday:</b>
+  <%= user.birthday %>
+</p>
+<p>
+  <b>Anniversary:</b>
+  <%= user.anniversary %>
+</p>
+
+<p>
+  <b>Address:</b>
+  <div><%= user.address %></div>
+  <div><%= user.city %></div>
+  <div><%= user.province %></div>
+  <div><%= user.country %></div>
+  <div><%= user.postal %></div>
+</p>
+<% end %>
+
+<%# Profile score is shown for current_user only %>
+<% if user==current_user %>
+<%
+   message = ""
+   profile_score = 35
+
+   if !user.country.blank?
+     profile_score += 5 
+   else
+     message += "<div>5% for adding your country.</div>"
+   end
+   if !user.city.blank?
+     profile_score += 5
+   else
+     message += "<div>5% for adding your city.</div>"
+   end
+   if !user.address.blank?
+     profile_score += 5
+   else
+     message += "<div>5% for adding your address.</div>"
+   end
+   if !user.province.blank?
+     profile_score += 5
+   else
+     message += "<div>5% for adding your province.</div>"
+   end
+   if !user.postal.blank?
+     profile_score += 5
+   else
+     message += "<div>5% for adding your postal code.</div>"
+   end
+   if !user.gender.blank?
+     profile_score += 5 
+   else
+     message += "<div>5% for adding your gender.</div>"
+   end
+   if !user.birthday.blank?
+     profile_score += 10 
+   else
+     message += "<div>10% for adding your birthday.</div>"
+   end
+   if !user.avatar_file_name.blank?
+     profile_score += 15 
+   else
+     message += "<div>15% for adding an avatar.</div>"
+   end
+   if false #!user.facebook.blank?
+     profile_score += 5 
+   else
+     message += "<div>5% for adding facebook.</div>"
+   end
+   if false #!user.twitter.blank?
+     profile_score += 5
+   else
+     message += "<div>5% for adding twitter.</div>"
+   end
+%>
+  <div>Your profile is at <%= profile_score %>%.</div>
+  <hr />
+  <%= message.html_safe %>
+  <hr />
+<% end %>
+
+<%# current_user's own likes and friend's likes are shown %>
+<% if current_user.friends_with?(user) %>
+<%= render partial: 'likes/index', object: user.like.sort_by {|like| like.category} %>
+<% if user == current_user %>
+  <h4>Add a new like</h4>
+  <% @like = Like.new %>
+  <%= render partial: 'likes/form', object: @like %>
+<% end %>
+
+<% end %>
+
+<%# Sizes are shown for current_user's friends %>
+<% if current_user.friends_with?(user) && current_user != user %>
+<h3>Sizes</h3>
+<%= render partial: 'sizes/size', object: user.user_size %>
+
+<% end %>
+
+<%# An add/remove contact link shown for everyone but current_user %>
+<% if current_user.eql?(user) %>
+<% else %>
+  <% if current_user.has_contacted?(user) %>
+    <%#= form_for(current_user.forward_associations.find_by_contact_id(user), html: { method: :delete }) do |f| %>
+      <%#= f.hidden_field :contact_id %>
+      <%#= f.submit "Remove as a contact" %>
+    <%# end %>
+    <% association = current_user.forward_associations.find_by_contact_id(user) %>
+    <%= link_to "Remove #{user.display_name} from contacts", association_path(association.id), method: :delete, confirm: "Are you sure? "%>
+  <% else %>
+    <%#= form_for(current_user.forward_associations.build(contact_id: user.id)) do |f| %>
+      <%#= f.hidden_field :contact_id %>
+      <%#= f.submit "Add as a contact" %>
+    <%# end %>
+    <%= link_to "Add #{user.display_name} to your contacts", {:action => 'create', :controller => 'associations', association: {contact_id: user.id}}, method: :post %>
+  <% end %>
+<% end %>

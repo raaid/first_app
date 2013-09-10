@@ -1,0 +1,77 @@
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner" style="background:#333;">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="<%=root_path%>">Eventastic</a>
+
+      <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="">
+                  <%= link_to "Home", root_path %>
+                </li>
+                <li class=""><%= link_to "Search Events", mobile_search_path %></li>
+                <% if authenticated? %><li class=""><%= link_to "Manage Events", events_path %></li><% end %>
+                <% if authenticated? %><li class="active"><%= link_to "Edit Profile", edit_user_path %></li><% end %>
+                <li class="">
+                  <% unless authenticated? %><li class=""><%= link_to "Login/Register", new_user_path %></li><% else %><li><%= link_to "Logout", logout_path, :method=>"get" %></li><% end %>
+                </li>
+                <li class="">
+                  <%= link_to "Contact Us", contact_path %>
+                </li>
+              </ul>
+            </div>
+    </div>
+  </div>
+</div>
+
+<div class="jumbotron masthead" style="padding: 15px 0px 80px;padding-bottom: 10px;background:#000 url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/newbg3.png);background-size: 100% 100%;">
+  <div class="container">
+    <h1>My Profile</h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="marketing">
+    <br />
+    <span class="main_content_partial" style="display:inline-block;width:90%;">
+       <div style="display:inline-block;">
+    <p class="marketing-byline">Manage Your Profile Below</p>
+    <div class="row-fluid">
+      <%= simple_form_for @user, html: {multipart:true},  url: update_user_path, method: :put do |form| %>
+            <div style="display:inline-block;">
+              <%= form.input :fname, label: "First Name",:input_html => {:style => "width:200px"} %>
+              <%= form.input :lname, label: "Last Name",:input_html => {:style => "width:200px"} %>
+              <%= form.input :email, label: "Email",:input_html => {:style => "width:200px"} %>
+              <%= form.input :password, label: "Password",:input_html => {:style => "width:200px", :id=>"pword"}, :error_html => { :id => "password_error"} %>
+              <%= form.input :password_confirmation, label: "Password Confirmation",:input_html => {:style => "width:200px", :id=>"pwordc"} %>
+                <%= form.input :address, label: "Address",:input_html => {:style => "width:200px"} %>
+                <%= form.input :city, label: "City",:input_html => {:style => "width:200px"} %>
+                <%= form.input :province, label: "Province/State",:input_html => {:style => "width:200px"} %>
+                <%= form.input :postal, label: "Postal/Zip",:input_html => {:style => "width:200px"} %>
+                <%= form.input :country, label: "Country",:input_html => {:style => "width:200px"} %>
+              <center>
+              <br />
+            <%= image_tag user.avatar.url(:profile), :class=>"profile_avatar"%>
+              <br /><br />
+              <p style="color:#000;">Select a photo from your computer</p>
+              <%= form.file_field :avatar, label: false, :input_html => {:style => "width:65px"} %>
+              </center>
+             <div class="clearfloat"></div>
+             <br />
+              <center><%= form.submit "Update Your Profile", class: "btn btn-large btn-success", :style=>"width:240px;"%></center>
+      <% end %>
+      <br />
+      <br />
+      <%= button_to 'Deactivate Account', destroy_user_path(current_user), confirm: 'Are you sure you want to deactivate your account?', method: :delete, class: "btn btn-small btn-danger", :style=>"float:right;" %>
+      <br />
+      </div>
+  </div>
+         </div>
+        </span>
+</div>
+</div>

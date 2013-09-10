@@ -1,0 +1,41 @@
+<section>
+  
+    <div class="" id="loginModal"  style="float:right;">
+      <h4>Affiliate Signup</h4>
+      
+      <br />
+      
+      <%= simple_form_for :user, :url => create_user_path do |form| %>
+      
+        <label  for="fname"><b>Business/Venue Name</b></label>
+        <%= form.input :fname, label: false, placeholder: "First Name", :input_html => {}, :error => false %>   
+
+        <label  for="lname"><b>Contact Name</b></label>
+        <%= form.input :lname, label: false, placeholder: "Last Name", :input_html => {}, :error => false %>      
+
+        <label  for="email"><b>Email</b><span style="font-size: 8pt;"> <i>(*If you have already signed up as an <br/>event organizer, please use a different email <br />address for your affiliate account.)</i></span></label>
+        <%= form.input :email, label: false, placeholder: "Email", :input_html => {}, :error => false %>        
+                  
+        <label  for="password"><b>Password</b></label>
+        <%= form.input :password, label: false, placeholder: "Password", :input_html => {}, :error => false %>
+                              
+        <label  for="password_confirmation"><b>Password Confirmation</b></label>
+        <%= form.input :password_confirmation, label: false, placeholder: "Confirm Password", :input_html => {}, :error => false %>
+        <%= form.input :accounttype, :as => :hidden, :input_html => { :value => 1 }%>
+
+        <br/>
+
+        <input type="checkbox" name="checkbox" value="check" style="max-width:20px"/><b> I Agree To The
+      <a href="<%=consolidated_terms_path%>" target="_blank">Terms of Service</b></a>
+        <br/><br>
+        <button type="submit" onclick="if(!this.form.checkbox.checked){alert('Sorry, You must agree to the terms of service before continuing!');return false}" class="btn btn-primary">
+                               <i class="icon-user icon-white"></i>
+                               <span style="font-size:20px">Sign Me Up!</span>
+        </button>
+
+        <br />
+      <% end %>
+           
+    </div><!--LoginModail-->
+  
+</section>

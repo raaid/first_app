@@ -1,0 +1,128 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner" style="background:#333;">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="<%=root_path%>">Eventastic</a>
+
+      <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="">
+                  <%= link_to "Home", root_path %>
+                </li>
+                <li><%= link_to "Search Events", mobile_search_path %></li>
+                <% if authenticated? %><li><%= link_to "Manage Events", events_path %></li><% end %>
+                <% if authenticated? %><li class=""><%= link_to "Edit Profile", edit_user_path %></li><% end %>
+                <li class="">
+                  <% unless authenticated? %><li class=""><%= link_to "Login/Register", new_user_path %></li><% else %><li><%= link_to "Logout", logout_path, :method=>"get" %></li><% end %>
+                </li>
+                <li class="">
+                  <%= link_to "Contact Us", contact_path %>
+                </li>
+              </ul>
+            </div>
+    </div>
+  </div>
+</div>
+
+<div class="jumbotron masthead" style="padding: 15px 0px 80px;padding-bottom: 10px;background:#000 url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/newbgsmall.png);background-size: 100% 100%;">
+  <div class="container">
+    <h1>Manage Files</h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="marketing">
+    <span class="main_content_partial" style="display:inline-block;width:90%;">
+      <div style="font-weight:bold">Current Files</div>
+          
+      <% @attacheds.each do |doc| %>
+        <div id="attached<%=doc.id%>" class="currentContainer">
+          <span class="openFile"><%= link_to doc.name, attached_path(doc.id), target: "_blank" %></span>
+          <span onclick="deleteFile(<%=doc.id%>)" class="deleteFile">Delete</span>
+        </div>
+      <% end %>
+
+      <br>
+      <div style="font-weight:bold">Queued Files For Upload</div>
+      <div id="queued"></div>
+      <%= simple_form_for @attached, url: upload_multiple_path, :html => {:multipart => true} do |f| %>
+        <%= f.hidden_field :event_id, :value => @event.id %>
+        <div id="fileContainer">
+          <%= f.file_field :file0, onchange: "addFile(this)" %>
+        </div>
+        <br>
+        <%= f.submit "Upload Files", class: "btn btn-primary" %>
+      <% end %>
+    </span>
+  </div>
+</div>
+
+<script>
+
+  function addFile(input) {
+    input.style.display = "none";
+    index = parseInt(input.id.charAt(input.id.length-1));
+
+    filename = input.value;
+    lastIndex = filename.lastIndexOf("\\");
+
+    if (lastIndex >= 0) {
+      filename = filename.substring(lastIndex + 1);
+    }
+
+    $('#queued').append('<div id="file' + index + '" class="currentContainer"><span class="openFile" style="border:none">' + filename + '</span><span id="cancel' + index + '" onclick="cancelFile(' + index + ')" class="deleteFile">Cancel</span></div>');
+    
+    index = index + 1;
+    $('#fileContainer').append('<input id="attached_file' + index + '" name="attached[file' + index + ']" onchange="addFile(this)" type="file">')
+    /*
+    <div id="attached8" class="currentContainer">
+          <span class="openFile"><a href="/attacheds/8" target="_blank">README.txt</a></span>
+          <span onclick="deleteFile(8)" class="deleteFile">Delete</span>
+        </div>
+    */
+  }
+
+  function cancelFile(id) {
+    el = document.getElementById("file" + id);
+    el.parentNode.removeChild(el);
+
+    file = document.getElementById("attached_file" + id);
+    file.parentNode.removeChild(file);
+
+    allque = document.getElementById("queued").getElementsByTagName("div");
+
+    for (i = 0; i < allque.length; i++) {
+      currentID = allque[i].id;
+      num = currentID.charAt(currentID.length - 1);
+      allque[i].id = "file" + i;
+      cancel = document.getElementById("cancel" + num);
+      cancel.id = "cancel" + i;
+      cancel.setAttribute("onclick", "cancelFile(" + i + ")");
+    }
+
+    allFiles = document.getElementById("fileContainer").getElementsByTagName("input");
+
+    for (i = 0; i < allFiles.length; i++) {
+      allFiles[i].id = "attached_file" + i;
+      allFiles[i].name = "attached[file" + i + "]";
+    }
+
+  }
+
+  function deleteFile(id) {
+      $.ajax({
+            url: "/attacheds/" + id,
+            type: "DELETE",
+            "dataType":"json",
+            processData: false,
+            contentType: false
+          });
+
+      row = document.getElementById("attached" + id);
+      row.parentNode.removeChild(row);
+  }
+</script>

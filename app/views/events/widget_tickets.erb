@@ -1,0 +1,78 @@
+<div style="height:100%;width:100%;display:inline-block;">
+  <%= form_for(@ticket_instance) do |f| %>
+       <div class="purchaseTicketContainer">
+     <% if @ticket_instance.errors.any? %>
+       <div id="error_explanation">
+         <h2><%= pluralize(@ticket_instance.errors.count, "error") %> prohibited this ticket_instance from being saved:</h2>
+
+         <ul>
+         <% @ticket_instance.errors.full_messages.each do |msg| %>
+           <li><%= msg %></li>
+         <% end %>
+         </ul>
+       </div>
+     <% end %>
+         <center>
+     <%= f.hidden_field :guest_id %>
+     <%= f.hidden_field :host_id %>
+     <% if cookies[:event_id].to_s == @event.id.to_s %>
+       <%= f.hidden_field :contract_id, value: cookies[:contract_id] %>
+     <% end %>
+                    <div>
+                     <center><p><b>*Guest Name</b></p></center>
+                     <center><%= f.text_field :guest_name, :class=>"loginFormSize", :required=>true %></center>
+                   </div>
+                   <div>
+                     <center><p><b>*Guest Email</b></p></center>
+                      <center><%= f.text_field :guest_email, :class=>"loginFormSize",:required=>true %></center>
+                  </div>
+            
+         <br />
+         </center>
+           <div class="purchaseTickets">
+         <center>
+          <!-- <p><b>Tickets Available For Purchase For This Event (Select Quantity)</b></p>     -->
+           <hr />
+     <table width="85%">
+       <tr style="margin:5px;">
+         <td width="66%"><b>Name</b></td>
+         <td width="20%"><b>Price</b></td>
+         <td width="5%"></td>
+         <td width="9%"><b>Quantity</b></td>
+       </tr>
+       </table>
+       <table width="85%">
+
+       <hr />
+       <% @quantities.each_with_index do |ticket_type, index| %>
+       <tr style="margin:3px;height:23px;">
+         <td width="63%"><%= ticket_type.name %></td>
+         <td width="18%"><%= number_to_currency(ticket_type.price) %> <%= ticket_type.currency %></td>
+         <td width="10%"> X &nbsp;</td>
+         <td width="9%"><input type="hidden" size="5" name=<%= "ticket_instance[quantities][" + index.to_s + "][ticket_type]" %> value="<%= ticket_type.id %>" /><input type="text" size="5" style="width:30px;" name=<%= "ticket_instance[quantities][" + index.to_s + "][quantity]" %> /></td>
+       </tr>
+       <% end %>
+     </table>
+         </center>
+           </div>
+     <div class="actions">
+       <br />
+       <center>
+         <%= image_tag "https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/paypal2s.png"%>
+         <% if @christmas_party == 0 %>
+         <center><p style="font-size: 8pt;">*All purchases are subject to Paypal processing fees</p></center>
+         <% end %>
+         <br />
+       <%= f.submit "Buy Tickets", :class=>"btn btn-success", id: "buyTickets", :style=>"width:250px;" %>
+       </center>
+     </div>
+       </div>
+   <% end %>
+</div>
+
+<script>
+$('#buyTickets').click(function(e) {
+    e.preventDefault(); //prevents the default submit action
+    $(this).closest('form').attr('target', '_blank').submit();
+});
+</script>

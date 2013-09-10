@@ -1,0 +1,21 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  guest: 
+  host: 
+  quantity: 1
+  price_paid: 9.99
+  guest_email: MyString
+  guest_name: MyString
+  paypal_transaction_id: MyString
+  status: MyString
+
+two:
+  guest: 
+  host: 
+  quantity: 1
+  price_paid: 9.99
+  guest_email: MyString
+  guest_name: MyString
+  paypal_transaction_id: MyString
+  status: MyString

@@ -1,0 +1,11 @@
+<table>
+  <th><td>name</td><td>email</td><td>status</td><td>description</td></th>
+  <% @invitations.each do |invite| %>
+  <tr>
+    <td><%= invite['name'] %></td>
+    <td><%= invite['email'] %></td>
+    <td><%= invite['status'] %></td>
+    <td><%= invite['description'] %></td>
+  </tr>
+  <% end %>
+</table>

@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  companyname: MyString
+  siteurl: MyString
+  apikey: MyString
+  contactemail: MyString
+
+two:
+  companyname: MyString
+  siteurl: MyString
+  apikey: MyString
+  contactemail: MyString

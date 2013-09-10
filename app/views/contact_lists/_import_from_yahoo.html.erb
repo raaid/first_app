@@ -1,0 +1,31 @@
+<div id="sendoutlook">
+  <% if @partial_is_popup %>
+  <a href="#" onclick="close_csv2()">x Close Window</a>
+  <% end %>
+
+  <center>
+    <p><b>To upload an Outlook style CSV file of contacts from Yahoo</b></p>
+    <br />
+    <p>To export a CSV or tab-delimited text file from Yahoo:</p>
+    <br />
+
+    <p>  1. In Yahoo Mail: Select Options => Mail Options from the mail menu. </p>
+    <p>  2. Go to the Contact Options category.</p>
+    <p>  3. Or, In Yahoo Mail Classic: Go to Options => Address Book category.</p>
+    <p>  4. Select Import/Export under Management.</p>
+    <p>  5. Look for Outlook CSV under Export and click Export Now. </p>
+    <p>  6. Click Save when prompted what to do with the file download.</p>
+    <p>  7. Choose the location where you want to save the Yahoo.csv copy of your Yahoo! Mail address book.</p>
+    <br />
+    <p>To upload your file to TheWeddingRegistry, simply hit "Browse" below and select the contact file you've just created.</p>
+    <br />
+    <br />
+    <%= form_tag({:controller => :contact_lists,:action => :import_from_yahoo_post}, :multipart => true) do %>
+    <div id="csv_import" style="display: inline;">
+      <p>Yahoo CSV file: <input name="csv" type="file"></p>
+      <br />
+      <%= submit_tag "Browse",class: "btn btn-success" %>
+    </div>
+    <% end %>
+  </center>
+</div>

@@ -1,0 +1,31 @@
+<% pointVal = Integer(POINTS_CONSTANTS['profile_complete']) %>
+<% pointFlagDef = POINTS_CONSTANTS['points_flags_def'] %>
+<% flag = Integer(POINTS_CONSTANTS['profile_complete_flag']) %>
+
+<% if user_completion_score(@user) == 100 %>
+    <% if @user.points_flags? %>
+        <% if @user.points_flags[Integer(POINTS_CONSTANTS['profile_complete_flag'])] =='0' %>
+            <% if @user.points? %>
+            <% @user.points = @user.points + (pointVal) %>
+            <% else %>
+            <% @user.points = (pointVal) %>
+             <% end %>
+             <% flagString = String.new(@user.points_flags) %>
+             <% flagString[flag, flag+1] = "1" %>
+             <% @user.points_flags = flagString %>
+             //alert("Congratulations on completing your profile! By filling out your profile in full you have earned yourself some bonus Giftopian Club Points!");
+        <% end %>
+    <% else %>
+         <% @user.points_flags = pointFlagDef %>
+        <% if @user.points? %>
+         <%  @user.points = @user.points + (pointVal) %>
+        <% else %>
+          <% @user.points = (pointVal) %>
+        <% end %>
+        <% flagString = String.new(@user.points_flags) %>
+        <% flagString[flag, flag+1] = "1" %>
+        <% @user.points_flags = flagString %>
+        //alert("Congratulations on completing your profile! By filling out your profile in full you have earned yourself some bonus Giftopian Club Points!");
+    <% end %>
+<% end %>
+document.location.href = "/posts"

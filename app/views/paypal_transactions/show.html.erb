@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Paypal transaction id:</b>
+  <%= @paypal_transaction.paypal_transaction_ID %>
+</p>
+
+<p>
+  <b>Amount:</b>
+  <%= @paypal_transaction.amount %>
+</p>
+
+<p>
+  <b>From:</b>
+  <%= @paypal_transaction.from %>
+</p>
+
+<p>
+  <b>To:</b>
+  <%= @paypal_transaction.to %>
+</p>
+
+<p>
+  <b>Response:</b>
+  <%= @paypal_transaction.response %>
+</p>
+
+
+<%= link_to 'Edit', edit_paypal_transaction_path(@paypal_transaction) %> |
+<%= link_to 'Back', paypal_transactions_path %>

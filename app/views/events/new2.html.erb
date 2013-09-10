@@ -1,0 +1,105 @@
+<style>
+.ui-tooltip {
+  font-size:10pt;
+}
+</style>
+
+<div class="fixedDetails" style="top:130px;left:50px" >
+  <h1 style="border-bottom:1px solid;color:#000;padding-left:10px">New Event</h1>
+  <div class="detail detailActive">Event Details</div>
+  <div class="detail">Event Options</div>
+  <center>
+    <div class="detail2">Tickets</div>
+    <div class="detail2">Donations</div>
+    <div class="detail2">Cash Gifts</div>
+    <div class="detail2">Social Profile</div>
+    <div class="detail2">Videos</div>
+  </center>
+  <div class="detail">Add To Photo Album</div>
+  <div class="detail" style="font-size:10pt">Manage Attendees & Transactions</div>
+
+</div>
+
+<div style="padding-top:30px;padding-left:50px;padding-right:50px;padding-bottom:30px">
+	
+<div class="clear"></div>
+<br>
+
+<%= simple_form_for(@event) do |f| %>
+
+  <br>
+      
+    <div class="info_container">
+      <div style="color:#000;display:inline-block"><img src="/images/info_icon.png" width="15px" class="tooltip_hover" title="Name of your event!">*Name
+      <%= f.input :name, label: false,:input_html => {:style => "width:250px"},required: true %></div>
+      <div style="color:#000;display:inline-block"><img src="/images/info_icon.png" width="15px" class="tooltip_hover" title="The name of your events venue!">Venue Name (Optional)
+      <%= f.input :venue_name, label: false,:input_html => {:style => "width:250px"} %></div><br>
+
+      <div style="color:#000;display:inline-block"><img src="/images/info_icon.png" width="15px" class="tooltip_hover" title="Category of your event!">*Event Category
+      <%= f.input :category, priority: Event::CATEGORY_PERSONAL, collection: [ Event::CATEGORY_PERSONAL, Event::CATEGORY_ENTERTAINMENT, Event::CATEGORY_CHARITY, Event::CATEGORY_BUSINESS],label: false,include_blank: false,:input_html => {:style => "width:265px"},required: true  %></div>
+      <div style="color:#000;display:inline-block"><img src="/images/info_icon.png" width="15px" class="tooltip_hover" title="Address of your event!">*URL Handle
+      <%= f.input :url_handle,as: :string, label: false,:input_html => {:style => "width:250px"},required: true %></div><br><br>
+      
+      <div style="color:#000;display:inline-block"><img src="/images/info_icon.png" width="15px" class="tooltip_hover" title="Address of your event!">*Event Address
+      <%= f.input :address, label: false,:input_html => {:style => "width:250px"} %></div>
+      <div style="color:#000;display:inline-block"><img src="/images/info_icon.png" width="15px" class="tooltip_hover" title="The city your event is hosted in">*City
+      <%= f.input :city, label: false,:input_html => {:style => "width:250px"} %></div><br>
+
+      <div style="color:#000;display:inline-block"><img src="/images/info_icon.png" width="15px" class="tooltip_hover" title="The province or state your event is hosted in">*Province/State
+      <%= f.input :province, label: false,:input_html => {:style => "width:116px"} %></div>
+      <div style="color:#000;display:inline-block"><img src="/images/info_icon.png" width="15px" class="tooltip_hover" title="The postal or zip code that your event is hosted in">*Postal/Zip Code
+      <%= f.input :postal, label: false,:input_html => {:style => "width:116px"} %></div>
+      <div style="color:#000;display:inline-block"><img src="/images/info_icon.png" width="15px" class="tooltip_hover" title="The country your event is hosted in">*Country
+      <%= f.input :country, label: false,:input_html => {:style => "width:265px"} %></div><br>
+
+      <div style="width:533px;text-align:center">
+        <div class="datetime">      
+          <div class="dateTitle">Event Start Time</div>
+          <input type="text" id="startTime" value="" name="startTime" />
+        </div>
+        <div class="datetime">
+          <div class="dateTitle">Event End Time</div>
+          <input type="text" id="endTime" value="" name="endTime" />
+        </div>  
+      </div>
+      
+    </center>
+
+
+    </div>
+    <br>
+    
+    
+
+    
+      <br />
+      <center>
+           <%= f.hidden_field :video %>
+       <br />
+   
+        <center><%= f.submit "Continue", :class=> "btn btn-large btn-success"%></center>
+  <% end %>
+</center>
+<br><br>
+</div>
+
+
+<%= javascript_include_tag 'jquery-ui-1.9.2.min.js', 'jquery-timepicker.js' %>
+
+<script>
+$(document).ready(function() {
+  $('#startTime').datetimepicker({
+    dateFormat: 'yy-mm-dd',
+    timeFormat: 'HH:mm'
+  });
+  $('#endTime').datetimepicker({
+    dateFormat: 'yy-mm-dd',
+    timeFormat: "HH:mm"
+  });
+}); 
+
+</script>
+
+
+
+

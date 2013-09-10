@@ -1,0 +1,64 @@
+<%= form_for(@cash_gift) do |f| %>
+            <div class="purchaseTicketContainer">
+              <% if @cash_gift.errors.any? %>
+                  <div id="error_explanation">
+                    <h2><%= pluralize(@cash_gift.errors.count, "error") %> prohibited this ticket_instance from being
+                      saved:</h2>
+                    <ul>
+                      <% @cash_gift.errors.full_messages.each do |msg| %>
+                          <li><%= msg %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+              <% end %>
+              
+                <%= f.hidden_field :guest_id %>
+                <%= f.hidden_field :user_id %>
+
+
+                <% if @donations.count > 0%>
+                    <div style="width:100%">
+
+
+                      <div style=" display:inline-block">
+
+                        <div style="display:inline-block">
+                          <div style="float:left;">Choose A Donation Type!</div>
+                          <div style="float:left; margin-left:10px"><%= select(:cash_gift, :cashgifttype_id, @donations.collect { |l| [l.title, l.id] }, {}, html_options={:id=> 'cg_id_2',:onchange=>"updateGift2()"}) %></div>
+                        </div>
+                        <br style="clear:both"/>
+                        <div style="display:inline-block; width:100%">
+                                            <% @donations.each do |c| %>
+                                              <div id="cashgifttype_donation_<%=c.id%>" style="display:inline-block">
+                                                <%= image_tag c.cgp_url(:newsfeed), :id=>"cashGiftImage", :style=> "float:left;width:70px;margin-top:-10px;margin-right:10px;  -webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;" %>
+                                                <p style="float:left; max-width:500px"><%= c.description %></p>
+                                              </div>
+                                            <% end %>
+
+                                          </div>
+                        <div style="max-width:550px">
+                          <%= f.check_box  :privacy, label: false, :style=> "float:left" %>
+                          <%= f.label :privacy, "Make this contribution Anonymously", :style=> "float:left"%>
+                        </div>
+                        <br style="clear:both"/>
+                        <%= f.text_field :guest_name, :size => "30",:placeholder => "Guest Name", :style => "display:inline-block; float:left;margin-right:10px; width:120px" %>
+                        <%= f.text_field :guest_email, :size => "30",:placeholder => "Guest Email", :style => "display:inline-block; float:left;margin-right:10px; width:200px"%>
+                        <%= f.text_field :amount,:placeholder => "Amount", :size => "18", :style => "display:inline-block; float:left;margin-right:10px; width:120px"%>
+                        <%= f.text_area :message, :placeholder => "Message", :size => "120x1", :style => " display:inline-block; float:left;"%>
+                        <br style="clear:both"/>
+                        <div style="display:inline-block">
+                                              <%= image_tag "https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/paypal2s.png" %>
+                                              <div style="font-size:8pt;margin-top:-20px">*All contributions are subject to standard Paypal processing fees</div>
+                                            </div>
+                                            <div class="round_btn_container" style="display:inline-block">
+                                                <%= f.submit "Donate", :class => "round_btn", :style=>"margin-left:95px; float:left" %>
+                                              </div>
+                      </div>
+
+
+
+
+                          
+                <% end %>
+          </div>
+        <% end %>

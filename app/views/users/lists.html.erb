@@ -1,0 +1,104 @@
+<script>
+    $('#clipcontrol').hide();
+    $('#pags').hide();
+    $('#foreground').hide();
+    $('#maincontentdiv').hide();
+    // $('#maincontentdiv').fadeIn(1500);
+    $('#maincontentdiv').animate({top:"600px"}, 0);
+    $('#maincontentdiv').show();
+    $('#maincontentdiv').animate({top:"101px"}, 1000);
+</script>
+<h1>Registries for <%= @user.weddingprofile.wedding_name %></h1>
+<hr/>
+<br/>
+<p>This is the Wedding Registry belonging to <%= @user.weddingprofile.wedding_name %>, login to see all of their
+  registries and to participate!</p>
+<br/>
+<p><b>Click on the name of the registry below to view some of the items in it!</b></p>
+<hr/>
+<br/>
+
+<div class="lists">
+  <br/>
+
+  <div class="name">
+    <b class="listtitlename"><%= link_to 'Cash Gifts ($)', @cashgifts %></b>
+  </div>
+  <br/>
+  <% Cashgifttype.find_all_by_user_id(@user.id).each_with_index do |g, index| %>
+      <% if index < 8 %>
+          <%= link_to image_tag(g.cgp_url(:newsfeed)), @cashgifts, style: "float: left;margin-left:5px;margin-bottom:5px;margin-top:5px;display:inline-block;background:#000;position:relative;-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;" if g.shown == TRUE %>
+      <% end %>
+  <% end %>  <br/>
+
+  <div class="clearfloat"></div>
+  <br/>
+</div>
+<% if @user.cg_only != TRUE %>
+
+<%= div_for @lists do |list| %>
+    <% unless list.name == 'Suggested' %>
+        <% giftWord = list.gifts.count != 1 ? 'gifts' : 'gift' %>
+        <% if list.name == "Public" %>
+            <div class="name">
+              <b class="listtitlename"><%= link_to "Wedding Registry", show_user_list_path(list.id, @user.id) %></b>
+              (<%= list.gifts.count %> <%= giftWord %>)
+            </div>
+        <% else %>
+            <div class="name">
+              <b class="listtitlename"><%= link_to list.name, show_user_list_path(list.id, @user.id) %></b>
+              (<%= list.gifts.count %> <%= giftWord %>)
+            </div>
+        <% end %>
+        <% list.gifts.each_with_index do |g, index| %>
+            <% if index < 8 %>
+                <%= link_to image_tag(g.photo_url(:newsfeed)), show_user_list_path(list.id, @user.id), style: "float: left;margin-bottom:5px;margin-top:5px;margin-left:5px;background:#000;position:relative;-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;" %>
+            <% end %>
+        <% end %>
+    <% end %>
+    <div class="clearfloat"></div>
+    <br/>
+<% end %>
+<div class="clearfloat"></div>
+<br/>
+<div class="navigation">
+  <% if current_user and @user.contacts.include?(current_user) %>
+      <%= button_to 'Make a gift Suggestion', new_gift_path(id: @suggestionsList.id), class: "btn btn-primary" %>
+  <% end %>
+</div>
+<% else %>
+
+    <%= div_for @lists do |list| %>
+        <% unless list.name == 'Public' %>
+        <% unless list.name == 'Suggested' %>
+            <% giftWord = list.gifts.count != 1 ? 'gifts' : 'gift' %>
+            <% if list.name == "Public" %>
+                <div class="name">
+                  <b class="listtitlename"><%= link_to "Wedding Registry", show_user_list_path(list.id, @user.id) %></b>
+                  (<%= list.gifts.count %> <%= giftWord %>)
+                </div>
+            <% else %>
+                <div class="name">
+                  <b class="listtitlename"><%= link_to list.name, show_user_list_path(list.id, @user.id) %></b>
+                  (<%= list.gifts.count %> <%= giftWord %>)
+                </div>
+            <% end %>
+            <% list.gifts.each_with_index do |g, index| %>
+                <% if index < 8 %>
+                    <%= link_to image_tag(g.photo_url(:newsfeed)), show_user_list_path(list.id, @user.id), style: "float: left;margin-bottom:5px;margin-top:5px;margin-left:5px;background:#000;position:relative;-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;" %>
+                <% end %>
+            <% end %>
+        <% end %>
+        <div class="clearfloat"></div>
+        <br/>
+       <% end %>
+    <% end %>
+    <div class="clearfloat"></div>
+    <br/>
+    <div class="navigation">
+      <% if current_user and @user.contacts.include?(current_user) %>
+          <%= button_to 'Make a gift Suggestion', new_gift_path(id: @suggestionsList.id), class: "btn btn-primary" %>
+      <% end %>
+    </div>
+
+<% end %>

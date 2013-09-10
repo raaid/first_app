@@ -3,3 +3,12 @@
 # To ban all spiders from the entire site uncomment the next two lines:
 # User-Agent: *
 # Disallow: /
+
+# robots.txt generated at http://www.mcanerin.com
+User-agent: *
+Disallow:
+Disallow: /contacts
+Disallow: /resetpassword
+Disallow: /rewards
+Disallow: /charities
+Disallow: /auth

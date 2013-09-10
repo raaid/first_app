@@ -1,0 +1,18 @@
+<div id="<%= dom_id(comment)%>" class="comment row">
+  <div class="commentlayout">
+    <div class="commentlayoutavater"><%= image_tag comment.user.avatar_url(:thumb) %></div>
+    <div class="commentlayoutright"><p class="commentusername"><%= comment.user.display_name %> said...</p>
+      <center><div class="commenttext">"<%= sanitize(comment.message) %>"</div>
+      <div class="commenttimestamp"><%= time_ago_in_words comment.updated_at || comment.created_at %> ago</div></center>
+    </div>
+  </div>
+  <% if comment.user == current_user %>
+      <div class="commentremove"><%= link_to 'X', comment, confirm: 'Are you sure?', method: :delete, remote: true , class: "removeComment"%></div>
+  <% elsif comment.blog_id %>
+    <% if current_user == @owner %>
+        <div class="commentremove"><%= link_to 'X', comment, confirm: 'Are you sure?', method: :delete, remote: true , class: "removeComment"%></div>
+    <% end %>
+  <% end %>
+  <div class="clearfloat"></div>
+</div>
+

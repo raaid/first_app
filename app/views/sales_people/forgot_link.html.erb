@@ -1,0 +1,18 @@
+<section>
+  <div class="container">
+<h1>Sales Person Portal</h1>
+<input type="button" onclick="history.go(-1);" value="Back" class="btn btn-primary" style="position:absolute;top:75px;right:25px;" />
+<br/>
+  <br>
+  <br>
+  <center>
+  <h3>Forget Your Sales Link?</h3>
+  <%= simple_form_for :forgot, html: { multipart: true }, url: sales_resend_path, method: :post do |f| %>
+  	<label for='email'>email</label>
+  	<%=text_field_tag :email %><br>
+  	<%=f.submit "Send Link", class: "btn btn-success", style: "width:150px;font-size:14pt;font-weight:bold"%>
+
+  <%end%>
+</center>
+</div>
+</section>

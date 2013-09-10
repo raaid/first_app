@@ -1,0 +1,91 @@
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner" style="background:#333;">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="<%=root_path%>">Eventastic</a>
+
+      <div class="nav-collapse collapse">
+             <ul class="nav">
+               <li class="active">
+                 <%= link_to "Home", root_path %>
+               </li>
+               <li class="">
+               <li class=""><%= link_to "Search Events", mobile_search_path %></li>
+               <% if authenticated? %><li class=""><%= link_to "Manage Events", events_path %></li><% end %>
+               <% if authenticated? %><li class=""><%= link_to "Edit Profile", edit_user_path %></li><% end %>
+               <li class="">
+                 <% unless authenticated? %><li class=""><%= link_to "Login/Register", new_user_path %></li><% else %><li><%= link_to "Logout", logout_path, :method=>"get" %></li><% end %>
+               </li>
+               <li class="">
+                 <%= link_to "Contact Us", contact_path %>
+               </li>
+             </ul>
+           </div>
+    </div>
+  </div>
+</div>
+
+<div class="jumbotron masthead" style="padding: 15px 0px 80px;padding-bottom: 10px;background:#000 url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/newbg3.png);background-size: 100% 100%;">
+  <div class="container">
+    <h1><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/eventastic_mobile.png"></h1>
+    <!-- <p>Taking the work out of lifes biggest challenge!</p>-->
+    <ul class="masthead-links">
+      <!--<li>Version 1.0</li> -->
+    </ul>
+  </div>
+</div>
+
+<div class="container">
+  <div class="marketing">
+    <br />
+    <span class="main_content_partial3" style="display:inline-block;width:90%;">
+    <% unless authenticated? %>
+    <br />
+    <center><div class="btn btn-large btn-success" style="width:85%" onclick="window.location='<%=mobile_search_path%>'">Search For Events</div> </center>
+<br />
+
+    <div class="row-fluid">
+      <div class="span4">
+        <h2>Features Galore</h2>
+        <img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/landing_1.png" alt="" class="profile_avatar"/>
+        <p>Rsvp management, ticketing, gifting and online donations all in one easy to use platform.</p>
+      </div>
+      <div class="span4">
+              <h2>Corporate Events</h2>
+        <img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/landing_4.png" alt="" class="profile_avatar"/>
+              <p>Professional and high level of engagement!</p>
+            </div>
+      <div class="span4">
+              <h2>Entertainment Events</h2>
+        <img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/landing_5.png" alt="" class="profile_avatar"/>
+              <p>Concerts, Shows, Restaurant & Bar Events, etc.</p>
+            </div>
+      <div class="span4">
+              <h2>Charity Events</h2>
+        <img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/landing_3.png" alt="" class="profile_avatar"/>
+              <p>Raise Money With Less Effort, Online Donations Made Easy!</p>
+            </div>
+    </div>
+    <% else %>
+        <br />
+        <div class="btn btn-large btn-success" style="width:85%" onclick="window.location='<%=mobile_search_path%>'">Search For Events</div>
+        <div class="clearfloat"></div>
+        <br />
+        <div class="btn btn-large btn-success" style="width:85%" onclick="window.location='<%=events_path%>'">Manage My Events</div>
+        <div class="clearfloat"></div>
+        <br />
+        <div class="btn btn-large btn-success" style="width:85%" onclick="window.location='<%=edit_user_path%>'">Manage My Profile</div>
+        <div class="clearfloat"></div>
+        <br />
+        <div class="btn btn-large btn-success" style="width:85%" onclick="window.location='<%= logout_path %>'">Logout</div>
+    <br />
+    <% end %>
+  </span>
+  </div>
+</div>
+</div>

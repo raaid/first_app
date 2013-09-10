@@ -1,0 +1,102 @@
+<%= form_for(@ticket_instance) do |f| %>
+      <div class="purchaseTicketContainer">
+    <% if @ticket_instance.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@ticket_instance.errors.count, "error") %> prohibited this ticket_instance from being saved:</h2>
+
+        <ul>
+        <% @ticket_instance.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+        
+    <%= f.hidden_field :guest_id %>
+    <%= f.hidden_field :host_id %>
+    <% if cookies[:event_id].to_s == @event.id.to_s %>
+      <%= f.hidden_field :contract_id, value: cookies[:contract_id] %>
+    <% end %>
+
+       <!-- <span style="font-size: 14pt;">Ticket Information</span>-->
+
+    <% @quantities.each_with_index do |ticket_type, index| %>
+      
+      <div style="margin-top:-15px">
+        
+        <% if @event.try(:max_capacity) > 0 or ticket_type[:ticket_type].capacity > 0 %>
+          <%limit = 0%>
+          <% if ticket_type[:ticket_type].count_towards_occupancy and ticket_type[:ticket_type].capacity == 0 %>
+                <% limit = @event.max_capacity - @capacity %>
+          <% elsif ticket_type[:ticket_type].count_towards_occupancy == FALSE and ticket_type[:ticket_type].capacity > 0 %>
+                <% limit = ticket_type[:ticket_type].capacity - ticket_type[:max_count] %>
+          <% elsif ticket_type[:ticket_type].count_towards_occupancy and ticket_type[:ticket_type].capacity > 0 
+                 event_limit = @event.max_capacity - @capacity 
+                 ticket_limit = ticket_type[:ticket_type].capacity - ticket_type[:max_count]
+               if ((event_limit / ticket_type[:ticket_type].group_size).to_i > ticket_limit.to_i)
+                  limit = ticket_limit
+                else
+                  limit = event_limit / ticket_type[:ticket_type].group_size
+                end%>
+          <%else%>
+          <%end %>
+            <div class="ticket_container">
+                               <div style="display:inline-block">
+                               <p style="display:inline-block;width:320px;float:left;"><span class="ticket_label" style="float:left;"><%= ticket_type[:ticket_type].name %></span></p><p style="display:inline-block;width:320px;float:left;"> <span style="float:left">Price: <%= number_to_currency(ticket_type[:ticket_type].price) %> <%= ticket_type[:ticket_type].currency %></span></p>
+                               <div style="display:inline-block;width:320px;float:left;"><%if limit == 0 %><span class="ticket_label">Sold Out</span><%else%><input type="hidden" size="2" name=<%= "ticket_instance[quantities][" + index.to_s + "][ticket_type]" %> value="<%= ticket_type[:ticket_type].id %>" /><input type="number" value="0" min="0" 
+                               <%if ticket_type[:ticket_type].group_size > 0%>
+                               max="<%=limit / ticket_type[:ticket_type].group_size %>" 
+                               <%end%>
+                                style="width:35px" name=<%= "ticket_instance[quantities][" + index.to_s + "][quantity]" %> /><%end%></div>
+                               </div>
+                               <br style="clear:both;" />
+                               <% unless ticket_type[:ticket_type].description.blank? %>
+                                <p style="font-size:10pt !important;float:left;margin-left: 10px;"><span class="ticket_label">Description:</span> <%= ticket_type[:ticket_type].description %></p>
+                                <%end%>
+                             </div>
+
+        <%else%>
+            <div class="ticket_container">
+                               <div style="display:inline-block">
+                               <p style="display:inline-block;width:320px;float:left;"><span class="ticket_label" style="float:left;"><%= ticket_type[:ticket_type].name %></span></p><p style="display:inline-block;width:320px;float:left;"> <span style="float:left">Price: <%= number_to_currency(ticket_type[:ticket_type].price) %> <%= ticket_type[:ticket_type].currency %></span></p>
+                               <div style="display:inline-block;width:320px;float:left;"><%if @event.try(:max_capacity) < @capacity and ticket_type[:count_towards_occupancy] %><span class="ticket_label">Sold Out</span><%else%><input type="hidden" size="2" name=<%= "ticket_instance[quantities][" + index.to_s + "][ticket_type]" %> value="<%= ticket_type[:ticket_type].id %>" /><input type="number" value="0" min="0" max="<%= 1000 / ticket_type[:ticket_type].group_size %>" style="width:35px" name=<%= "ticket_instance[quantities][" + index.to_s + "][quantity]" %> /><%end%></div>
+                               </div>
+                               <br style="clear:both;" />
+                               <% unless ticket_type[:ticket_type].description.blank? %>
+                                <p style="font-size:10pt !important;float:left;margin-left: 10px;"><span class="ticket_label">Description:</span> <%= ticket_type[:ticket_type].description %></p>
+                                <%end%>
+                             </div>
+
+             <!-- <div class="ticket_container" style="margin-left:5%;float:right">
+                <span class="ticket_label">Tickets Left: </span><%= 1000 / ticket_type[:ticket_type].group_size %>
+             </div> -->
+          
+        <%end%>
+      <div class="clear"></div>
+        <br>
+    <%end%>
+              <div style="float:left;">
+              <div style="width:220px;display:inline-block;float:left;margin-right: 10px;">
+                <%= f.text_field :guest_name, label: false,:placeholder=>"Guest Name", style: "width:210px", :required=>true %>
+              </div>
+              <div style="width:220px;display:inline-block;float:left;">
+                <%= f.text_field :guest_email, label: false,:placeholder=>"Guest Email", style: "width:210px", :required=>true %>
+              </div>
+              </div>
+      <br>
+
+      <br style="clear:both"/>
+      <div style="float:left;">
+
+                <div style="display:inline-block;">
+                                      <%= image_tag "https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/paypal2s.png" %>
+                                      <div style="font-size:8pt;margin-top:-20px">*All contributions are subject to standard Paypal processing fees</div>
+                                    </div>
+                                    <div class="round_btn_container" style="display:inline-block">
+                                        <%= f.submit "Buy Tickets", :class => "round_btn", :style=>"margin-left:95px; float:left" %>
+                                      </div>
+
+           </div>
+      </div>
+      </div>
+  <% end %>

@@ -1,0 +1,14 @@
+<br />
+<p><b>Now that you've created your event please take a minute to configure some of the options which you had added during the event creation process!</b></p>
+<br />
+<p><i>*Remember you can always go back and edit/change these settings from your event management console at any time!</i></p>
+<br />
+<center>
+<% if @event.has_cash_gifting and @show_cg_tutorial%><input type="button" class="btn btn-primary" value="Setup Cash Gifts" onclick="window.location='<%=new_cashgifttype_path(:id => @event.id, :cg => 1)%>'" style="width:360px;"><div class="clearfloat"></div><br /><% end %>
+<% if @event.has_donations and @show_donation_tutorial%><input type="button" class="btn btn-primary" value="Setup Cash Donations" onclick="window.location='<%=new_cashgifttype_path(:id => @event.id, :cg => 0)%>'" style="width:360px;"><div class="clearfloat"></div><br /><% end %>
+<% if @event.has_ticketing and @show_ticketing_tutorial%><input type="button" value="Setup & Add Tickets To Sell!" onclick="window.location = '<%=ticket_type_new_path(:event_id => @event.id)%>'"class= "btn btn-primary" style="width:360px;" /><div class="clearfloat"></div><br /><% end %>
+<% if @all_wallpapers.empty? %>
+	<input type="button" value="Add Cover Photos To Your Event" onclick="window.location = '<%=edit_event_path(@event.id)%>'" class= "btn btn-primary" style="width:360px;" /><div class="clearfloat"></div><br />
+<% end %>
+<%#= button_to "Edit Event Details", edit_event_path(@event), :method=>"get",:class=>"btn btn-primary", :style=>"width:360px;"%>
+</center>

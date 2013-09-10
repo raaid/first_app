@@ -1,0 +1,43 @@
+<h1>Listing cash_gifts</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Amount</th>
+    <th>Status</th>
+    <th>Guest email</th>
+    <th>Guest name</th>
+    <th>Guest</th>
+    <th>User</th>
+    <th>Paypal transaction</th>
+    <th>Message</th>
+    <th>Payout fee transaction</th>
+    <th>Payout user transaction</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @cash_gifts.each do |cash_gift| %>
+  <tr>
+    <td><%= cash_gift.title %></td>
+    <td><%= cash_gift.amount %></td>
+    <td><%= cash_gift.status %></td>
+    <td><%= cash_gift.guest_email %></td>
+    <td><%= cash_gift.guest_name %></td>
+    <td><%= cash_gift.guest_id %></td>
+    <td><%= cash_gift.user_id %></td>
+    <td><%= cash_gift.paypal_transaction_id %></td>
+    <td><%= cash_gift.message %></td>
+    <td><%= cash_gift.payout_fee_transaction_id %></td>
+    <td><%= cash_gift.payout_user_transaction_id %></td>
+    <td><%= link_to 'Show', cash_gift %></td>
+    <td><%= link_to 'Edit', edit_cash_gift_path(cash_gift) %></td>
+    <td><%= link_to 'Destroy', cash_gift, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Cash gift', new_cash_gift_path %>

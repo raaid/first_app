@@ -1,0 +1,144 @@
+<section>
+  <div class="container">
+<%if current_user.accounttype == 1%>
+<h1 style="font-size: 25pt;">Affiliate Profile Information</h1>
+<%else%>
+<h1 style="font-size: 25pt;">Promoter Profile Information</h1>
+<%end%>
+<div class="clearfloat"></div>
+  <br>
+  <center><p style="color:#000;font-size: 10pt;"><i>*Your privacy is important to us! Any information shared during event creation or profile submission is not shared with any third party entities</i></p></center>
+<%= simple_form_for @user, html: {multipart:true},  url: update_user_path, method: :put do |form| %>
+      <div style="display:inline-block;margin-left: 60px;">
+        <div style="float:left;width:250px;">
+        <% if current_user.accounttype == 0 %>
+        <%= form.input :fname, label: "First Name",:input_html => {:style => "width:200px"} %>
+        <%= form.input :lname, label: "Last Name",:input_html => {:style => "width:200px"} %>
+        <% else %>
+        <%= form.input :fname, label: "Business/Venue Name",:input_html => {:style => "width:200px"} %>
+        <%= form.input :lname, label: "Contact Name",:input_html => {:style => "width:200px"} %>
+        <% end %>
+        <%= form.input :email, label: "Email",:input_html => {:style => "width:200px"} %>
+        <%= form.input :password, label: "Password",:input_html => {:style => "width:200px", :id=>"pword"}, :error_html => { :id => "password_error"} %>
+        <%= form.input :password_confirmation, label: "Password Confirmation",:input_html => {:style => "width:200px", :id=>"pwordc"} %>
+        </div>
+        <div style="float:left;width:250px;">
+          <%= form.input :address, label: "Address",:input_html => {:style => "width:200px"} %>
+          <%= form.input :city, label: "City",:input_html => {:style => "width:200px"} %>
+          <%= form.input :province, label: "Province/State",:input_html => {:style => "width:200px"} %>
+          <%= form.input :postal, label: "Postal/Zip",:input_html => {:style => "width:200px"} %>
+          <%= form.input :country, label: "Country",:input_html => {:style => "width:200px"} %>
+        </div>
+        <div style="float:left;width:300px;">
+          <center>
+          <br />
+          <%= image_tag user.avatar.url(:profile), :class=>"profile_avatar", id: "profile_avatar", style: "width:230px"%>
+          <br /><br />
+          <p style="color:#000;">Select a photo from your computer</p>
+          <%= form.file_field :avatar, label: false, onchange: "readAvatar(this)" %>
+          </center>
+        </div>
+        <div class="clearfloat"></div>
+
+        <% if @user.accounttype == 0 %>
+        <div style="float:left;width:460px;">
+          <%= form.input :cg_key1, label: "Security Question", :input_html => {:style => "width:460px"} %>
+
+           <% if @user.cg_key2 %>
+            <% if @user.cg_key2 != '' %>
+              
+              <%= label_tag :cg_key_old, "Current Answer" %>  
+              <%= text_field_tag :cg_key_old, "", :style => "width: 460px"%>
+              
+            <% end %>
+          <% end %>
+
+
+          <%= form.input :cg_key2, label: "Security Answer", :input_html => {:style => "width:460px", value: "", onkeyup: "checkConfirm()"} %>
+          <%= label_tag :cg_key_confirm, "Confirm Security Answer" %>          
+          <%= text_field_tag :cg_key_confirm, "", style: "width:460px", onkeyup: "checkConfirm()" %>
+          <div style="position:relative;float:left;display:inline-block;left:-32px;top:-39px;">
+            <img id="confirmred" src='/images/minus.png' style="position: relative;display:inline-block;opacity:0"/>
+            <img id="confirmgreen" src='/images/checkmark2.png' style="position: relative;display:inline-block;display:none"/>
+          </div>
+        </div>
+
+        <%else%>
+          <%if current_user.try(:approve) == 1%>
+          <!--  <div style="color:#000;font-size:20pt;font-weight:bold">Your commission rate: <%=user.negotiated_commission_rate%>%</div>    -->
+          <%end%>
+        <%end%>
+      </div>
+       <div class="clearfloat"></div>
+       <br />
+        <center><%= form.submit "Update Your Profile", class: "btn btn-large btn-success", :style=>"width:300px;"%></center>
+<% end %>
+<br />
+<%#= button_to 'Deactivate Account', destroy_user_path(current_user), confirm: 'Are you sure you want to deactivate your account?', method: :delete, class: "btn btn-small btn-danger", :style=>"float:right;" %>
+<br />
+
+
+  <% if @authentications %>
+    <% unless @authentications.empty? %>
+              <center><p><strong>You can currently sign in to Ticketacular with these services:</strong></p></center>
+      <div style="margin-left: 50%;position:relative;left:-290px;">
+      <div class="authenticationso">
+        <br />
+        <% for authentication in @authentications %>
+          <div class="authenticationo">
+            <%= image_tag "#{authentication.provider}_64.png", :size => "64x64" %>
+            <div class="providero"><h1><%= authentication.provider.titleize %></h1></div>
+         <!--   <div class="uido"><%= authentication.uid %></div>  -->
+            <br />
+           <!-- <%= link_to "Import Profile", authentication_path(authentication), :class => "remove2" %> -->
+            <% if authentication.provider == "twitter" %>
+            <% end %>
+            <% if authentication.provider == "facebook" %>
+                <%#= button_to "Invite Friends To Join TheWeddingRegistry", invite_facebook_path, :method=>"get", :class => "weddingbutton6" %>
+            <% end %>
+            <%= link_to "X", authentication, :confirm => 'Are you sure you want to remove the link to this social account?', :method => :delete, :class => "remove" %>
+          </div>
+            <div class="clearfloat"></div>
+            <br />
+        <% end %>
+        <div class="clear"></div>
+      </div>
+      </div>
+    <% end %>
+    <div class="clearfloat"></div>
+    <br />
+  <% end %>
+  <div class="clearfloat"></div>
+
+</div>
+</section>
+
+<script>
+function readAvatar(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      document.getElementById("profile_avatar").setAttribute("src", e.target.result);
+    }
+
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+ function checkConfirm(e) {
+    val = document.getElementById("user_cg_key2").value;
+    answer = document.getElementById("cg_key_confirm").value;
+    //answer = e.target.value;
+
+    if (val == answer) {
+      document.getElementById("confirmred").style.display = "none";
+      document.getElementById("confirmgreen").style.display = "block";
+    } else {
+      red = document.getElementById("confirmred");
+      red.style.display = "block";
+      red.style.opacity = 1;
+      document.getElementById("confirmgreen").style.display = "none";
+    }
+  }
+</script>

@@ -1,0 +1,37 @@
+<%= form_for(@thank_you) do |f| %>
+  <% if @thank_you.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@thank_you.errors.count, "error") %> prohibited this thank_you from being saved:</h2>
+
+      <ul>
+      <% @thank_you.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :to_email %><br />
+    <%= f.text_field :to_email %>
+  </div>
+  <div class="field">
+    <%= f.label :to_note %><br />
+    <%= f.text_field :to_note %>
+  </div>
+  <div class="field">
+    <%= f.label :to_name %><br />
+    <%= f.text_field :to_name %>
+  </div>
+  <div class="field">
+    <%= f.label :gift %><br />
+    <%= f.text_field :gift %>
+  </div>
+  <div class="field">
+    <%= f.label :cash_gift %><br />
+    <%= f.text_field :cash_gift %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

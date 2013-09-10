@@ -1,0 +1,102 @@
+<center>
+  <h2>Add New Sales Person</h2>
+  
+  <div style="position:relative;display:inline-block">
+    <%#= f.label :fname, "First Name" %>
+    <label for="sales_person_fname">First Name</label>
+    <input id="sales_person_fname" name="sales_person[fname]" size="30" type="text">
+    <%#= f.text_field :fname  %>
+  </div>
+  <!--<div style="position:relative;display:inline-block">
+    <%#= f.label :lname, "Last Name" %>
+    <%#= f.text_field :lname %>
+  </div>-->
+  <div style="position:relative;display:inline-block">
+    <label for="sales_person_lname">Last Name</label>
+    <input id="sales_person_lname" name="sales_person[lname]" size="30" type="text">
+  </div>
+  <br>
+  <!--<div style="position:relative;display:inline-block;margin-left:56px">
+    <%#= f.label :email %>
+    <%#= f.text_field :email %>
+  </div>-->
+  <div style="position:relative;display:inline-block;margin-left:56px">
+    <label for="sales_person_email">Email</label>
+    <input id="sales_person_email" name="sales_person[email]" size="30" type="text">
+  </div>
+  <div style="position:relative;display:inline-block">
+    <label for="sales_person_commission" style="margin-left:-56px">Commission</label>
+    
+      <input id="commission" name="commission" type="range" min="0" max="100" step="0.1" value="50" onchange="updateCommission('comNumber', this.value)">
+      <span style="margin-top:5px;margin-left:40px;position:absolute">%</span>
+      <input id="comNumber" type="number" step="0.1" value="50" style="width:62px" onchange="updateCommission('commission', this.value)"/>
+    
+    <%#= text_field_tag :commission %>
+  </div>
+  <br>
+    <%#= hidden_field_tag :event_id, @event.id %>
+    <%#= f.submit "Add Sales Person", class: "btn btn-success", style: "font-size:14pt;width:200px"%>
+    <input type="button" value="Add Sales Person" onclick="addSalesPerson()" class="btn btn-success" style="width:200px">
+    <br>
+    <br>
+  </center>
+
+
+
+<script>
+  function updateCommission(ID, val) {
+    document.getElementById(ID).value = val;
+  }
+  function addSalesPerson() {
+    var formdata = new FormData();
+    formdata.append("fname", $('#sales_person_fname').val());
+    formdata.append("lname", $('#sales_person_lname').val());
+    formdata.append("email", $('#sales_person_email').val());
+    formdata.append("commission", $('#comNumber').val());
+    formdata.append("event_id", <%=@event.id%>);
+
+        $.ajax({
+            url:"/sales_people",
+            type:"post",
+            data:formdata,
+            dataType:"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+              $('#insertHere').before('<tr id="person' + res.contract_id + '">' +
+                  '<td style="width:1px;cursor:pointer" onclick="showStats(' + res.contract_id + ', ' + (res.sales.length-1) + ')">' +
+                    '<img id="right' + res.contract_id + '" src="/images/right.png" style="width:17px;float:right;position:absolute;">'+
+                    '<img id="down' + res.contract_id + '" src="/images/next.png" style="width:17px;float:right;position:absolute;display:none">' +
+                  '</td>' +
+                  '<td class="sales_person" onclick="showStats(' + res.contract_id + ', ' + (res.sales.length-1) + ')"><b>' + res.fname + ' ' + res.lname + '</b></td>' +
+                  '<td class="sales_person" onclick="showStats(' + res.contract_id + ', ' + (res.sales.length-1) + ')"><b>' + res.email + '</b></td>' +
+                  '<td class="sales_person">'+
+                    '<div style="width:230px">'+
+                      '<input id="slider' + res.contract_id + '" type="range" min="0" max="100" step="0.1" style="width:145px" value="' + res.commission + '" onchange="updateNumber(this.value, \'number\', ' + res.contract_id + ')">'+
+                      '<span style="margin-top:5px;margin-left:40px;position:absolute">%</span>'+
+                      '<input id="number' + res.contract_id + '" type="number" value="' + res.commission + '" step="0.1" style="width:61px" onchange="updateNumber(this.value, \'slider\', ' + res.contract_id + ')">'+
+                    '</div>'+
+                  '</td>'+
+                  '<td class="sales_person" onclick="showStats(' + res.contract_id + ', ' + (res.sales.length-1) + ')"><b>0</b></td>'+
+                  '<td id="totalAmt' + res.contract_id + '" class="sales_person" style="font-weight:bold" onclick="showStats(' + res.contract_id + ', ' + (res.sales.length-1) + ')">$0.00</td>'+
+                  '<td><input type="button" value="delete" class="btn btn-danger" style="width:70px" onclick="deletePerson(' + res.contract_id + ', ' + res.sales.length + ')"></td>'+
+                '</tr>');
+
+                for (i = 0; i < res.sales.length; i++) {
+                  $('#insertHere').before('<tr class="sales_' + res.contract_id + i +'" style="display:none">'+
+                      '<td></td>'+
+                      '<td></td>'+
+                      '<td>' + res.sales[i].name + '($' + res.sales[i].ticket_price + ')</td>'+
+                      '<td>$0.00</td>'+
+                      '<td>0</td>'+
+                    '</tr>');
+                }
+                document.getElementById("sales_person_fname").value = "";
+                document.getElementById("sales_person_lname").value = "";
+                document.getElementById("sales_person_email").value = "";
+                document.getElementById("commission").value = "50";
+                document.getElementById("comNumber").value = "50";
+            }
+        });
+  }
+</script>

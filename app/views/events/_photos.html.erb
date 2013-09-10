@@ -1,0 +1,26 @@
+<div style="display:inline-block;width:300px;">
+          <div class="flexslider teaser">
+            <ul class="slides" id="fs_slide" name="fs_slide">
+              <% @photos.each do |photo| %>
+                  <li><img src="<%= photo.photo_url(:display) %>" alt="Eventastic_<%= photo.id %>"/></li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+        <br/>
+        <% if @photos %>
+            <% if @photos.length >= 1 %>
+                <input type="button" class="btn btn-success" value="Enter Live Stream Slideshow" onclick="fs_slide();"/>
+            <% end %>
+        <% end %>
+        <br/>
+        <br/>
+
+        <p>Upload A New Photo:</p>
+        <br/>
+        <%= simple_form_for(@album_photo) do |f| %>
+            <%= f.hidden_field :album_id %>
+            <%= f.file_field :album_photo %>
+            <br/>
+            <button type="submit" class="btn btn-primary">Upload Your Photo</button>
+        <% end %>

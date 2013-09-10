@@ -1,0 +1,76 @@
+<script>
+    $('#clipcontrol').hide();
+    $('#pags').hide();
+    $('#foreground').hide();
+    $('#maincontentdiv').hide();
+    $('#maincontentdiv').fadeIn(1500);
+</script>
+<div class="contentarea">
+  <h1 style="float:left;">Select Contacts To Import</h1><input type="button" onclick="window.location='/contact_lists'" class='btn btn-success' style="float:right;" value='Back To Contact Lists'></input>
+  <div class="clearfloat"></div>
+  <hr />
+  <br />
+<script>
+var importable_contacts = {};
+</script>
+
+<% @importable_contacts.each do |contact| %>
+<div id='contact_container' style="display: inline-block;">
+    <input type='checkbox' class='import_checkboxes' value='<%= contact[:email] %>'>
+    <%= contact[:name] %> (<%= contact[:email] %>)<br />
+</div>
+
+<script>
+<% contact['contact_list_id'] = params[:id] %>
+importable_contacts['<%= contact[:email] %>'] = <%= contact.to_json.html_safe %>;
+</script>
+<div class="clearfloat"></div><br />
+<% end %>
+<br />
+<center><input type="button" onclick='import_checked_click();' class='btn btn-success' value='Import All Checked'></input></center>
+<br />
+<script>
+function import_checked_click() {
+    // Get all the checked elements.
+    var checked_elements = checked_contacts();
+    import_contacts(checked_elements);
+}
+
+function checked_contacts() {
+    var result_array = [];
+
+    $('.import_checkboxes').filter(':checked').each(function(index, element) {
+	result_array.push(importable_contacts[$(element).val()]);
+    });
+
+    return result_array;
+}
+
+function import_contacts(contact_list_members) {
+    $.ajax({ "url":"/contact_list_members",
+	     "type":"post",
+	     "data": {"contact_list_members": contact_list_members},
+	     "dataType":"json",
+	     "success":function (data) {
+		 //alert("Contacts added successfully!");
+		 window.location.replace("/contact_lists/<%= params[:id] %>");
+	     },
+	     "failure":function () {
+                 alert("The contacts failed to save! It is a safe to retry.");
+	     },
+	     "complete":function () {
+		 stop_pending("#all_container");
+	     }});
+}
+
+function start_pending(container_name) {
+    $(container_name).attr('disabled', 'disabled');
+}
+
+function stop_pending(container_name) {
+    $(container_name).removeAttr('disabled');
+}
+
+</script>
+</div>
+<br />

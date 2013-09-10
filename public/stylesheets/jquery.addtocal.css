@@ -1,0 +1,17 @@
+
+
+.ui-addtocal {
+  cursor:pointer;cursor:hand;
+    width:400px;
+    overflow:hidden;
+}
+
+ul.ui-addtocal a{
+  cursor:default;
+  position:absolute;
+    color: rgb(153, 153, 153);
+}
+
+ul.ui-addtocal a:hover {
+    color:#fff;
+}

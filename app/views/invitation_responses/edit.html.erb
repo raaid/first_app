@@ -1,0 +1,18 @@
+<script>
+  $('#clipcontrol').hide();
+  $('#pags').hide();
+  $('#foreground').hide();
+  $('#maincontentdiv').hide();
+  $('#maincontentdiv').fadeIn(1500);
+</script>
+<div class="contentarea">
+<h1 style="float:left;">Submit Your RSVP Below</h1><!--<input type="button" value="Create A New Video Message" onclick="window.location='/invitation_messages/new'" class="btn btn-success" style="margin-top: 5px;float:right;"></input>-->
+<div class="clearfloat"></div>
+<hr />
+<br />
+<%= render 'form' %>
+
+<%#= link_to 'Show', @invitation_response %>
+<%#= link_to 'Back', invitation_responses_path %>
+</div>
+<br />

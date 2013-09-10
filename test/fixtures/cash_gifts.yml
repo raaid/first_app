@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  title: MyString
+  amount: 9.99
+  status: MyString
+  guest_email: MyString
+  guest_name: MyString
+  guest_id: 1
+  user_id: 1
+  paypal_transaction_id: MyString
+  message: MyText
+  payout_fee_transaction_id: 1
+  payout_user_transaction_id: 1
+
+two:
+  title: MyString
+  amount: 9.99
+  status: MyString
+  guest_email: MyString
+  guest_name: MyString
+  guest_id: 1
+  user_id: 1
+  paypal_transaction_id: MyString
+  message: MyText
+  payout_fee_transaction_id: 1
+  payout_user_transaction_id: 1

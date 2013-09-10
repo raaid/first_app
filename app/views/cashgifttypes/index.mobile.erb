@@ -1,0 +1,128 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner" style="background:#333;">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="<%=root_path%>">Eventastic</a>
+
+      <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="">
+                  <%= link_to "Home", root_path %>
+                </li>
+                <li class=""><%= link_to "Search Events", mobile_search_path %></li>
+                <% if authenticated? %><li class="active"><%= link_to "Manage Events", events_path %></li><% end %>
+                <% if authenticated? %><li class=""><%= link_to "Edit Profile", edit_user_path %></li><% end %>
+                <li class="">
+                  <% unless authenticated? %><li class=""><%= link_to "Login/Register", new_user_path %></li><% else %><li><%= link_to "Logout", logout_path, :method=>"get" %></li><% end %>
+                </li>
+                <li class="">
+                  <%= link_to "Contact Us", contact_path %>
+                </li>
+              </ul>
+            </div>
+    </div>
+  </div>
+</div>
+
+<div class="jumbotron masthead" style="padding: 15px 0px 80px;padding-bottom: 10px;background:#000 url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/newbg3.png);background-size: 100% 100%;">
+  <div class="container">
+    <h1>Manage<br />Cash Gifts &<br />Donations</h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="marketing">
+    <br />
+    <span class="main_content_partial" style="display:inline-block;width:90%;">
+       <div style="display:inline-block;">
+<% if current_user %>
+<center>
+             <p><b><i><span style="font-size:12pt;color:#000;"><u>Configure a message for your guests for when they visit your cash gift list!</u><br /> Let them know what
+               you will be looking to use their generous gifts towards; be it a honeymoon vacation, a down payment on
+               your house, or simply that one item you were hoping to get at your wedding that nobody thought of
+
+             <br />Here's your chance to make sure you get the most out of your wedding registry!</span></i></b></p>
+             <br/>
+
+             <div class="purchaseTickets" style="width:75%">
+               <%= form_for @event, :url => {:controller => 'events',:action => "update_cg", :id => @event.id} do |f| %>
+                   <% if @event.errors.any? %>
+                       <div id="error_explanation">
+                         <h2><%= pluralize(@event.errors.count, "error") %> prohibited this update from occurring:</h2>
+                         <ul>
+                           <% @event.errors.full_messages.each do |msg| %>
+                               <li><%= msg %></li>
+                           <% end %>
+                         </ul>
+                       </div>
+                   <% end %>
+                   <p style="font-size: 11pt;"><b>Specify Your Custom Message To Your Guests Here!</b></p>
+                   <p style="font-size: 8pt;"><i>This message will be visible to guests when they view your cash gifts registry!</i></p>
+                   <hr/>
+                   <%= f.text_area :cg_message, :size => "75x3" %>
+                   <div class="clearfloat"></div>
+                   <br/>
+
+                   <div class="purchaseTickets">
+                     <p style="float:left;font-size: 11pt;">
+                       <b>Select Cash Gifts To Display As Purchase Options For Guests</b>
+                     </p>
+                     <center><%= button_to_function 'Add A Cash Gift Option', "", class: "btn btn-success", :style => "", :onclick => 'addType()' %> </center>
+                     <div class="clearfloat"></div>
+                     <hr/>
+                     <br/>
+
+                     <% if @cashgifttypes.size <= 0 %>
+                         <p>You have not created any "Cash Gift Options" for you guests to give directly to as of yet.
+                           This means that when a Guest visits your cash gift list to donate their donations will just
+                           be made to you as a generic gift rather than towards a specific cause.</p>
+                     <% else %>
+                         <center>
+                         <table width="90%">
+                           <tr>
+                             <td width="30%"><center>Include As Option?</center></td>
+                             <td width="30%"></td>
+                             <td width="30%">Gift</td>
+                             <td width="10%"><center>Edit</center></td>
+                           </tr>
+                         </table>
+                         <hr />
+                         <% @cashgifttypes.each do |cgt| %>
+                             <table width="90%">
+                               <tr>
+                                 <td width="30%"><center><%= check_box_tag 'picked[]', cgt.id, cgt.shown %></center></td>
+                                 <td width="30%"><%= image_tag cgt.cgp_url(:thumb) %></td>
+                                 <td width="30%" style="overflow: hidden;"><%= cgt.title %></td>
+                                 <td width="10%"><center><%= link_to 'Edit', edit_cashgifttype_path(cgt) %></center></td>
+                               </tr>
+                             </table>
+                             <br>
+                         <% end %>
+                         </center>
+                     <% end %>
+                   </div>
+                   <br />
+                   <%= f.submit "Update These Options", :class => "btn btn-success", :style=>"width:200px;" %>
+               <% end %>
+             </div>
+           </center>
+<% else %>
+
+<% end %>
+   </div>
+   </span>
+  </div>
+  </div>
+</div>
+</div>
+
+
+<script>
+    function addType() {
+        window.location.href = "/cashgifttypes/new?id=<%= @event.id%>";
+    }
+</script>

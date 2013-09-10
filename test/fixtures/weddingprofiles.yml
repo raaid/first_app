@@ -1,0 +1,37 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  partner_first: MyString
+  partner_last: MyString
+  bio1: MyText
+  bio1: MyText
+  photo1_file_name: MyString
+  photo1_content_type: MyString
+  photo1_file_size: MyString
+  photo2_file_name: MyString
+  photo2_content_type: MyString
+  photo2_file_size: MyString
+  photo3_file_name: MyString
+  photo3_content_type: MyString
+  photo3_file_size: MyString
+  photo4_file_name: MyString
+  photo4_content_type: MyString
+  photo4_file_size: MyString
+
+two:
+  partner_first: MyString
+  partner_last: MyString
+  bio1: MyText
+  bio1: MyText
+  photo1_file_name: MyString
+  photo1_content_type: MyString
+  photo1_file_size: MyString
+  photo2_file_name: MyString
+  photo2_content_type: MyString
+  photo2_file_size: MyString
+  photo3_file_name: MyString
+  photo3_content_type: MyString
+  photo3_file_size: MyString
+  photo4_file_name: MyString
+  photo4_content_type: MyString
+  photo4_file_size: MyString

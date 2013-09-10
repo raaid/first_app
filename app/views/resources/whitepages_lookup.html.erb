@@ -1,0 +1,6 @@
+<% @details.each do |detail| %>
+    <p><%= detail.fetch("displayname") %></p>
+    <p><%= detail.fetch("address").fetch("city") %>, <%= detail.fetch("address").fetch("country") %>, <%= detail.fetch("address").fetch("fullstreet")%>, <%= detail.fetch("address").fetch("state") %>, <%= detail.fetch("address").fetch("zip") %></p>
+    <p><a target="_blank" href="<%= detail.fetch("listingmeta").fetch("moreinfolinks").fetch("drivingdirections").fetch("url") %>"><%= detail.fetch("listingmeta").fetch("moreinfolinks").fetch("drivingdirections").fetch("linktext") %></a> | <a target="_blank" href="<%= detail.fetch("listingmeta").fetch("moreinfolinks").fetch("viewmap").fetch("url") %>"><%= detail.fetch("listingmeta").fetch("moreinfolinks").fetch("viewmap").fetch("linktext") %></a></p>
+    <br />
+<% end %>

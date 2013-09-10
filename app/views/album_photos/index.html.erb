@@ -1,0 +1,31 @@
+<h1>Listing album_photos</h1>
+
+<table>
+  <tr>
+    <th>Album photo file name</th>
+    <th>Album photo content type</th>
+    <th>Album photo file size</th>
+    <th>Caption</th>
+    <th>Album</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @album_photos.each do |album_photo| %>
+  <tr>
+    <td><%= album_photo.album_photo_file_name %></td>
+    <td><%= album_photo.album_photo_content_type %></td>
+    <td><%= album_photo.album_photo_file_size %></td>
+    <td><%= album_photo.caption %></td>
+    <td><%= album_photo.album_id %></td>
+    <td><%= link_to 'Show', album_photo %></td>
+    <td><%= link_to 'Edit', edit_album_photo_path(album_photo) %></td>
+    <td><%= link_to 'Destroy', album_photo, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Album photo', new_album_photo_path %>

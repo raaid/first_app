@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-FirstApp::Application.config.secret_token = '5614d9bd05cbb9b53e1321963367123766a8e0938f4514736b1d889ac01a4410b7ffbde89708ade34932f6c5e62ed9815de98e96b2501a7c3e981674b2af8b8b'
+Ticketacular::Application.config.secret_token = '974367546515dba195d478f0711313241990e3d2e29e5693ef2e8c4a338f9c8bd8239f212a4119a1f76872f935ba2d0001f2862058d77723d483bcf4b89c9031'

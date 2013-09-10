@@ -1,0 +1,48 @@
+<section>
+  <div class="container">
+<h1>Features</h1>
+<input type="button" onclick="history.go(-1);" value="Back" class="btn btn-primary" style="position:absolute;top:75px;right:25px;" />
+<br/>
+    <%if current_user.try(:accounttype) == 1 %>
+   <br><br>
+
+   Here's how we calculate yo moula.<br>
+ <br />Organizers selling tickets are charged a service fee of 2.5%, plus an additional scalable processing fee per ticket based on ticket price to offset internal processing costs of tickets.
+ <br />Tickets priced $0.01-4.99 will incur a charge of $0.25
+ <br />Tickets priced $5.00-9.99 will incur a charge of $0.50
+ <br />Tickets priced $10.00-19.99 will incur a charge of $0.75
+ <br />Tickets priced $20.00+ will incur a charge of $0.99
+
+ <br />
+ You get commission taken from our fee!
+ <br><br>
+ yaaa.... I would change this text to something else, but that's the general idea<br>
+   <%else%>
+        <center>
+            <div class="row screenshots">
+              <div class="thumb_row" style="background: url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/FeatureBlock1.png);">
+                <a href="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/large1.png" class="thumbnail" style="float:left;width:235px;height:200px;cursor:pointer;"></a>
+                <a href="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/large2.png" class="thumbnail" style="float:left;width:235px;height:200px;cursor:pointer;position:relative;right:-6px;"></a>
+                <a href="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/large3.png" class="thumbnail" style="float:left;width:235px;height:200px;cursor:pointer;position:relative;right:-13px;"></a>
+              </div>
+              <div class="thumb_row" style="background: url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/FeatureBlock2.png);">
+                <a href="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/large7.png" class="thumbnail" style="float:left;width:235px;height:200px;cursor:pointer;"></a>
+                <a href="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/large8.png" class="thumbnail" style="float:left;width:235px;height:200px;cursor:pointer;position:relative;right:-6px;"></a>
+                <a href="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/large9.png" class="thumbnail" style="float:left;width:235px;height:200px;cursor:pointer;position:relative;right:-13px;"></a>
+              </div>
+              <div class="thumb_row" style="background: url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/FeatureBlock3.png);">
+                <a href="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/large10.png" class="thumbnail" style="float:left;width:235px;height:200px;cursor:pointer;"></a>
+                <a href="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/large11.png" class="thumbnail" style="float:left;width:235px;height:200px;cursor:pointer;position:relative;right:-6px;"></a>
+                <a href="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/large12.png" class="thumbnail" style="float:left;width:235px;height:200px;cursor:pointer;position:relative;right:-13px;"></a>
+              </div>
+              <div class="thumb_row" style="background: url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/FeatureBlock4.png);">
+                <a href="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/large4.png" class="thumbnail" style="float:left;width:235px;height:200px;cursor:pointer;"></a>
+              </div>
+            </div>
+        </center>
+<% end %>
+</div>
+</section>
+
+
+

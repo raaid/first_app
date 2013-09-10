@@ -1,0 +1,11 @@
+<loader version="1.0" >
+<application id="Eventastic">
+<name>Eventastic</name>
+<description>Eventastic Ticket Redemption Mobile Application</description>
+<version>1.0.0.0</version>
+<fileset Java="1.45">
+<directory></directory>
+<files>Eventastic.cod</files>
+</fileset>
+</application>
+</loader>

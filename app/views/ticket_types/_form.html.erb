@@ -1,0 +1,123 @@
+<link href="/css_temp/tooltipster.css" rel="stylesheet">
+<script type="text/javascript" src="/js/jquery.tooltipster.min.js"></script>
+
+<%= form_for(@ticket_type) do |f| %>
+    <div class="clearfloat"></div>
+    <br />
+    <div class="clearfloat"></div>
+<br />
+    <center>
+    <%= f.hidden_field :event_name %>
+      <%= f.hidden_field :event_id %>
+
+    <p style="color:#000;"><b>Ticket Name</b></p>
+    <%= f.text_field :name %>
+    <br />
+    <p style="color:#000;"><b>Ticket Price (Enter Price In Numbers Only)</b></p>
+    <%= f.text_field :price  %>
+    <br />
+    <p style="color:#000;"><b>Currency</b></p>
+    <%= f.select(:currency, options_for_select([["US Dollars", "USD"], ["Canadian Dollars", "CAD"]], selected: @ticket_type.currency)) %>
+    <br />
+      <p style="color:#000;"><b>Description</b></p>
+      <%= f.text_field :description %>
+      <br />
+    <p style="color:#000;"><b>Sell From:</b></p>
+    <%= f.date_select :sell_from %>
+    <p style="color:#000;"><b>Sell Until:</b></p>
+    <%= f.date_select :sell_to %>
+    </center>
+    <div class="clearfloat"></div>
+    <br />
+
+
+    <div style="width:380px;position:relative;left:50%;margin-left:-190px">
+    
+         <div style="color:#000;width:430px">
+          <%= f.check_box :count_towards_occupancy, onchange: "disableInput('ticket_type_group_size')", style: "width:10px" %>
+          <div style="display:inline-block"><b>&nbsp;This Ticket Counts Towards Max Occupancy</b></div>
+          <%= f.number_field :group_size, disabled: (@ticket_type.count_towards_occupancy ? false : "disabled"), min: 1, value: (@ticket_type.count_towards_occupancy ? @ticket_type.group_size : 1), style: "display:inline-block;width:50px" %>
+         </div>
+
+         <div style="width:335px;height:40px;position:relative">
+          <span style="color:#000;float:left">
+            <input type="checkbox" <%unless @ticket_type.capacity.nil?%><% if @ticket_type.capacity > 0 %>checked="checked"<%end%><%end%> value="1" onchange="disableInput('ticket_type_capacity')" style="width:10px">
+            <b>&nbsp;Limit The Number Of Tickets Sold</b>
+          </span>
+          <%if @ticket_type.capacity%>
+            <%= f.number_field :capacity, min: 1, value: @ticket_type.capacity || 1, disabled: (@ticket_type.capacity > 0 ? false : "disabled"), style: "width:70px;float:right;position:relative;top:-5px"%>
+          <%else%>
+            <%= f.number_field :capacity, min: 1, value: @ticket_type.capacity || 1, disabled: 'disabled', style: "width:70px;float:right;position:relative;top:-5px"%>
+          <%end%>
+         </div>
+
+         <div style="width:430px">
+            <div style="color:#000">
+              <%= f.check_box :groupable, style: "width:10px" %> 
+              <span style="display:inline-block"><b>&nbsp;This Ticket Is Groupable</b></span>
+              <div  class="tooltip" style="opacity:1;display:inline-block;margin-left:8px" title="A Groupable ticket is one which, when sent to the buyer, will be redeemable for multiple items with one barcode (Eg. Ten drink tickets can be emailed as one ticket redeemable for ten drinks to a guest rather than sending 10 individual tickets.)">
+                <img src="/images/info_icon.png" width="15px" style="float:left" >
+              </div>
+            </div>
+         </div>
+    </div>
+    
+  
+    <center><p style="font-size: 8pt;color:#000">*Organizers & Guests are subject to the fees outlined in Eventastics <a href="/terms_of_service#fees"><u>Terms Of Service</u></a></p></center>
+    <br />
+    <center><%= f.submit :class=>"btn btn-success", :style=>"width:200px"%></center>
+<% end %>
+
+<script>
+<% if @ticket_type.errors.any? %>
+  <% @ticket_type.errors.full_messages.each do |msg| %>
+    flash_notice('<%=msg%>');
+  <% end %>
+<% end %>
+
+  function disableInput(el) {
+    elem = $('#' + el);
+    elem.prop("disabled",!elem.prop("disabled"))
+    if (elem.prop("disabled")) {
+      document.getElementById(el).value = 1;
+    }
+    /*$('#ticket_type_capacity').fadeToggle(function() {
+      if (!el.checked) {
+        document.getElementById("ticket_type_capacity").value = 0;
+      }
+    });*/
+  }
+  $(document).ready(function () {
+
+    $('.tooltip').tooltipster({
+      animation: 'fade',
+      arrow: true,
+      arrowColor: '',
+      content: '',
+      delay: 0,
+      fixedWidth: 0,
+      maxWidth: 0,
+      functionBefore: function(origin, continueTooltip) {
+        continueTooltip();
+      },
+      functionReady: function(origin, tooltip) {},
+      functionAfter: function(origin) {},
+      icon: '(?)',
+      iconDesktop: false,
+      iconTouch: false,
+      iconTheme: '.tooltipster-icon',
+      interactive: false,
+      interactiveTolerance: 350,
+      offsetX: 0,
+      offsetY: 0,
+      onlyOne: true,
+      position: 'top',
+      speed: 0,
+      timer: 0,
+      theme: '.tooltipster-default',
+      touchDevices: true,
+      trigger: 'hover',
+      updateAnimation: true
+    });
+  });
+</script>

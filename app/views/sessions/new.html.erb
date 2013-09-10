@@ -1,0 +1,16 @@
+<h1>Login</h1>
+
+<%= form_for @session, :as => :session, :url => { :action => "create" } do |f| %>
+
+  <div class="field">
+    <%= f.label :email %><br />
+    <%= f.text_field :email %>
+  </div>
+  <div class="field">
+    <%= f.label :password %><br />
+    <%= f.password_field :password %>
+  </div>
+  <%= f.submit "Submit" %>
+<% end %>
+<%#= render 'form' %>
+<%#= link_to 'Back', user_sessions_path %>

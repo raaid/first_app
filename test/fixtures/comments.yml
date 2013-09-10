@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+john_posts_first:
+  message: Woot! First!
+  user: john_doe
+  post: johns_gift_post
+
+joe_complains_about_first:
+  message: Lame...
+  user: joe_blow
+  post: johns_gift_post

@@ -1,0 +1,57 @@
+<%= form_for(@registration_member) do |f| %>
+   <center>
+    <div style="float:left;padding:10px;margin-top:17px">
+      <%= f.hidden_field :registration_list_id %>
+      <%= f.label :name %>
+      <%= f.text_field :name, :required=>true %>
+      <br>
+      <%= f.label :email %>
+      <%= f.text_field :email, :required=>true  %>
+    </div>
+
+    <div style="float:left;padding:10px">
+      <div>Message</div>
+      <textarea style="width:250px;height:100px" id="registration_member_message"></textarea>
+
+      <div class="round_btn_container" style="margin-left:-40px">
+        <div class="round_btn" onclick="ajaxSubmitRegister()" ><span>Register</span></div>
+      </div>
+    </div>
+    <br>
+
+    
+
+     <!-- <input type="button" value="Register For This Event" class="btn btn-success" style="display:inline-block" onclick="ajaxSubmitRegister()"/> -->
+     </center>
+<% end %>
+
+
+
+<script>
+    function ajaxSubmitRegister() {
+      name = document.getElementById("registration_member_name").value;
+      email = document.getElementById("registration_member_email").value;
+      message = document.getElementById("registration_member_message").value;
+      registration_list_id = document.getElementById("registration_member_registration_list_id").value;
+      data = {'name': name, 'email': email,'message': message, 'registration_list_id': registration_list_id};
+
+      $.post('/registration_members', data, function(response) {
+        data = JSON.parse(response);
+        if (data['created_at']){
+           alert("Registration was successful!");
+           // console.log("Registration was successful!");
+            //flash_notice("Registration was successful!");
+            document.getElementById("registration_member_name").value='';
+            document.getElementById("registration_member_email").value='';
+            document.getElementById("registration_member_message").value='';
+
+           // $('#registrationPanel').toggle(500);
+        } else{
+            alert("Registration was unsuccessful, please check the email and or name you\'ve entered!");
+
+            //flash_notice('Registration was unsuccessful, please check the email and or name you\'ve entered!');
+           // $('#registrationPanel').toggle(500);
+        }
+      }, 'html');
+    }
+</script>

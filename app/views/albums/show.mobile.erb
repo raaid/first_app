@@ -1,0 +1,277 @@
+<link href="/javascripts/photoswipe/styles.css" type="text/css" rel="stylesheet" />
+<link href="/javascripts/photoswipe/photoswipe.css" type="text/css" rel="stylesheet" />
+	
+<script type="text/javascript" src="/javascripts/photoswipe/klass.min.js"></script>
+<script type="text/javascript" src="/javascripts/photoswipe/code.photoswipe-3.0.5.min.js"></script>
+	
+<script type="text/javascript">
+function initPhotoSwipe() {
+	(function(window, PhotoSwipe){
+
+		
+			var options = {
+					preventHide: true, 
+					captionAndToolbarAutoHideDelay: 0, 
+					captionAndToolbarFlipPosition:true,
+					getImageMetaData: function(el){
+							return {
+								href: el.getAttribute('href'),
+								id: el.getAttribute('data-id')
+							}
+						},
+				<% if current_user %>
+					<% if current_user.id.to_s == @user.id.to_s %>
+					getToolbar: function(){
+							return '<div id="garbage" class="garbage" "></div><div class="ps-toolbar-close" data-ccl-disp="table-cell" style="display: none;"><div class="ps-toolbar-content"></div></div><div class="ps-toolbar-play"><div class="ps-toolbar-content"></div></div><div class="ps-toolbar-previous"><div class="ps-toolbar-content"></div></div><div class="ps-toolbar-next"><div class="ps-toolbar-content"></div></div>';
+							// NB. Calling PhotoSwipe.Toolbar.getToolbar() wil return the default toolbar HTML
+						}
+					<% end %>
+				<% end %>
+				};
+			instance = PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), options );
+			
+
+			<% if current_user %>
+				<% if current_user.id.to_s == @user.id.to_s %>
+				setGarbageClick();
+				<% end %>
+			<% end %>
+			removeCaption();
+
+			function removeCaption() {
+				instance.addEventHandler(PhotoSwipe.EventTypes.onShow, function(e) {
+					document.getElementsByClassName("ps-caption")[0].style.opacity = 0;
+				})	
+			}
+					
+			function setGarbageClick() {
+				instance.addEventHandler(PhotoSwipe.EventTypes.onToolbarTap, function(e){
+				if (e.toolbarAction === PhotoSwipe.Toolbar.ToolbarAction.none){
+					if (e.tapTarget === $("#garbage")[0]){
+
+						var currentImage = instance.getCurrentImage();
+						formdata = new FormData();
+						formdata.append("id", currentImage.metaData.id);
+
+						orig = instance.originalImages;
+						imgsLeft = orig.length;
+
+						$.ajax({
+        					url: "/album_photos/" + currentImage.metaData.id,
+        					type: "DELETE",
+        					data: formdata,
+        					"dataType":"json",
+        					processData: false,
+        					contentType: false,
+        					complete: function (res) {
+        						if (imgsLeft <= 1) {
+									location.reload();
+								}
+        					}
+      					});
+								
+						
+						content = instance.carousel.contentEl.children;
+
+						for (i = 0; i < content.length; i++) {
+							if (content[i].firstChild.originalSrc == currentImage.metaData.href) {
+								content[i].parentNode.removeChild(content[i]);
+								break;
+							}
+						}
+
+						cache = instance.cache.images;
+						for (i = 0; i < cache.length; i++) {
+							if (cache[i].imageEl.originalSrc == currentImage.metaData.href) {
+								cache.splice(i, 1);
+								break;
+							}
+						}
+					
+						
+
+						for (i = 0; i < orig.length; i++) {
+							if (orig[i].href == currentImage.metaData.href) {
+								orig[i].parentNode.removeChild(orig[i]);
+								break;
+							}
+						}
+						el = document.getElementById("photo" + currentImage.metaData.id);
+						el.parentNode.removeChild(el);
+
+						PhotoSwipe.unsetActivateInstance(instance);
+						PhotoSwipe.detatch(instance); 
+
+						if (imgsLeft > 1) {
+							instance = PhotoSwipe.attach( window.document.querySelectorAll('#Gallery a'), options );
+							instance.show(0);
+							setGarbageClick();
+							removeCaption();
+						}
+
+							
+					}
+				}
+				});
+			}
+			console.log("show instance");
+			instance.show(0);
+
+			
+		
+			
+	}(window, window.Code.PhotoSwipe));
+}
+
+<% approvedcount = 0
+	totalImages = 0
+	@allphotos.each do |photo|
+		if photo.approved == 0
+			approvedcount = approvedcount + 1
+		end
+		totalImages = totalImages + 1
+	end %>
+
+<% if current_user %>
+	<% if current_user.id.to_s == @user.id.to_s %>
+		<% if approvedcount == 0 and totalImages > 0 %>
+			document.addEventListener('DOMContentLoaded', function(){
+				initPhotoSwipe();
+			}, false);
+		<%end%>
+	<% elsif totalImages > 0 %>
+		document.addEventListener('DOMContentLoaded', function(){
+			initPhotoSwipe();
+		}, false);
+	<%end%> 
+<% elsif totalImages > 0 %>
+	document.addEventListener('DOMContentLoaded', function(){
+		initPhotoSwipe();
+	}, false);
+<% end %>
+
+
+
+	function approve(id, el, origSrc, coverSrc) {
+		formdata = new FormData();
+		formdata.append("id", id);
+
+		$.ajax({
+        	url: "/approve",
+        	type: "POST",
+        	data: formdata,
+        	"dataType":"json",
+        	processData: false,
+        	contentType: false
+      	});
+
+		el.parentNode.removeChild(el);
+		$("#Gallery").append('<li id="photo' + id + '" ><a data-id="' + id + '" href="' + origSrc +'"><img src="' + coverSrc + '"/></a></li>');
+		photos = document.getElementById("approval").getElementsByTagName("div").length;
+
+		if (photos == 0) {
+			initPhotoSwipe();el.parentNode.removeChild(el);
+		}
+
+	}
+
+	function removeimg(id, el) {
+		$.ajax({
+        	url: "/album_photos/" + id,
+        	type: "DELETE",
+        	"dataType":"json",
+        	processData: false,
+        	contentType: false
+      	});
+      	console.log(el);
+      	el.parentNode.removeChild(el);
+
+      	photos = document.getElementById("approval").getElementsByTagName("div").length;
+
+		if (photos == 0) {
+			initPhotoSwipe();
+		}
+	}
+
+</script>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner" style="background:#333;">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="/">Eventastic</a>
+
+      <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="">
+                  <%= link_to "Home", root_path %>
+                </li>
+                <li class=""><%= link_to "Search Events", mobile_search_path %></li>
+                <% if authenticated? %><li class=""><%= link_to "Manage Events", events_path %></li><% end %>
+                <% if authenticated? %><li class=""><%= link_to "Edit Profile", edit_user_path %></li><% end %>
+                <li class="">
+                  <% unless authenticated? %><li class=""><%= link_to "Login/Register", new_user_path %></li><% else %><li><%= link_to "Logout", logout_path, :method=>"get" %></li><% end %>
+                </li>
+                <li class="">
+                  <%= link_to "Contact Us", contact_path %>
+                </li>
+              </ul>
+            </div>
+    </div>
+  </div>
+</div>
+
+<% if current_user %>
+	<% if current_user.id.to_s == @user.id.to_s %>
+		<% if totalImages > 0%>
+<div class="jumbotron masthead" style="padding: 15px 0px 80px;padding-bottom: 10px;background:#000 url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/newbg3.png);background-size: 100% 100%;">
+  <div class="container">
+    <h1>Photos For Approval</h1>
+  </div>
+</div>
+		<% end %>
+	<% end %>
+<% end %>
+
+
+<div class="container">
+	<br>
+
+	<% if current_user %>
+		<% if current_user.id.to_s == @user.id.to_s %>
+	<div id="approval" class="approvals">
+		<% @allphotos.each do |photo| %>
+        	<% if photo.approved == 0 %>
+        		<div class="aprImgContainer">
+        			<span class="approvebtn" onclick="approve(<%=photo.id%>, this.parentNode, '<%=photo.photo_url(:original)%>', '<%=photo.photo_url(:cover)%>')">Approve</span>
+        			<span class="remove" onclick="removeimg(<%=photo.id%>, this.parentNode)">Delete</span>
+        			<img src="<%=photo.photo_url(:cover)%>" style="width:100%"/>
+        		</div>
+        	<% end %>
+        <% end %> 
+	</div>
+	<% if totalImages > 0 %>
+	<br><br>
+	<div class="clearfloat"></div>
+	<center><input type="button" class="btn btn-primary" value="Skip" style="width:150px;margin-top:20px;font-size:15pt;font-weight:bolder" onclick="initPhotoSwipe();"/></center>
+	<%end%>
+		<%end%>
+	<%end%>
+	<ul id="Gallery" class="gallery" style="display:none">
+
+		<% @allphotos.each do |photo| %>
+          <% if photo.approved == 1 %>
+          	<li id="photo<%=photo.id%>" ><a  data-id="<%=photo.id%>" href="<%=photo.photo_url(:original)%>"><img src="<%=photo.photo_url(:cover)%>"/></a></li>
+          <% end %>
+        <% end %>		
+	</ul>
+	<% if totalImages == 0 %>
+		<h1> No images have been uploaded </h1>
+	<% end %>
+
+</div>
+	

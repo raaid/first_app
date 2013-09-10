@@ -1,0 +1,41 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+johns_public_list:
+  user: john_doe
+  name: Public
+  access: admin
+
+johns_private_list:
+  user: john_doe
+  name: Private List
+  access: user
+
+johns_custom_list:
+  user: john_doe
+  name: Private List
+  access: invalid_access_type
+
+johns_suggested_list:
+  user: john_doe
+  name: Suggested
+  access: admin
+
+joes_suggested_list:
+  user: joe_blow
+  name: Suggested
+  access: admin
+
+giftopia_user_public_list:
+  user: giftopia_user
+  name: Public
+  access: admin
+
+giftopia_user_suggested_list:
+  user: giftopia_user
+  name: Suggested
+  access: admin
+
+giftopia_user_master_list:
+  user: giftopia_user
+  name: Master
+  access: admin

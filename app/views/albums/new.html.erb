@@ -1,0 +1,18 @@
+<center><h1>New album</h1>
+  <span class="btn btn-primary" style="width:200px;position:absolute;left:10px; top:10px;" onclick="window.location='/show_albums/<%=@user.id.to_s%>'">
+            <i class="icon-arrow-left icon-white"></i>
+            <span>Back To Albums</span>
+  	</span>
+
+<%= render 'form' %>
+</center>
+
+<script>
+  $('#clipcontrol').hide();
+  $('#pags').hide();
+  $('#foreground').hide();
+  $('#maincontentdiv').hide();
+  $('#maincontentdiv').animate({top: "600px"}, 0 );
+  $('#maincontentdiv').show();
+  $('#maincontentdiv').animate({top: "101px"}, 1000 );
+</script>

@@ -1,0 +1,29 @@
+<h1>Listing user_sessions</h1>
+
+<% if @sessions %>
+<table>
+  <tr>
+    <th>Email</th>
+    <th>Password</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+  <% @sessions.each do |session| %>
+  <tr>
+    <td><%= user_session.email %></td>
+    <td><%= user_session.password %></td>
+    <td><%= link_to 'Show', session %></td>
+    <td><%= link_to 'Edit', edit_session_path(session) %></td>
+    <td><%= link_to 'Destroy', user_session, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+  <% end %>
+</table>
+<% else %>
+Cannot list sessions - @user_sessions is nil.
+<% end %>
+
+<br />
+
+<%= link_to 'New User session', new_session_path %>

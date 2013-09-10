@@ -1,0 +1,189 @@
+<script>
+    $('#clipcontrol').hide();
+    $('#pags').hide();
+    $('#foreground').hide();
+    $('#maincontentdiv').hide();
+    $('#maincontentdiv').fadeIn(1500);
+</script>
+<script src="http://connect.facebook.net/en_US/all.js" xmlns="http://www.w3.org/1999/html"
+        xmlns="http://www.w3.org/1999/html"></script>
+<div class="positioncss">
+  <div id="fb-root"></div>
+</div>
+
+
+<script src="http://connect.facebook.net/en_US/all.js"></script>
+<script type="text/javascript">
+
+    var token = '<%=@authentication.token %>'
+    var id = '<%=@appid%>'
+   // var FB;
+    //FB.init({appId:id, xfbml:true, cookie:true});
+    FB.init({appId: id, status: true, cookie: true});
+    function send(aName) {
+        //var aName = '<%=@a%>'
+
+        // var params = {};
+        // params['name'] = "Join <%= "#{@user.display_name}" %>'s Wedding Registry on TheWeddingRegistry.me";
+        // params['description'] = 'TheWeddingRegistry keeps all of your gifts together in one place and shares them with only the contacts you specify.';
+        // params['link'] = 'http://www.theweddingregistry.me/weddingprofiles/<%= @user.weddingprofile.id.to_s%>';
+        // params['picture'] = 'http://www.TheWeddingRegistry.me/images/logowedding.png';
+
+        // for(i=0;i<aName.length;i++) {
+        //     FB.api('/' + aName[i] + '/feed', 'post', params, function(response) {
+        //
+        //     });
+        // }
+
+            desc = 'TheWeddingRegistry keeps all of your gifts together in one place and shares them with only the contacts you specify.'
+        for(i=0;i<aName.length;i++) {
+            //desc = desc+'@['+aName[i]+']'
+                to = to+'@['+aName[i]+'],'
+            }
+        //alert(desc);
+
+            // calling the API ...
+            var obj = {
+                method:'feed',
+                redirect_uri:'http://www.theweddingregistry.me',
+                link:'http://www.theweddingregistry.me/weddingprofiles/<%= @user.weddingprofile.id.to_s%>',
+                picture:'http://www.TheWeddingRegistry.me/images/logowedding.png',
+                name:"Join <%= "#{@user.display_name}" %>'s Wedding Registry on TheWeddingRegistry.me",
+                caption:'TheWeddingRegistry.me',
+                description:desc
+            };
+
+            function callback(response) {
+                alert("Invites have been sent!");
+            }
+
+            FB.ui(obj, callback);
+
+          window.location="/associations/new";
+        /*
+         FB.ui({
+         to: aName,
+         display: 'popup',
+         // access_token: token,
+         method: 'feed',
+         name: 'Sign up and get connected with <%= "#{@user.display_name}" %> on TheWeddingRegistry',
+         link: 'http://www.TheWeddingRegistry.me'
+
+         },
+         function(){
+         top.location.href = "/authentications";
+         }
+         );*/
+    }
+
+    function toggle(ID) {
+
+    <% ('A'..'Z').each do |l| %>
+        var hider = document.getElementById("fb<%=l%>");
+
+        if (("fb<%=l%>") != ID) {
+            if (hider.style.display != "none") {
+                $("#fb<%=l%>").hide('blind', 1000);
+            }
+        }
+    <% end %>
+
+        var elem = document.getElementById(ID);
+        if (elem.style.display == "none") {
+            $("#" + ID).show('blind', 1000);
+        } else {
+            $("#" + ID).hide('blind', 1000);
+        }
+    }
+
+    function toggleDiv(ID) {
+        var elem = document.getElementById("div" + ID);
+        var check = document.getElementById("check" + ID);
+        if (elem.style.opacity == 1) {
+            check.checked = false;
+            elem.style.opacity = 0.7;
+            elem.style.background = "rgb(50, 47, 50)";
+        } else {
+            check.checked = true;
+            elem.style.opacity = 1;
+            elem.style.backgroundImage = "url(/images/checkmark2.png)";
+            elem.style.backgroundPosition = "top right";
+            elem.style.backgroundRepeat = "no-repeat";
+
+        }
+    }
+
+    function get_check_value() {
+        var c_value = [];
+        var counter = 0;
+
+        for (var i = 0; i < document.fbform.fbCheckBox.length; i++) {
+            if (document.fbform.fbCheckBox[i].checked) {
+                c_value[counter] = document.fbform.fbCheckBox[i].value;
+                counter++;
+            }
+        }
+        return c_value;
+    }
+
+
+    function fbsubmit() {
+        var data = get_check_value();
+        send(data);
+    }
+
+</script>
+
+
+<div style="display:none">
+
+<h1>Invite Facebook Friends</h1>
+<hr/>
+<br/>
+<center>
+  <p>Click each friend you would like to invite to your wedding registry, then click "+ Participants" at the bottom of
+    the page!</p></center>
+<br/>
+<form name="fbform" id="fbform">
+  <div style="display:inline-block;width:480px;margin-left:50%;position:relative;left:-240px;">
+    <% ('A'..'Z').each do |l| %>
+        <% fbID = "fb" + l %>
+        <% hrefID = "#fb" + l %>
+        <ul>
+          <div id="bar<%= l %>" class="fbBar" onclick="toggle('<%=fbID%>')">
+            <a id="anchor<%= l %>" style="color: white;position:relative;left:10px" href="javascript: toggle('<%= fbID %>')"><%= l %></a>
+          </div>
+        </ul>
+        <div id="<%= fbID %>" style="display:none">
+          <% counter = 0 %>
+          <% @friends.each_with_index do |a, i| %>
+              <% if a.name[0] == l %>
+                  <% counter += 1 %>
+                  <div class="fbContacts" id="div<%= a.name %>" onclick="toggleDiv('<%=a.name%>')">
+                    <input id="check<%= a.name %>" class="fbCheckbox" type="checkbox" name="fbCheckBox" value="<%= @a[i] %>">
+
+                    <div id="fbImage<%= a.name %>" class="fbImage"><img src="<%= a.picture+'?type=small' %>"></div>
+                    <div class="fbText"><%= a.name %></div>
+                  </div>
+              <% end %>
+          <% end %>
+        </div>
+        <script type="text/javascript">
+            var mydiv = document.getElementById("bar<%=l%>");
+            var atag = document.createElement('a');
+            atag.setAttribute('class', 'counterClass');
+            atag.innerHTML = 'contacts: <%=counter%>';
+            mydiv.appendChild(atag);
+        </script>
+    <% end %>
+  </div>
+</form>
+<br/>
+<center><input id="fbbutton" class="btn btn-success" type="button" value="+ Participants" onclick="fbsubmit()"/>
+</center>
+<br/>
+<br/>
+</div>
+<script>
+    fbsubmit();
+</script>

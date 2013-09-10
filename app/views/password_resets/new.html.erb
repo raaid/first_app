@@ -1,0 +1,28 @@
+<script>
+  $('#clipcontrol').hide();
+  $('#pags').hide();
+  $('#foreground').hide();
+  $('#maincontentdiv').hide();
+ // $('#maincontentdiv').fadeIn(1500);
+
+$('#maincontentdiv').animate({top: "600px"}, 0 );
+  $('#maincontentdiv').show();
+  $('#maincontentdiv').animate({top: "101px"}, 1000 );
+</script>
+<h1>Forget Your Password?</h1>
+<hr />
+<br />
+<center>
+  <div class="registerContainer2">
+  <p>Fill out the form below and instructions to reset your password will be emailed to you:</p>
+<br />
+<br />
+
+<%= form_tag password_resets_path do %>
+  <label>Email:</label><br />
+  <%= text_field_tag "email" %><br />
+  <br />
+  <%= submit_tag "Reset my password" ,class: "btn btn-success", :style=>"width:200px"%>
+<% end %>
+  </div>
+</center>

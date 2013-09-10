@@ -1,0 +1,14 @@
+<div class="menu">
+	<ul>
+		<li><%= link_to 'My Profile', edit_user_path,        class: section.eql?(:profile) ? 'active' : 'inactive' %></li>
+		<li><%= link_to 'My Sizes',   edit_user_sizes_path,  class: section.eql?(:sizes  ) ? 'active' : 'inactive' %></li>
+        <li><%= link_to 'My Social',  authentications_path,  class: section.eql?(:social  ) ? 'active' : 'inactive' %></li>
+	      <% @account%>
+          <% Recurly::Account.find_each do |account| %>
+              <% @account = account if account.email == @current_user.email%>
+          <% end %>
+          <% if @account %>
+          <li><%= link_to 'My Subscriptions',  gps_criteria_path,  class: section.eql?(:gps  ) ? 'active' : 'inactive' %></li>
+          <% end %>
+    </ul>
+</div>

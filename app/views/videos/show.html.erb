@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Event:</b>
+  <%= @video.event_id %>
+</p>
+
+<p>
+  <b>Video:</b>
+  <%= @video.video %>
+</p>
+
+<p>
+  <b>Has youtube:</b>
+  <%= @video.has_youtube %>
+</p>
+
+<p>
+  <b>Youtube:</b>
+  <%= @video.youtube %>
+</p>
+
+<p>
+  <b>Default:</b>
+  <%= @video.default %>
+</p>
+
+
+<%= link_to 'Edit', edit_video_path(@video) %> |
+<%= link_to 'Back', videos_path %>

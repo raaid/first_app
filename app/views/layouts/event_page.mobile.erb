@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title><%= @event.name %></title>
+  <meta name="keywords" content="">
+  <meta name="description" content="The official website for <%= @event.name %>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <% if @video_html and @event.show_video_message %>
+  <meta property="og:video" content="https://s3.amazonaws.com/<%=AWS_BUCKET%>/transcoded_opentok_#{archive_id}.mp4<%=@event.video%>"/>
+  <meta property="og:video:height" content="640" />
+  <meta property="og:video:width" content="385" />
+  <!--<meta property="og:video:type" content="application/x-shockwave-flash" /> -->
+  <% end %>
+
+
+
+
+  <!-- <link rel="stylesheet" href="/event_template/2058.css" type="text/css"> 
+
+  <link rel="stylesheet" type="text/css" href="/event_template/style.css">-->
+  <!-- <link rel='stylesheet' type='text/css' href='/stylesheets/jquery.addtocal.css' /> -->
+  <!--<link rel="stylesheet" href="/event_template/mediaqueries.css" type="text/css">
+  <link rel="stylesheet" type="text/css" href="/event_template/jquery.css">
+  <link rel="stylesheet" type="text/css" href="/event_template/skin.css">
+  <link rel=StyleSheet href="/stylesheets/mobile.css" type="text/css">-->
+  <%#= stylesheet_link_tag 'template/form.css' %>
+  
+  <%= stylesheet_link_tag 'event_page_mobile.min.css' %>
+  <%= javascript_include_tag 'event_layout_mobile.js' %>
+  <%#= stylesheet_link_tag 'bootstrap.min.css' %>
+
+
+    <!-- <script src="/event_template/ga.js" async="" type="text/javascript"></script> -->
+  <!--<script type="text/javascript" src="/event_template/jquery.js"></script>
+  <script type="text/javascript" src="/javascripts/jquery-2.0.1.min.js"></script>
+  <script type="text/javascript" src="/event_template/jquery_004.js"></script>
+  <script type="text/javascript" src="/event_template/tiny_mce.js"></script>
+  <script type="text/javascript" src="/event_template/jquery_003.js"></script> -->
+  <!--<script type="text/javascript" src="/event_template/main.js"></script>
+  <script type="text/javascript" src="/javascripts/jquery-ui-1.8.2.custom.min.js"></script>-->
+ <!-- <script type="text/javascript" src="/javascripts/md5.js"></script>
+  <script type='text/javascript' src='/javascripts/rfc3339date.js'></script>
+  <script type="text/javascript" src="/javascripts/mobile_collapse.js"></script>-->
+  <!--<script type='text/javascript' src='/javascripts/jquery.cycle2.min.js'></script>-->
+  
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+  
+
+  <!-- <script src="http://static.opentok.com/v0.91/js/TB.min.js" type="text/javascript" charset="utf-8"></script> -->
+  <script type="text/javascript" src="//cdn.sublimevideo.net/js/dv7mc6b4.js"></script>
+
+  <script type="text/javascript">
+      function showBuy(){
+          <% if @event.has_ticketing and @tickettypes.count > 0%>
+          $('#buyPanel').toggle(500);
+          <% end %>
+      }
+
+      function showRegistration(){
+          <% if @event.has_registration %>
+          $('#registrationPanel').toggle(500);
+          <% end %>
+      }
+
+      function showRegistrationList(){
+          <% if @event.has_registration %>
+          $('#registrationListPanel').toggle(500);
+          <% end %>
+      }
+
+      function showDonations(){
+          <% if @event.has_cash_gifting and @cashgifttypes.count > 0%>
+          $('#donationPanel').toggle(500);
+          <% end %>
+      }
+
+      function showDonations2(){
+          <% if @event.has_donations and @donations.count > 0%>
+          $('#donationPanel2').toggle(500);
+          <% end %>
+      }
+
+      function toggle_tutorial(){
+          $('#tutorialPanel').toggle(500);
+      }
+
+      function showPhoto(){
+          <% if @event.allow_photo_sharing %>
+          $('#photoPanel').toggle(500);
+          <% end %>
+      }
+
+      var geocoder;
+      var map;
+      var cur_location;
+      var service;
+      var bounds;
+      var infoWindow;
+      var directionsDisplay;
+      var directionsService;
+
+      $(document).ready(function () {
+          if (navigator.geolocation) {
+              navigator.geolocation.getCurrentPosition(initialize, fail);
+          } else {
+              document.getElementById("map").innerHTML = "Geolocation is not supported by this browser.";
+          }
+      });
+
+      function initialize(position) {
+          cur_location = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+          bounds = new google.maps.LatLngBounds();
+          infoWindow = new google.maps.InfoWindow({});
+          directionsDisplay = new google.maps.DirectionsRenderer();
+          directionsService = new google.maps.DirectionsService();
+          geocoder = new google.maps.Geocoder();
+          var mapOptions = {
+              zoom:8,
+              center:cur_location,
+              mapTypeId:google.maps.MapTypeId.ROADMAP
+          }
+          map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+          codeAddress();
+
+          directionsDisplay.setMap(map);
+          directionsDisplay.setPanel(document.getElementById('directions'));
+      }
+
+      function codeAddress() {
+          var address = '<%=@event.address if @event.address%>,<%=@event.city if @event.city%>, <%=@event.country if @event.country%>';
+          geocoder.geocode({ 'address':address}, function (results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                  map.setCenter(results[0].geometry.location);
+                  var marker = new google.maps.Marker({
+                      map:map,
+                      position:results[0].geometry.location
+                  });
+                  getDirections(marker.position);
+              } else {
+                  alert('Geocode was not successful for the following reason: ' + status);
+              }
+          });
+      }
+
+      function getDirections(pos) {
+
+          var request = {
+              origin:cur_location,
+              destination:pos,
+              travelMode:google.maps.DirectionsTravelMode.DRIVING
+          };
+
+          directionsService.route(request, function (response, status) {
+              if (status == google.maps.DirectionsStatus.OK) {
+                  directionsDisplay.setDirections(response);
+              }
+          });
+      }
+
+      function fail(error) {
+          x = document.getElementById("map");
+          switch (error.code) {
+              case error.PERMISSION_DENIED:
+                  x.innerHTML = "User denied the request for Geolocation."
+                  break;
+              case error.POSITION_UNAVAILABLE:
+                  x.innerHTML = "Location information is unavailable."
+                  break;
+              case error.TIMEOUT:
+                  x.innerHTML = "The request to get user location timed out."
+                  break;
+              case error.UNKNOWN_ERROR:
+                  x.innerHTML = "An unknown error occurred."
+                  break;
+          }
+      }
+
+      function ajaxSubmit() {
+        name = document.getElementById("comment_name").value;
+        email = document.getElementById("comment_email").value;
+        msg = document.getElementById("comment_message").value;
+        id = document.getElementById("comment_event_id").value;
+        uid = document.getElementById("comment_user").value;
+
+        data = {'name': name, 'email': email, 'msg': msg, 'uid': uid, 'id':id};
+        emailAdd = $.trim(email);
+        md5 = calcMD5(emailAdd.toLowerCase());
+
+        $.post('/comments', data, function(response) {
+          data = JSON.parse(response);
+          $("#commentContainer").append($("<div style='display: inline-block;width:100%'><div class='home_blog_item'><div class='home_blog_date'>" + data['time'] + "<br></div><div class='home_blog_item_content'><img src='http://www.gravatar.com/avatar/" + md5 + ".jpg?d=mm' class='post_image'><h3><i>" + data['name'] + " said...</i></h3><h4><i>" + data['email'] + "</i></h4><p>" + data['message'] + "</p></div></div></div>"));
+          document.getElementById("comment_message").value = '';
+        }, 'html');
+      }
+
+      function getDetails() {
+
+        eventDetails = {};
+        eventDetails.title = '<%= escape_javascript @event.name%>';
+        eventDetails.start = new Date('<%= @event.startTime %>');
+        eventDetails.end = new Date('<%= @event.endTime %>');
+        eventDetails.details = '<%= escape_javascript @event.details %>';
+        eventDetails.locat = '<%= escape_javascript @event.address %>';
+        eventDetails.url = document.URL;
+
+        eventDetails.title = ( eventDetails.title ? encodeURIComponent( eventDetails.title ) : '' );
+        eventDetails.start = ( typeof eventDetails.start.toRFC3339UTCString == 'function' ?
+          eventDetails.start.toRFC3339UTCString(true,true) : eventDetails.start );
+        eventDetails.end = ( typeof  eventDetails.end.toRFC3339UTCString == 'function' ?
+          eventDetails.end.toRFC3339UTCString(true,true) : eventDetails.end );
+        eventDetails.locat = ( eventDetails.locat ? encodeURIComponent( eventDetails.locat ) : '' );
+        eventDetails.details = ( eventDetails.details ? encodeURIComponent( eventDetails.details ) : '' );
+        // avoid 414 error due to overlong url
+        var MAX_DETAILS_LENGTH = 1550;
+        if (eventDetails.details.length > MAX_DETAILS_LENGTH) {
+          eventDetails.details = eventDetails.details.substr(0, MAX_DETAILS_LENGTH);
+          eventDetails.details.replace(/%[^0-9]*$/, "");
+          eventDetails.details += "...";
+        }
+        eventDetails.url = ( eventDetails.url ? encodeURIComponent( eventDetails.url ) : '' );
+        return eventDetails;
+      }
+
+      function googleCal() {
+        details = getDetails();
+
+        window.open("http://www.google.com/calendar/event?action=TEMPLATE" +
+            "&text=" + details.title +
+            "&dates=" + details.start +
+            "/" + details.end +
+            "&location=" + details.locat +
+            "&details=" + details.details +
+            "&sprop=" + details.url);
+      }
+      
+      function liveCal() {
+        details = getDetails();
+
+        window.open("http://calendar.live.com/calendar/calendar.aspx?rru=addevent" +
+            "&dtstart=" + details.start +
+            "&dtend=" + details.end +
+            "&summary=" + details.title +
+            "&location=" + details.locat);
+      }
+
+      function yahooCal() {
+        eventDetails = getDetails();
+
+        var minsDuration = ( Date.parse(eventDetails.end) - Date.parse(eventDetails.start) ) / 60 / 1000;
+        var durationString = (minsDuration / 60).toPaddedString(2) + (minsDuration%60).toPaddedString(2);
+        <% hour = (((@event.endTime - @event.startTime) / 60) / 60).to_i.to_s.rjust(2,'0') %>
+        <% min = (((@event.endTime - @event.startTime) / 60) % 60).to_i.to_s.rjust(2,'0') %>
+
+        window.open("http://calendar.yahoo.com/?v=60" +
+            "&DUR=" + durationString +
+            "&TITLE=" + eventDetails.title +
+            "&ST=" + eventDetails.start +
+            "&in_loc=" + eventDetails.locat +
+            "&DESC=" + eventDetails.details +
+            "&URL=" + eventDetails.url);
+      }
+      $('#flashnotice').hide();
+      $('#flashnotice').animate({bottom: "-100px"}, 0 );
+      <% notice_text = ""
+     if flash[:notice]
+notice_text = notice_text + " " unless notice_text == ""
+notice_text = notice_text + flash[:notice]
+end
+     if params[:notice]
+notice_text = notice_text + " " unless notice_text == ""
+notice_text = notice_text + params[:notice]
+end
+     if notice_text != "" %>
+       flash_notice("<%= notice_text.gsub('\\', '\\\\').gsub('\"', '\"') %>")
+
+  <% end %>
+
+    function flash_notice(text) {
+      $(document).ready(function() {
+        $("#flashNoticeText").html(text);
+        $("#flashnotice").show();
+        $("#flashnotice").animate({bottom: "0"}, 1000 );
+      })   
+    }
+
+    function hideflashnotice(){
+      $('#flashnotice').animate({bottom: "-100px"}, 1000 );
+    }
+    setMainHeaderSize();
+  </script>
+</head>
+
+<body>
+
+<div class="flashNotice" id="flashnotice" onclick="hideflashnotice()">
+  <div style="font-weight:bolder;position:absolute;right:30px">X</div>
+  <div id="flashNoticeText" style="margin-top:15px;text-align:center;float:left;width:90%;"></div>
+</div>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner" style="background:#333;">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"z>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="/">Eventastic</a>
+
+      <select id="eventNav" style="width:135px;top:5px;position:relative" onchange="nav()">
+        <option value="details">Details</option>
+        <% if @documents.length > 0 %><option value="uploads">Files</option><%end%>
+        <option value="directionsnav">Directions</option>
+        <option value="comment">Comments</option>
+        <%if @event.has_registration%><option value="rightbox_register">Registration</option><%end%>
+        <% if @event.has_ticketing%><option value="rightbox_tickets">Tickets</option><%end%>
+        <% if @event.has_donations and @donations.count > 0%><option value="rightbox_donations2">Donations</option><%end%>
+        <% if @event.has_cash_gifting and @cashgifttypes.count > 0%><option value="rightbox_donations">Cash Gifts</option><%end%>
+        <% if @event.allow_photo_sharing %><option value="rightbox_photo">Photos</option><%end%>
+        <% if @event.show_attendees and @attendees.count > 0%><option value="rightbox_attendee">Attendees</option><%end%>
+        <option value="rightbox_share">Share</option>
+        <option value="rightbox_social">Social</option>
+      </select>
+
+      <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="">
+                  <%= link_to "Home", root_path %>
+                </li>
+                <li class=""><%= link_to "Search Events", mobile_search_path %></li>
+                <% if authenticated? %><li><%= link_to "Manage Events", events_path %></li><% end %>
+                <% if authenticated? %><li><%= link_to "Edit Profile", edit_user_path %></li><% end %>
+                <li class="">
+                  <% unless authenticated? %><li class=""><%= link_to "Login/Register", new_user_path %></li><% else %><li><%= link_to "Logout", logout_path, :method=>"get" %></li><% end %>
+                </li>
+                <li class="">
+                  <%= link_to "Contact Us", contact_path %>
+                </li>
+              </ul>
+            </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div style="position:relative;width:100%;<% if @event.has_ticketing and @tickets.count > 0%>top:-46px<%else%>top:-76px<%end%>" >
+  <div id="cycleWallpaper" style="position:absolute;width:100%">
+    <% @all_wallpapers.each do |paper| %>
+      <img src="<%= paper.wallpaper_url(:background) %>" style="width:100%"alt="">
+    <% end %>
+  </div>
+
+   <div id="header_big_content" style="z-index:999">
+    <div id="header_content">
+      <div style="margin-top: -98px;" id="header_content_announcement" onclick="showBuy()">
+        <a href="#">
+          <span class="header_content_announcement_item"><span class="header_content_announcement_date"><%= @event.startTime.to_date %></span></span>
+          <span class="header_content_announcement_item"><h2><%= @event.name %></h2></span>
+          <% if @event.has_ticketing and @tickets.count > 0%>
+          <span class="header_content_announcement_item">Buy Tickets Here Now!</span>
+          <% end %>
+
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="jpId"></div>
+<div id="page_home" style="margin-top:0">
+  <div id="page_home_left">
+    <h1 name="details" id="details">Event Details</h1>
+    <div class="headerline"></div>
+<span style="display:inline-block;">
+  <% if @event.event_image_file_name %>
+      <div style="display:inline-block;">
+      <div style="float:left;">
+
+        <div style="float: left;display: inline-block;position: relative;">
+          <div style="margin-left:20px;-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;boxsubmit -shadow:rgba(0,0,0,0.6) 0 6px 15px;float:left;">
+            <img src="<%= @event.event_url(:feed) %>">
+          </div>
+        </div>
+
+      <div style="width: 490px;display: inline-block;position: relative;float: left;left:2%;top:8px">
+        <p>
+          <b>Description:</b> <%= @event.description %>
+          <br /><br />
+          <b>Details:</b> <%= @event.details %>
+        </p>
+        <p>
+          <b>Venue:</b> <%= @event.venue_name %>
+        </p>
+        <p>
+          <% if @event.startTime.strftime("%Y-%m-%d") == @event.endTime.strftime("%Y-%m-%d") %>
+              <b>Time:</b> <%= @event.startTime.strftime("%Y-%m-%d %-I:%M %P") %> - <%= @event.endTime.strftime("%-I:%M %P") %>
+            <% else %>
+              <b>Time:</b> <%= @event.startTime.strftime("%Y-%m-%d %-I:%M %P") %> - <%= @event.endTime.strftime("%Y-%m-%d %-I:%M %P") %>
+            <% end %>
+        </p>
+      </div>
+
+        
+
+        <div style="position:relative;float:left;width:60%">
+          <center>
+
+
+        <span class="btn btn-success" style="width:200px;margin-top:7px">
+          <img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/googleimport.png" style="width:20px;float:left" />
+           <a class="calendarbtn" target="_blank" href="http://www.google.com/calendar/event?action=TEMPLATE&text=<%=@event.name.gsub(/\n/, '').gsub(/\r/, '')%>&dates=<%= @event.startTime.strftime('%Y%m%dT%H%M%SZ') %>/<%= @event.endTime.strftime('%Y%m%dT%H%M%SZ') %>&sprop=http://eventastic.com/events/<%= @event.id %>&location=<%=@event.address.gsub(/\n/, '').gsub(/\r/, '')%>, <%= @event.city.gsub(/\n/, '').gsub(/\r/, '') %>&details=<%= @event.details.gsub(/\n/, '').gsub(/\r/, '') %>">Add to Google Calendar</a>
+        </span>
+
+        <span class="btn btn-success" style="width:200px;margin-top:7px">
+          <img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/newoutlookimport.png" style="width:20px;float:left" />
+           <a class="calendarbtn" onclick="liveCal()">Add to Live Calendar</a>
+        </span>
+
+        <% hour = (((@event.endTime - @event.startTime) / 60) / 60).to_i.to_s.rjust(2,'0') %>
+        <% min = (((@event.endTime - @event.startTime) / 60) % 60).to_i.to_s.rjust(2,'0') %>
+        <span class="btn btn-success" style="width:200px;margin-top:7px">
+          <img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/yahooimport.png" style="width:20px;float:left" />
+           <a class="calendarbtn" target="_blank" href="http://calendar.yahoo.com/?v=60&DUR=<%= hour + min %>&TITLE=<%= @event.name%>&ST=<%= @event.startTime.strftime('%Y%m%dT%H%M%SZ') %>&in_loc=<%= @event.address%>, <%= @event.city %>&DESC=<%= @event.details.gsub(/\n/, '').gsub(/\r/, '') %>&URL=http://eventastic.com/events/<%=@event.id%>" style="cursor:hand;cursor:pointer;">Add to Yahoo! Calendar</a>
+        </span>
+
+        <!-- <span class="btn btn-success" style="width:191px;margin-top:7px">
+          <img src="/images/appleimport.png" style="width:20px;float:left" />
+           <a class="calendarbtn" href="/add_to_cal/<%=@event.id%>.ics" >Add to iCal</a>
+        </span>
+
+        <span class="btn btn-success" style="width:191px;margin-top:7px">
+           <a class="calendarbtn" href="/add_to_cal/<%=@event.id%>.vcs" >Add to vCal</a>
+        </span> -->
+        </center>
+        </div>
+
+      
+      </div>
+        
+      </div>
+   <% else %>
+        <div style="display: inline-block;position: relative;float: left;">
+          <p>
+            <b>Description:</b> <%= @event.description %>
+            <br /><br />
+            <b>Details:</b> <%= @event.details %>
+          </p>
+          <p>
+            <b>Venue:</b> <%= @event.venue_name %>
+          </p>
+          <p>
+            <% if @event.startTime.strftime("%Y-%m-%d") == @event.endTime.strftime("%Y-%m-%d") %>
+              <b>Time:</b> <%= @event.startTime.strftime("%Y-%m-%d %-I:%M %P") %> - <%= @event.endTime.strftime("%-I:%M %P") %>
+            <% else %>
+              <b>Time:</b> <%= @event.startTime.strftime("%Y-%m-%d %-I:%M %P") %> - <%= @event.endTime.strftime("%Y-%m-%d %-I:%M %P") %>
+            <% end %>
+          </p>
+        </div>
+
+         <div style="position:relative;float:left;width:60%">
+          <center>
+
+
+        <span class="btn btn-success" style="width:200px;margin-top:7px">
+          <img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/googleimport.png" style="width:20px;float:left" />
+           <a class="calendarbtn" target="_blank" href="http://www.google.com/calendar/event?action=TEMPLATE&text=<%=@event.name.gsub(/\n/, '').gsub(/\r/, '')%>&dates=<%= @event.startTime.strftime('%Y%m%dT%H%M%SZ') %>/<%= @event.endTime.strftime('%Y%m%dT%H%M%SZ') %>&sprop=http://eventastic.com/events/<%= @event.id %>&location=<%=@event.address.gsub(/\n/, '').gsub(/\r/, '')%>, <%= @event.city.gsub(/\n/, '').gsub(/\r/, '') %>&details=<%= @event.details.gsub(/\n/, '').gsub(/\r/, '') %>">Add to Google Calendar</a>
+        </span>
+
+        <span class="btn btn-success" style="width:200px;margin-top:7px">
+          <img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/newoutlookimport.png" style="width:20px;float:left" />
+           <a class="calendarbtn" onclick="liveCal()">Add to Live Calendar</a>
+        </span>
+
+        <% hour = (((@event.endTime - @event.startTime) / 60) / 60).to_i.to_s.rjust(2,'0') %>
+        <% min = (((@event.endTime - @event.startTime) / 60) % 60).to_i.to_s.rjust(2,'0') %>
+        <span class="btn btn-success" style="width:200px;margin-top:7px">
+          <img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/yahooimport.png" style="width:20px;float:left" />
+           <a class="calendarbtn" target="_blank" href="http://calendar.yahoo.com/?v=60&DUR=<%= hour + min %>&TITLE=<%= @event.name%>&ST=<%= @event.startTime.strftime('%Y%m%dT%H%M%SZ') %>&in_loc=<%= @event.address%>, <%= @event.city %>&DESC=<%= @event.details.gsub(/\n/, '').gsub(/\r/, '') %>&URL=http://eventastic.com/events/<%=@event.id%>" style="cursor:hand;cursor:pointer;">Add to Yahoo! Calendar</a>
+        </span>
+
+       <!--  <span class="btn btn-success" style="width:191px;margin-top:7px">
+          <img src="/images/appleimport.png" style="width:20px;float:left" />
+           <a class="calendarbtn" href="/add_to_cal/<%=@event.id%>.ics" >Add to iCal</a>
+        </span>
+
+        <span class="btn btn-success" style="width:191px;margin-top:7px"> -->
+          <!-- <img src="/images/yahooimport.png" style="width:20px;float:left" /> -->
+           <!-- <a class="calendarbtn" href="/add_to_cal/<%=@event.id%>.vcs" >Add to vCal</a>
+        </span> -->
+        </center>
+        </div>
+   <% end %>
+
+</span>
+  <br /><br />
+
+  <% if @documents.length > 0 %>
+  <h1 name="directions" id="uploads">File Uploads</h1>
+    <div class="headerline"></div>
+    <% @documents.each do |doc| %>
+      <a href="<%=attached_path(doc.id)%>" target="_blank"><img src="/images/download_icon.png" style="position:relative;top:13px" /></a>
+      <h3 style="display:inline-block"><%= link_to doc.name, attached_path(doc.id), target: "_blank", class: "right_link", style: "color:#000;position:relative;top:15px" %></h3><br>
+    <% end %>
+  <% end %>
+
+    <div class="clearfloat"></div>
+    <br />
+    <h1 name="directions" id="directionsnav">Directions</h1>
+    <div class="headerline"></div>
+    <p>Event Location: <%= @event.address if @event.address %>, <%= @event.city if @event.city %>, <%= @event.country if @event.country %></p>
+    <div style="display:inline-block;">
+    <div style="float:left;">
+    <div id="directions" class="directions" style="width:90%"></div>
+    </div>
+      <div style="float:left;width:100%">
+    <div id="map_canvas" style="width:280px;height:300px;-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;float:left;"></div>
+      </div>
+      </div>
+  <br />
+    <% if @event.allow_comments %>
+        <br />
+      <h1 name="comment" id="comment">Add A Comment</h1>
+      <div class="headerline"></div>
+        <a href="https://en.gravatar.com/" target="_blank">Avatars are loaded from <img src="/images/gravatar.png" style="position:relative;top:4px;" alt="Gravatar">! To update your globally recognized avatar click here!</a>
+        <br />
+        <br />
+        <center>
+        <%= simple_form_for(@comment) do |form| %>
+               <%= form.hidden_field :user %>
+               <%= form.hidden_field :event_id %>
+               <span style="display: inline-block;">
+                 <div style="display: inline-block;">
+               <span style="float:left;margin-left: 15px;">
+                <%#= form.input :name, required: true%>
+                <label class="string required" for="comment_name">Name</label>
+                <input class="string required" id="comment_name" maxlength="255" size="50" type="text" style="width:255px;">
+               </span>
+                <span style="float:left;margin-left: 15px;">
+                  <%#= form.input :email, required: true%>
+                  <label class="string required" for="comment_email">Email</label>
+                  <input class="string required" id="comment_email" maxlength="255" size="50" type="text" style="width:255px;">
+                </span>
+                   </div>
+                <label class="string required" for="comment_message">Message</label>
+                <textarea class="text required" id="comment_message" style="min-width:255px;float:left;margin-left: 15px;"></textarea>
+                 <%#= form.input :message,:input_html => {:style => "width:100%;display:inline-block;height:100px;"}, required: true%><br />
+               <center>
+               </center>
+               </span>
+                <br />
+                <div class="clearfloat"></div>
+                <br />
+                <%#= form.submit "Add Comment", class:"btn btn-success" %>
+                <input type="button" value="Add Comment" class="btn btn-success" onclick="ajaxSubmit()"/>
+               <%#= link_to "update", update_stream_path(:id => @album.id, :length => @photos.length), :data => { :remote => true, :type => 'html'}, id: "updatebtn", style: "display:none" %>
+           <% end %>
+        </center>
+    <% end %>
+    <br />
+    <h1 name="news" id="news">Latest News</h1>
+    <div class="headerline"></div>
+    <% if @event.show_promotor %>
+    <div style="display: inline-block;width:100%">
+    <div class="home_blog_item">
+      <div class="home_blog_date"><%= @event.created_at.strftime("%Y-%m-%d %-I:%M %P") %>
+        <br></div>
+      <div class="home_blog_item_content">
+        <% unless @owner.avatar_file_name %>
+        <img src="http://www.gravatar.com/avatar/<%= @ownerMD5 %>.jpg?d=mm" class="post_image" alt="<%= @event.name %>">
+        <% else %>
+            <%= image_tag @owner.avatar.url(:profile), :class=>"post_image"%>
+        <%end%>
+        <h3>Event Was Created By: <i><%= User.find(@event.user_id).display_name %></i></h3>
+        <h4><i><%= User.find(@event.user_id).email %></i></h4>
+        <p>Enjoy and thanks for visiting this page!</p>
+      </div>
+    </div>
+    </div>
+    <% end %>
+    <% if @event.allow_comments %>
+      <div id="commentContainer">
+        <% @comments.each do |comment| %>
+            <div style="display: inline-block;width:100%">
+        <div class="home_blog_item">
+          <div class="home_blog_date"><%= comment.created_at.strftime("%Y-%m-%d %-I:%M %P") %>
+            <br></div>
+          <div class="home_blog_item_content">
+            <img src="http://www.gravatar.com/avatar/<%= comment.md5 %>.jpg?d=mm" class="post_image" alt="<%= @event.name %>">
+            <h3><i><%= comment.name %> said...</i></h3>
+            <h4><i><%= comment.email %></i></h4>
+            <p><%= comment.message %></p>
+          </div>
+        </div>
+         </div>
+        <% end %>
+      </div>
+    <% end %>
+
+  </div>
+
+  <div id="page_home_right">
+    <% if @video_html and @event.show_video_message%>
+        <div class="rightbox" id="rightbox_video" style="-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;">
+          <h2>Video Message!</h2>
+          <center><%= @video_html.html_safe %>
+          <a id="video-anchor" class='sublime' href='#video1' data-settings='overlay-opacity:0.9;close-button-visibility:visible'><img src="/images/video-poster.jpg"></a></center>
+        </div>
+        <% end %>
+
+    <% if @event.has_youtube and @event.youtube%>
+        <div class="rightbox" id="rightbox_video" style="-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;">
+          <h2>Video Message!</h2>
+          <center>
+            <a class="sublime">
+                <span class="zoom_icon">
+                </span>
+              </a>
+            <% y = @event.youtube.split("/") %>
+              <video id="video1"  class="sublime zoom" data-youtube-id="<%=y.last%>" width="530" height="420" poster="/images/video-poster.jpg" preload="none" data-settings="overlay-opacity:0.9;"></video>
+            <br />
+            <br />
+          <a id="video-anchor" href='#video1' data-settings='overlay-opacity:0.9;'><img src="/images/video-poster.jpg">
+          </a>
+          </center>
+        </div>
+        <% end %>
+
+
+
+
+    <% if @event.has_registration %>
+    <div class="rightbox" id="rightbox_register" style="-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;">
+      <h2>Event Registration Here</h2>
+      <br/>
+      <h3><a class="right_link" href="#" onclick="showRegistration()">Register Here!</a></h3>
+      <!--<h3><a class="right_link" href="#" onclick="showRegistrationList()">View Registration List!</a></h3>  -->
+    </div>
+    <% end %>
+
+    <% if @event.has_ticketing and @tickettypes.count > 0 %>
+    <div class="rightbox" id="rightbox_tickets" style="-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;">
+      <h2>Tickets Available Here!</h2>
+      <br/>
+      <h3><a class="right_link" href="#" onclick="showBuy()">Buy Here!</a></h3><br>
+      <p style="color:#999999;">If you have purchased tickets and would like them to be resent to you, please specify your email</p>
+   
+      <%= simple_form_for :email, :url => resend_by_email_path, method: :post, multipart: true do |f| %>
+        <%= f.input :email, :label => false %>
+        <%= f.hidden_field :event, :value => @event.id %>
+        <%= f.submit "Resend",class:"btn btn-success"%>
+      <% end %>
+    </div>
+    <% end %>
+
+
+
+    <% if @event.has_donations and @donations.count > 0%>
+        <div class="rightbox" id="rightbox_donations2" style="-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;">
+              <h2>Donations Made Here!</h2>
+              <br/>
+              <h3><a class="right_link" href="#" onclick="showDonations2()"><p>For: <%@donations.each do |don|%><% if @donations.count <= 1 %>&nbsp;<%= don.title %> <% else %>&nbsp;<%= don.title %> /<% end %><% end %></p>Click Here!</a></h3>
+        </div>
+    <% end %>
+
+
+    <% if @event.has_cash_gifting and @cashgifttypes.count > 0%>
+    <div class="rightbox" id="rightbox_donations" style="-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;">
+      <h2>Cash Gifts Made Here!</h2>
+      <br/>
+      <h3><a class="right_link" href="#" onclick="showDonations()">Click Here!</a></h3>
+    </div>
+    <% end %>
+
+    <% if @event.allow_photo_sharing %>
+    <div class="rightbox" id="rightbox_photo" style="-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;">
+      <h2>Photo Sharing Here!</h2>
+      <%if current_user %>
+        <%if (current_user.id == @owner.id and @photos.length > 0) or (@hasApprovedPhotos == 1) %>
+          <h3><a class="right_link" href="<%=album_show_path(@event.id)%>">View Photos</a></h3>
+        <%end%>
+      <%elsif @hasApprovedPhotos == 1%>
+        <h3><a class="right_link" href="<%=album_show_path(@event.id)%>">View Photos</a></h3>
+      <%end%>
+      
+      <h3><a class="right_link" href="#" onclick="showPhoto()">Submit Photos</a></h3>
+
+      <%if @hasApprovedPhotos == 1%>
+        <h3><a class="right_link" href="<%=choose_images_path(:id => @event.id)%>">Download Photos</a></h3>
+      <%end%>    
+    </div>
+    <% end %>
+
+    <% if @event.show_attendees and @attendees.count > 0%>
+    <div class="rightbox" id="rightbox_attendee" style="-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;">
+      <h2>Attendees</h2>
+      <br/>
+      <% @attendees.each do |attendee| %>
+        <% if attendee.status == 'paid' or attendee.status == 'redeemed' %>
+        <h3><%= attendee.guest_name %></h3>
+        <% end %>
+      <% end %>
+    </div>
+    <% end %>
+
+    
+    <div class="rightbox" id="rightbox_share" style="-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;">
+      <h2>Share This Event!</h2>
+      <br/>
+      <a onClick="window.open('http://www.facebook.com/sharer.php?m2w&s=100&p[title]=Eventastic - Events Made Easy!&p[summary]=Event: <%= escape_javascript @event.name %> &p[url]=http://www.Eventastic.com/events/<%=@event.id%>&&p[images][0]=<%=@event.event_url(:feed)%>','sharer','toolbar=0,status=0,width=548,height=325');" target="_parent" href="javascript: void(0)">
+        <%= image_tag "/images/facebookshare.png", :class=>"submissionshare"%>
+      </a>
+      <a target="_blank" href="https://mobile.twitter.com/compose/tweet?status=join%20me%20at%20this%20event%3A%20http%3A%2F%2Fwww.Eventastic.com%2Fevents%2F<%=@event.id%>">
+        <%= image_tag "/images/twittershare.png", class:"submissionshare"%>
+      </a>
+
+      <a href="mailto:?subject=<%= escape_javascript @event.name %>&body=join%20me%20at%20this%20event%3A%20http%3A%2F%2Fwww.Eventastic.com%2Fevents%2F<%=@event.id%>" style="cursor:pointer;cursor:hand;">
+        <%= image_tag "/images/send_email.png", class:"submissionshare"%>
+      </a>
+
+    </div>
+
+
+    <div class="rightbox" id="rightbox_social" style="-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;">
+      <h2>Eventastic</h2>
+      <div id="socialline"></div>
+      <ul class="tabs">
+        <li class="active"><a href="#rightbox_twtab"><img src="/event_template/rightside_social_tw.png" alt="twitter"></a></li>
+        <li><a href="#rightbox_fbtab"><img src="/event_template/rightside_social_fb.png" alt="facebook"></a></li>
+        <li><a href="#rightbox_yttab"><img src="/event_template/rightside_social_yt.png" alt="youtube"></a></li>
+      </ul>
+      <div class="tab_container">
+        <div style="display: none;" id="rightbox_twtab" class="tab_content">
+          <a class="twitter-timeline"  href="https://twitter.com/EventasticMe"  data-widget-id="306790481608704001">Tweets by @EventasticMe</a>
+          <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+          </div>
+        <div style="display: block;" id="rightbox_fbtab" class="tab_content">
+          <iframe src="//www.facebook.com/plugins/likebox.php?href=http%3A%2F%2Fwww.facebook.com%2Fpages%2FEventastic%2F487978684591977&amp;width=300&amp;height=315&amp;show_faces=true&amp;colorscheme=dark&amp;stream=false&amp;border_color&amp;header=true&amp;appId=504545792924158" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:300px; height:315px;" allowTransparency="true"></iframe>
+        </div>
+        <div style="display: none;" id="rightbox_yttab" class="tab_content">
+          <iframe id="fr" src="http://www.youtube.com/subscribe_widget?p=Giftopia" style="overflow: hidden; height: 100px; width: 300px; border: 0;" scrolling="no" frameBorder="0"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<center>
+<div id="footer">
+  <div id="footer_content">
+    <h3>This event page was made possible by www.Eventastic.com</h3>
+    <ul class="bs-docs-social-buttons">
+                <li class="follow-btn">
+                  <a href="https://twitter.com/eventasticme" class="twitter-follow-button" data-link-color="#0069D6" data-show-count="true">Follow @eventasticme</a>
+                </li>
+              </ul>
+    <ul id="footer_artists">
+      <li>Copyright Giftopia Inc. 2013</li>
+      <li><a href="<%=terms_of_service_path%>">Terms Of Service</a></li>
+      <li><a href="<%=privacy_path%>">Privacy Policy</a></li>
+    </ul>
+  </div>
+</div>
+<center>
+
+
+<div id="buyPanel"  class="side_panel2_mobile" style="right:-160px;margin-right: 50%;z-index:9999;display:none;top:65px;padding-top: 0px;">
+        <h1 onclick="showBuy()" style="top:-7px;font-size:19pt" class="ticketbuttonclose">X</h1>
+  <div id="page_home_left2">
+  <h1 style="color:#474747;">Purchase Tickets</h1>
+     <div class="headerline2"></div>
+    <%= render('ticket_instances/new') %>
+    </div>
+    </div>
+
+<div id="donationPanel"  class="side_panel2_mobile" style="right:-160px;margin-right: 50%;z-index:9999;display:none;top:65px;padding-top: 0px;">
+              <h1 onclick="showDonations()" class="ticketbuttonclose">X</h1>
+  <div id="page_home_left4">
+  <h1 style="color:#474747;">Specify Gift</h1>
+     <div class="headerline2"></div>
+    <%= render('cash_gifts/new') %>
+    </div>
+    </div>
+
+<div id="donationPanel2"  class="side_panel2_mobile" style="right:-160px;margin-right: 50%;z-index:9999;display:none;top:65px;padding-top: 0px;">
+              <h1 onclick="showDonations2()" class="ticketbuttonclose">X</h1>
+  <div id="page_home_left5">
+  <h1 style="color:#474747;">Specify Donation</h1>
+     <div class="headerline2"></div>
+    <%= render('cash_gifts/donations') %>
+    </div>
+    </div>
+
+
+<div id="tutorialPanel"  class="side_panel2_mobile" style="right:-160px;margin-right: 50%;z-index:9999;display:none;top:65px;padding-top: 0px;">
+              <h1 onclick="toggle_tutorial()" class="ticketbuttonclose">X</h1>
+  <div id="page_home_left6">
+  <h1 style="color:#474747;">Tutorial</h1>
+     <div class="headerline2"></div>
+    <%= render('events/tutorial') %>
+    </div>
+    </div>
+
+<div id="registrationPanel"  class="side_panel2_mobile" style="right:-160px;margin-right: 50%;z-index:9999;display:none;top:65px;padding-top: 0px;">
+              <h1 onclick="showRegistration()" class="ticketbuttonclose">X</h1>
+  <div id="page_home_left7">
+  <h1 style="color:#474747;">Register Here</h1>
+     <div class="headerline2"></div>
+    <%= render('events/register') %>
+    </div>
+    </div>
+
+<div id="registrationListPanel"  class="side_panel2_mobile" style="right:-160px;margin-right: 50%;z-index:9999;display:none;top:65px;padding-top: 0px;">
+              <h1 onclick="showRegistrationList()" class="ticketbuttonclose">X</h1>
+  <div id="page_home_left8">
+  <h1 style="color:#474747;">Registered Attendees</h1>
+     <div class="headerline2"></div>
+    <%= render('events/registerList') %>
+    </div>
+    </div>
+
+
+<div id="photoPanel" class="side_panel2_mobile" style="right:-160px;margin-right: 50%;z-index:9999;display:none;top:65px;padding-top: 0px;">
+              <h1 onclick="showPhoto()" class="ticketbuttonclose">X</h1>
+  <div id="page_home_left3">
+  <h1 style="color:#474747;">Upload Photos</h1>
+     <div class="headerline2"></div>
+    <span style="margin-left: 15px; width:300px;overflow:hidden;">
+      <center>
+      <%= simple_form_for(@album_photo) do |f| %>
+              <%= f.hidden_field :album_id %>
+              <%= f.file_field :album_photo%><br />
+        <button type="submit" class="btn btn-primary start">Submit The Photo</button>
+            </center>
+        <br />
+          <br />
+      <% end %>
+    </span>
+  </div>
+    </div>
+
+<script>
+
+$(document).ready(function(){
+  $(window).scroll(function(){
+    var y = $(window).scrollTop();
+
+    details = $('#details').offset();
+    <% if @documents.length > 0 %>uploads = $('#uploads').offset();<%end%>
+    directionsnav = $('#directionsnav').offset();
+    <% if @event.allow_comments %>comment = $('#comment').offset();<%end%>
+    <% if @event.has_registration%>register = $('#rightbox_register').offset();<%end%>
+    <% if @event.has_ticketing%>tickets = $('#rightbox_tickets').offset();<%end%>
+    <% if @event.has_donations and @donations.count > 0%>donations2 = $('#rightbox_donations2').offset();<%end%>
+    <% if @event.has_cash_gifting and @cashgifttypes.count > 0%>donations = $('#rightbox_donations').offset();<%end%>
+    <% if @event.allow_photo_sharing %>photo = $('#rightbox_photo').offset();<%end%>
+    <% if @event.show_attendees and @attendees.count > 0%>attendee = $('#rightbox_attendee').offset();<%end%>
+    share = $('#rightbox_share').offset();
+    social = $('#rightbox_social').offset();
+    
+    if (y >= social.top) {
+      $('#eventNav').val('rightbox_social');
+    } else if (y >= share.top) {
+      $('#eventNav').val('rightbox_share');
+    } 
+    <% if @event.show_attendees and @attendees.count > 0%>
+    else if (y >= attendee.top) {
+      $('#eventNav').val('rightbox_attendee');
+    }<%end%><% if @event.allow_photo_sharing %>
+    else if (y >= photo.top) {
+      $('#eventNav').val('rightbox_photo');
+    }<%end%><% if @event.has_cash_gifting and @cashgifttypes.count > 0%>
+     else if (y >= donations.top) {
+      $('#eventNav').val('rightbox_donations');
+    }<%end%><% if @event.has_donations and @donations.count > 0%>
+    else if (y >= donations2.top) {
+      $('#eventNav').val('rightbox_donations2');
+    }<%end%><% if @event.has_ticketing%>
+    else if (y >= tickets.top) {
+      $('#eventNav').val('rightbox_tickets');
+    }<%end%><%if @event.has_registration%>
+     else if (y >= register.top) {
+      $('#eventNav').val('rightbox_register');
+    }<%end%><% if @event.allow_comments %>
+    else if (y >= comment.top) {
+      $('#eventNav').val('comment');
+    }<%end%> 
+    else if (y >= directionsnav.top) {
+      $('#eventNav').val('directionsnav');
+    }<% if @documents.length > 0 %>
+     else if (y >= uploads.top) {
+      $('#eventNav').val('uploads');
+    }<%end%>
+     else if (y >= details.top) {
+      $('#eventNav').val('details');
+    }
+  });
+});
+
+  function nav() {
+      val = $("#eventNav option:selected")[0].value;
+
+      $('html, body').animate({
+          scrollTop: $("#" + val).offset().top
+      }, 1000);
+    
+  };
+    var currencies = {};
+
+    function updateGift(){
+        var gifttypeid = $('#cash_gift_cashgifttype_id').find(":selected").val();
+    <% if @cashgifttypes.count > 0%>
+        <% @cashgifttypes.each do |c| %>
+        $('#cashgifttype_<%=c.id%>').hide();
+        <% end %>
+        $('#cashgifttype_'+gifttypeid).fadeIn(1500);
+    <% end %>
+    }
+    function updateGift2(){
+        var gifttypeid = $('#cg_id_2').find(":selected").val();
+    <% if @donations.count > 0%>
+        <% @donations.each do |c| %>
+        $('#cashgifttype_donation_<%=c.id%>').hide();
+        <% end %>
+        $('#cashgifttype_donation_'+gifttypeid).fadeIn(1500);
+    <% end %>
+    }
+
+
+  $(document).ready(function () {
+      $('#cycleWallpaper').cycle({
+        fx:'fade',
+        timeout: 8000,
+        speed: 2000
+      });
+
+      <% @cashgifttypes.each do |cgt| %>
+ currencies[<%=cgt.id%>] = "<%= cgt.currency %>";
+<% end %>
+
+      <% @donations.each do |cgt| %>
+ currencies[<%=cgt.id%>] = "<%= cgt.currency %>";
+<% end %>
+
+      updateGift();
+      updateGift2();
+      //test = $._data( $("#rightbox_cal")[0], "events" );
+      //$('#addittocal').trigger('click');
+
+      <% if @video_html and @event.show_video_message %>
+      <%# unless @show_tutorial %>
+      sublimevideo.ready(function() {
+          sublimevideo.prepareAndPlay("video1");
+          //sublimevideo.resize("video1", (screen.width/2), (screen.width/2)/1.7777777778);
+          sublimevideo.onEnd(function(sv) {
+            //
+                  });
+         // sublimevideo.close("video1");
+      });
+      <%# end %>
+      <% end %>
+
+      <% if @event.has_youtube and @event.youtube %>
+      <%# unless @show_tutorial %>
+      sublimevideo.ready(function() {
+          sublimevideo.prepareAndPlay("video1");
+          //sublimevideo.resize("video1", (screen.width/2), (screen.width/2)/1.7777777778);
+          sublimevideo.onEnd(function(sv) {
+            //
+                  });
+         // sublimevideo.close("video1");
+      });
+      <%# end %>
+      <% end %>
+
+
+      <% if @show_tutorial %>
+      <% if @event.has_cash_gifting or @event.has_donations or @event.has_ticketing or @all_wallpapers.empty?%>
+      toggle_tutorial();
+      <% end %>
+      <% end %>
+  });
+</script>
+
+</body>
+</html>

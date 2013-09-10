@@ -1,0 +1,150 @@
+<!-- Navbar ================================================== -->
+<script>
+  //  if (navigator.userAgent.indexOf('iPhone') != -1) {
+  //      window.location = "/apple";
+  //  }
+
+  //  if (navigator.userAgent.indexOf('Android') != -1) {
+  //      window.location = "/android";
+  //  }
+  function showlogin(){
+                 $('#loginbuttonsselect').hide();
+                 $('#registershow').hide();
+                 $('#resetpassword').hide();
+                 $('#loginshow').show();
+             }
+            function showreset(){
+                $('#loginbuttonsselect').hide();
+                $('#registershow').hide();
+                $('#resetpassword').show();
+                $('#loginshow').hide();
+            }
+             function showregister(){
+                 $('#loginbuttonsselect').hide();
+                 $('#registershow').show();
+                 $('#resetpassword').hide();
+                 $('#loginshow').hide();
+            }
+</script>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner" style="background:#333;">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="<%=root_path%>">Eventastic</a>
+
+      <div class="nav-collapse collapse">
+        <ul class="nav">
+          <li class="">
+            <%= link_to "Home", root_path %>
+          </li>
+          <li class=""><%= link_to "Search Events", mobile_search_path %></li>
+          <% if authenticated? %><li class=""><%= link_to "Manage Events", events_path %></li><% end %>
+          <% if authenticated? %><li class=""><%= link_to "Edit Profile", edit_user_path %></li><% end %>
+          <li class="">
+            <% unless authenticated? %><li class="active"><%= link_to "Login/Register", new_user_path %></li><% else %><li><%= link_to "Logout", logout_path, :method=>"get" %></li><% end %>
+          </li>
+          <li class="">
+            <%= link_to "Contact Us", contact_path %>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="jumbotron masthead" style="padding: 15px 0px 80px;padding-bottom: 10px;background:#000 url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/newbg3.png);background-size: 100% 100%;">
+  <div class="container">
+    <h1>Login</h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="marketing">
+    <br />
+    <span class="main_content_partial" style="display:inline-block;width:90%;">
+       <div style="display:inline-block;">
+    <div class="row-fluid">
+      <span id="loginbuttonsselect">
+       <center>
+       <br />
+       <div class="btn btn-success" onclick="showlogin()" style="width:90%;"><h4>Event Planner Login</h4></div>
+         <br />
+         <br />
+         <div class="btn btn-success" onclick="showregister()" style="width:90%;"><h4>Register As An Event Planner</h4></div>
+         <br />
+       </center>
+       </span>
+       <span id="loginshow" style="display:none;">
+         <center><!--<h4>Login</h4>-->
+           <span class="loginformcontents">
+           <%= simple_form_for @session || Session.new, url: sessions_path do |form| %>
+                 <label for="email">Email</label>
+           <%= form.input :email, placeholder: "Email", label: false, :input_html => {tabindex: '1', class: "loginFormSize"} %>
+                 <label for="password">Password</label>
+           <%= form.input :password, placeholder: "Password", label: false, :input_html => {tabindex: '2', class: "loginFormSize"} %>
+          <br />
+           <%= form.submit "Login", tabindex: '3', class: 'btn btn-large btn-success' ,style:"width:260px;" %>
+           <!-- <%= form.input :remember_me, :as => :boolean, label: false %>-->
+                 <br />
+                 <br />
+                 <span onclick="showreset()"><p style="cursor: pointer;">Forget Your Password?</p></span>
+                 <span onclick="showregister()"><p style="cursor: pointer;">Don't Have An Account?</p></span>
+           <% end %>
+           </span>
+           <br />
+           <br />
+         </center>
+       </span>
+       <span id="registershow" style="display:none;">
+         <center><!--<h4>Register</h4>-->
+           <span class="loginformcontents">
+           <%= simple_form_for :user, :url => create_user_path do |form| %>
+                 <label  for="fname">First Name</label>
+           <%= form.input :fname, label: false, placeholder: "First Name", :input_html => {:size => 35, class: "loginFormSize"}, :error => false %>
+                 <label  for="lname">Last Name</label>
+           <%= form.input :lname, label: false, placeholder: "Last Name", :input_html => {:size => 35, class: "loginFormSize"}, :error => false %>
+                 <label  for="email">Email</label>
+           <%= form.input :email, label: false, placeholder: "Email", :input_html => {:size => 35, class: "loginFormSize"}, :error => false %>
+                 <label  for="password">Password</label>
+                 <%= form.input :password, label: false, placeholder: "Password", :input_html => {:size => 35, class: "loginFormSize"}, :error => false %>
+                 <label  for="password_confirmation">Password Confirmation</label>
+                 <%= form.input :password_confirmation, label: false, placeholder: "Confirm Password", :input_html => {:size => 35, class: "loginFormSize"}, :error => false %>
+           <br/>
+                 <input type="checkbox" name="checkbox" value="check"/> I Agree To The
+                 <a href="/privacy">Privacy & Terms of Service</a><br/><br>
+                 <button type="submit" onclick="if(!this.form.checkbox.checked){alert('Sorry, You must agree to the terms of service before continuing!');return false}" class="btn btn-large btn-success" style="width:260px;">
+                               <i class="icon-user icon-white"></i>
+                               <span>Sign Up</span>
+                             </button>
+             <% end %>
+             <span onclick="showlogin()"><p style="cursor: pointer;">Already Have An Account?</p></span>
+           </span>
+         </center>
+       </span>
+       <span id="resetpassword" style="display:none;">
+         <center><h4>Reset Password</h4>
+           <p>Enter your email below and a link to reset your password will be sent to you!</p>
+           <span class="loginformcontents">
+         <%= form_tag password_resets_path do %>
+                 <label  for="email">Email</label>
+         <%= text_field_tag "email", nil, :placeholder => "Email", :class=> "loginFormSize"%>
+         <br />
+         <br />
+         <%= submit_tag "Reset My Password", class: 'btn btn-large btn-success',style:"width:260px;"  %>
+         <% end %>
+             <span onclick="showregister()"><p style="cursor: pointer;">Don't Have An Account?</p></span>
+           </span>
+           <br />
+     </center>
+       </span>
+ </div>
+         </div>
+        </span>
+  </div>
+</div>
+</div>

@@ -1,0 +1,15 @@
+<section>
+  <div class="container">
+<h1>Add A <% if @cg %>Cash Gift<% else %>Donation<% end %></h1>
+<br/>
+<%= render 'form' %>
+
+</div>
+</section>
+
+<script>
+  
+  <% if @cashgifttype.errors.full_messages.length > 0 %>
+       flash_notice("<%= @cashgifttype.errors.full_messages[0] %>");
+  <% end %> 
+</script>

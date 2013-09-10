@@ -1,0 +1,31 @@
+<h1>Listing paypal_transactions</h1>
+
+<table>
+  <tr>
+    <th>Paypal transaction id</th>
+    <th>Amount</th>
+    <th>From</th>
+    <th>To</th>
+    <th>Response</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @paypal_transactions.each do |paypal_transaction| %>
+  <tr>
+    <td><%= paypal_transaction.paypal_transaction_ID %></td>
+    <td><%= paypal_transaction.amount %></td>
+    <td><%= paypal_transaction.from %></td>
+    <td><%= paypal_transaction.to %></td>
+    <td><%= paypal_transaction.response %></td>
+    <td><%= link_to 'Show', paypal_transaction %></td>
+    <td><%= link_to 'Edit', edit_paypal_transaction_path(paypal_transaction) %></td>
+    <td><%= link_to 'Destroy', paypal_transaction, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Paypal transaction', new_paypal_transaction_path %>

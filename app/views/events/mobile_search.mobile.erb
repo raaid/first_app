@@ -1,0 +1,253 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner" style="background:#333;">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="<%=root_path%>">Eventastic</a>
+
+      <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="">
+                  <%= link_to "Home", root_path %>
+                </li>
+                <li class="active"><%= link_to "Search Events", mobile_search_path %></li>
+                <% if authenticated? %><li class=""><%= link_to "Manage Events", events_path %></li><% end %>
+                <% if authenticated? %><li class=""><%= link_to "Edit Profile", edit_user_path %></li><% end %>
+                <li class="">
+                  <% unless authenticated? %><li class=""><%= link_to "Login/Register", new_user_path %></li><% else %><li><%= link_to "Logout", logout_path, :method=>"get" %></li><% end %>
+                </li>
+                <li class="">
+                  <%= link_to "Contact Us", contact_path %>
+                </li>
+              </ul>
+            </div>
+    </div>
+  </div>
+</div>
+
+<div class="jumbotron masthead" style="padding: 15px 0px 80px;padding-bottom: 10px;background:#000 url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/newbg3.png);background-size: 100% 100%;">
+  <div class="container">
+    <h1>Search</h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="marketing">
+    <br />
+    <span class="main_content_partial" style="display:inline-block;width:90%;">
+       <div style="display:inline-block;">
+   <!-- <p class="marketing-byline">Search Events Below</p>-->
+    <div class="row-fluid">
+
+      <%= form_tag(search_events_path) do |form| %>
+        <span style="font-size:14pt;">Category:</span><br />
+        <%= select_tag :category, options_for_select([ "All", Event::CATEGORY_ENTERTAINMENT, Event::CATEGORY_PERSONAL, Event::CATEGORY_BUSINESS, Event::CATEGORY_CHARITY], "All") %>
+
+        <br />
+        <span style="font-size:14pt;">Event Name or Venue Name:</span><br />
+                  <%= text_field_tag :name, params[:name], placeholder: "Search By Event Name/Venue!", class: "searchFormSize2"%>
+      <br />
+        <button type="submit" class="btn btn-large btn-success" style="width:170px;"><span>Search</span></button>
+  <% end %>
+
+      <!-- <span>
+      <center><h4>Search By Name</h4></center>
+      <hr />
+      <center>
+      <%= form_tag(search_events_path) do |form| %>
+                      <%= text_field_tag :name, params[:name], placeholder: "Search By Event Name!", class: "searchFormSize"%>
+          <br />
+            <button type="submit" class="btn btn-success" style="width:170px;"><i class=""></i><span>Search</span></button>
+      <% end %>
+      </center>
+      </span> -->
+      <!--<br>
+      <span>
+      <center><h4>Search By Date</h4></center>
+      <hr />
+      <center>
+      <%= simple_form_for( :date, :url => search_by_date_path) do |f| %>
+                  Event Before:<%= f.input :from, :as => :date, label:false, :input_html => {:id=>"date-pick"}, :required => true %>
+          <br />
+            <button type="submit" class="btn btn-success" style="width:170px;"><i class=""></i><span>Search</span></button>
+      <% end %>
+      </center> 
+      </span>-->
+      <br>
+            <span>
+            <center><h4>Events In Your Area</h4></center>
+            <center>
+                   <select id="selectkm" class="selectkm">
+                     <option value="25">Within 25 km</option>
+                     <option value="50">Within 50 km</option>
+                     <option value="100" selected="true">Within 100 km</option>
+                     <option value="150">Within 150 km</option>
+                     <option value="200">Within 200 km</option>
+                     <option value="300">Within 300 km</option>
+                     <option value="500">Within 500 km</option>
+                   </select>
+                   <div class="clearfloat"></div>
+                   <hr>
+                   <div id="eventList"></div>
+            </center>
+            </span>
+    </div>
+         </div>
+        </span>
+  </div>
+</div>
+</div>
+
+
+<script>
+    var cur_position;
+    var all_events = [];
+    $(document).ready(function() {
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(initialize, fail);
+      } else {
+        document.getElementById("map").innerHTML = "Geolocation is not supported by this browser.";
+      }
+
+      $('#selectkm').change(function() {
+        km = $("#selectkm option:selected").val();
+        if (km != 0) {
+          clearDiv(document.getElementById("eventList"));
+          for (i = 0; i < all_events.length; i ++) {
+            if (all_events[i][2] < km) {
+              addEvent(all_events[i][0], all_events[i][1], all_events[i][3], all_events[i][4]);
+            }
+          }
+        }
+      });
+    })
+
+    function clearDiv(a) {
+      while (a.hasChildNodes()) {
+        a.removeChild(a.lastChild)
+      }
+     // a.parentNode.removeChild(a);
+    }
+
+    function initialize(position) {
+      /*cur_position = position;
+
+      var geocoder = new google.maps.Geocoder();
+
+      <% if @events%>
+      <% @events.each_with_index do |event, i| %>
+        address = '<%= event.address if event.address%>, <%=event.city if event.city%>, <%=event.country if event.country%>';
+
+        geocoder.geocode( { 'address': address}, function(results, status) {
+
+        if (status == google.maps.GeocoderStatus.OK) {
+          var latitude = results[0].geometry.location.lat();
+          var longitude = results[0].geometry.location.lng();
+
+
+
+          dist = getDistance(position.coords.latitude, position.coords.longitude, latitude, longitude);
+          all_events[<%= i %>] = ["<%= event.name %>", "<%= event.startTime %>", dist, <%= event.id %>, "<%= event.event_url(:feed) %>"];
+
+          if (dist < 100) {
+            addEvent("<%= event.name %>", "<%= event.startTime %>", <%= event.id %>, "<%= event.event_url(:feed) %>");
+          }
+
+        }
+      });
+      <% end %>
+      <% end %>*/
+       <% if @events%>
+        <% @events.each_with_index do |event, i| %>
+          /*<% if event.category ==  Event::CATEGORY_ENTERTAINMENT %>
+            addEvent("<%= escape_javascript event.name %>", "<%= event.date %>", <%= event.id %>, "<%= event.event_url(:feed) %>");
+          <% end %>*/        
+          dist = getDistance(position.coords.latitude, position.coords.longitude, parseFloat("<%=event.lat%>"), parseFloat("<%=event.lon%>"));
+
+          <% if event.event_url(:feed) %>
+            all_events[<%= i %>] = ["<%= escape_javascript event.name %>", "<%= event.startTime.strftime("%Y-%m-%d %-I:%M %P") %>", dist, <%= event.id %>, "<%= event.event_url(:feed) %>", "<%= event.category %>"];
+            if (dist < 100) {
+              addEvent("<%= escape_javascript event.name %>", "<%= event.startTime.strftime("%Y-%m-%d %-I:%M %P") %>", <%= event.id %>, "<%= event.event_url(:feed) %>");
+            }
+          <% else %>
+            all_events[<%= i %>] = ["<%= escape_javascript event.name %>", "<%= event.startTime.strftime("%Y-%m-%d %-I:%M %P") %>", dist, <%= event.id %>, "images/event_image/feed/missing.jpg", "<%= event.category %>"];
+            if (dist < 100) {
+              addEvent("<%= escape_javascript event.name %>", "<%= event.startTime.strftime("%Y-%m-%d %-I:%M %P") %>", <%= event.id %>, "images/event_image/feed/missing.jpg");
+            }
+          <% end %>
+
+          
+        
+      
+        <% end %>
+      <% end %>
+    }
+
+    function fail(error) {
+          x = document.getElementById("map");
+          switch (error.code) {
+              case error.PERMISSION_DENIED:
+                  x.innerHTML = "User denied the request for Geolocation."
+                  break;
+              case error.POSITION_UNAVAILABLE:
+                  x.innerHTML = "Location information is unavailable."
+                  break;
+              case error.TIMEOUT:
+                  x.innerHTML = "The request to get user location timed out."
+                  break;
+              case error.UNKNOWN_ERROR:
+                  x.innerHTML = "An unknown error occurred."
+                  break;
+          }
+      }
+
+      function addEvent(name, date, id, source) {
+        list = document.getElementById("eventList");
+
+        container = document.createElement("div");
+        container.setAttribute("class", "eventContainer");
+        container.setAttribute("style", "width:85%");
+        container.setAttribute("onclick", "window.location = '/events/" + id + "'");
+
+        imgprev = document.createElement("img");
+        imgprev.setAttribute("class", "imgpreview");
+        imgprev.setAttribute("src", source);
+
+        nameCont = document.createElement("div");
+        nameCont.setAttribute("class", "eventName");
+        nameCont.innerHTML = name;
+
+        dateCont = document.createElement("div");
+        dateCont.setAttribute("class", "eventDate");
+        dateCont.innerHTML = date;
+
+        container.appendChild(imgprev);
+        container.appendChild(nameCont);
+        container.appendChild(dateCont);
+        list.appendChild(container);
+
+      }
+
+    function getDistance(lat1,lon1,lat2,lon2) {
+      var R = 6371; // km
+      var dLat = (lat2-lat1).toRad();
+      var dLon = (lon2-lon1).toRad();
+      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    if (typeof(Number.prototype.toRad) === "undefined") {
+      Number.prototype.toRad = function() {
+        return this * Math.PI / 180;
+      }
+    }
+
+
+</script>

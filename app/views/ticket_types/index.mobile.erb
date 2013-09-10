@@ -1,0 +1,104 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner" style="background:#333;">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="<%=root_path%>">Eventastic</a>
+
+      <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="">
+                  <%= link_to "Home", root_path %>
+                </li>
+                <li class=""><%= link_to "Search Events", mobile_search_path %></li>
+                <% if authenticated? %><li class="active"><%= link_to "Manage Events", events_path %></li><% end %>
+                <% if authenticated? %><li class=""><%= link_to "Edit Profile", edit_user_path %></li><% end %>
+                <li class="">
+                  <% unless authenticated? %><li class=""><%= link_to "Login/Register", new_user_path %></li><% else %><li><%= link_to "Logout", logout_path, :method=>"get" %></li><% end %>
+                </li>
+                <li class="">
+                  <%= link_to "Contact Us", contact_path %>
+                </li>
+              </ul>
+            </div>
+    </div>
+  </div>
+</div>
+
+<div class="jumbotron masthead" style="padding: 15px 0px 80px;padding-bottom: 10px;background:#000 url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/newbg3.png);background-size: 100% 100%;">
+  <div class="container">
+    <h1>Sales For<br /><%= @event.name %></h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="marketing">
+
+  <% if @event then %>
+    <br />
+    <center><%= button_to 'Add A New Ticket To Sell', ticket_type_new_path(params[:event_id]), :method => "get", :class=>"btn btn-success", :style=>"width:240px;"%></center>
+     <% else %>
+    You are viewing all ticket types as an admin. You cannot create a new ticket type from this interface.
+  <% end %>
+  <br />
+  <hr />
+
+<center>
+  <% if @event.ticket_types.length > 0 then %>
+ <% overalltotal = 0 %>
+<% @ticket_types.each do |ticket_type| %>
+<table width="95%">
+  <tr>
+    <td width="68%"><%= ticket_type.name %> (<%= ticket_type.price %> <%= ticket_type.currency %>)</td>
+    <td width="10%"><%= "(Groupable)" if ticket_type.groupable? %></td>
+    <td width="5%"></td>
+    <td width="17%"><%= link_to 'Edit', edit_ticket_type_path(ticket_type) %></td>
+  </tr>
+</table>
+<hr />
+   <% instances = TicketInstance.where(:ticket_type_id => ticket_type.id, :status => ["paid", "redeemed"]) %>
+   <% total = 0 %>
+   <% instances.each do |ticket| %>
+                 <table width="95%">
+                  <tr>
+                    <td width="65%"><%= ticket.guest_name %> (<%= ticket.guest_email %>) X <%= ticket.quantity %></td>
+                    <td width="5%"></td>
+                    <td width="10%">Paid: $</td>
+                    <td width="20%"><%= ticket.price_paid %></td>
+                  </tr>
+                </table>
+                <br />
+                <% total = total+ ticket.price_paid%>
+   <% end %>
+            <br />
+            <table width="95%">
+             <tr>
+               <td width="60%"></td>
+               <td width="10%"></td>
+               <% overalltotal = overalltotal + total %>
+               <td width="30%">Total: $<%= total %></td>
+             </tr>
+           </table>
+            <br />
+            <br />
+            <br />
+            <br />
+
+<% end %>
+        <br />
+        <center>Event Total: $<%= overalltotal %></center>
+        <br />
+        <%=button_to 'Request Event Cash Out!',cashout_path(:id => @event.id), :class => 'btn btn-success', :style=>"width:240px;"%>
+        <br />
+     <center><p style="font-size: 8pt;">*Organizers & Guests are subject to the fees outlined in TheWeddingRegistries <a href="/terms_of_service#fees"><u>Terms Of Service</u></a></p></center>
+      <br />
+      <% end %>
+</center>
+<br />
+</div>
+</div>
+</div>
+</div>

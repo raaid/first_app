@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+		<meta name="viewport" content="width=device-width, user-scalable=no" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+		<script type="text/javascript" charset="utf-8" src="cordova-1.7.0rc1.js"></script>
+        <script type="text/javascript" src="js/zepto.js"></script>
+        <script type="text/javascript" src="js/barcodescanner.js"></script>
+        <script type="text/javascript" src="js/redeem.js"></script>
+        <script type="text/javascript" src="js/iscroll-lite.js"></script>  
+        <title>Ticket Redeemer</title>
+        <script>
+            var theScroll;
+            function scroll(){
+                theScroll = new iScroll('wrapper', {
+                                        useTransform: true,
+                                        zoom: false,
+                                        onBeforeScrollStart: function (e) {
+                                        var target = e.target;
+                                        while (target.nodeType != 1) target = target.parentNode;
+                                        
+                                        if (target.tagName != 'SELECT' && target.tagName != 'INPUT' && target.tagName != 'TEXTAREA')
+                                        e.preventDefault();
+                                        }
+                                        });
+                
+            }
+            document.addEventListener('DOMContentLoaded', scroll, false);
+            //	orientationChange();
+            //		window.addEventListener("orientationchange", orientationChange, true);
+    		document.addEventListener("touchmove",preventBehavior, false);  //prevent all scrolling
+            </script>    
+    </head>
+    <body>
+        <header>
+            <img src="img/back.png" class="backbtn" id="backbtn" onclick="hideResults()" style="display:none"/>
+    		<center><img src="img/logo.png" class="logo" /></center></header>
+        <div id="wrapper">
+            <div id="main-content">
+                <center>
+                    <div id="scanbtn" class="btn scan" style="margin-bottom:10px;" onclick="getBarcode()">Scan Ticket</div>
+                    <div id="manual" class="container">
+                        <b>Redeem A Guests Ticket By ID</b>
+                        <hr />
+                        <input type="text" id="input" placeholder="Ticket ID Number" class="inputBox" />
+                        <br />
+                        <input class="btn" type="button" value="Redeem" onclick="manualInput()"/>
+                    </div>
+                    <div id="search" class="container" style="margin-top:30px">
+                        <b>Look up Tickets For Guest By E-mail<b/>
+                            <hr />
+                            <input type="text" id="searchInput" placeholder="Guests E-Mail" class="inputBox" />
+                            <br />
+                            <input class="btn" type="button" value="Search" onclick="searchEmail()"/>
+                            </div>
+                </center>
+                <center>
+                    <div id="searchResults" class="container" style="display:none">
+                        <div id="name" class="name"></div>
+                        <div id="results" class="results"></div>
+                        <div id="noresults" class="container" style="display:none">Sorry, No Tickets Were Found.</div>
+                        
+                        <div style="text-align:center">
+                            <input type="button" onclick="redeemAll()" value="Redeem" class="btn" id="redeemAll" />
+                        </div>  	
+                    </div>
+                </center>   
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,603 @@
+<style>
+.UploadifyObjectWrapper {
+  position: relative;
+  z-index: 10;
+  top: -25px;
+  width: 100%;
+  left:-13px;
+}
+.ui-tooltip {
+  font-size:10pt;
+}
+</style>
+
+<div style="width:100%">
+<%= form_for Wallpaper.new, :html => {:multipart => true}, :remote => true do |form| %>
+  <div class="flex-container" >
+  
+
+
+  <div class="flexslider teaser" id="flexslider">
+    <div id="hoverGarbage" class="garbage" <%if @all_wallpapers.length > 0%>onclick="deletePaper(0, <%=@all_wallpapers[0].id%>)"<%else%>style="display:none"<%end%>>
+      <img src="/images/garbage.png" style="width:17px;margin-top:-9px;margin-left:6px" />
+    </div>
+    <ul class="slides" id="paperContainer">
+
+    <% if @all_wallpapers.try(:length) > 0 %>
+      <% @all_wallpapers.each do |paper| %>
+        <li id="<%=paper.id%>">
+          <div class="product-img slide2" style="max-width:none"><img src="<%=paper.wallpaper_url(:background)%>" alt="Eventastic"/></div>
+        </li>
+      <%end%>
+    <% else %>
+      <li id="default_paper">
+          <div class="product-img slide2" style="max-width:none"><img src="/images/wallpaper/missing/missing_wallpaper.jpg" alt="Eventastic"/></div>
+        </li>
+    <%end%>
+
+    </ul>
+  </div>
+
+  <center>
+    <div style="color:#000;font-size:11pt;margin-top:5px">Upload As Many Cover Photos As You'd Like (Recommended: 1950x900)<br /><span style="font-size: 8pt;">These photos work like a background slideshow and serve as a great marketing tool</span></div>
+    <div class="btn btn-success" id="flashUpload" style="height:23px;z-index:0">
+      <a style="color:#fff;z-index:0">Upload New Cover Photo</a>
+      <div class="UploadifyObjectWrapper">
+        <%= form.file_field :wallpaper, :label => false, :required => false %>
+      </div>
+    </div>
+    <input type="button" id="noflash" onclick="$('#noFlashfile').click()" value="Upload New Cover Photo" class="btn btn-success">
+    <input type="file" id="noFlashfile" style="display:none"/>
+  </center>
+
+  <%= form.hidden_field :event_id, :value => @event.id %>
+  <%= form.submit "upload", :id=> "savePaper", :style=> "display:none" %>
+  
+  </div>
+
+  <div class="avatar-container" >
+    <center>
+      <p style="color:#000;">Select a display photo for your event page<br /><span style="font-size:9pt;">(Recommended: 500x500)</span></p>
+      <div class="profile_avatar" style="width:150px;"><%= image_tag @event.event_image.url(:feed), :style=>"height:150px;width:150px;", id: "profile_avatar" %></div>
+      <input type="button" class="btn btn-success" value="Choose File" style="width:150px;margin-top:17px" onclick="$('#event_event_image').click()" />
+      <img src="/images/loading.gif" id="loading" style="margin-top:14px;display:none"/>
+    </center>
+  </div>
+
+<% end %>
+</div>
+<div class="clear"></div>
+<br>
+
+<%= simple_form_for(@event) do |f| %>
+  
+  <%= f.file_field :event_image, label: false, onchange:"readAvatar(this)", style: "display:none", required: false%>
+  <center>
+    <div class="event_details"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="Name of your event!">*Name
+    <%= f.input :name, label: false,:input_html => {:style => "width:184px"} %></div>
+    <div class="event_details"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="Category of your event!">*Event Category
+    <%= f.input :category, priority: Event::CATEGORY_PERSONAL, collection: [ Event::CATEGORY_PERSONAL, Event::CATEGORY_ENTERTAINMENT, Event::CATEGORY_CHARITY, Event::CATEGORY_BUSINESS],label: false,include_blank: false,:input_html => {:style => "width:200px"}  %></div>
+    <div class="event_details"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="The name of your events venue!">Venue Name (Optional)
+    <%= f.input :venue_name, label: false,:input_html => {:style => "width:184px"} %></div>
+    <div class="event_details"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="Address of your event!">*Event Address
+    <%= f.input :address, label: false,:input_html => {:style => "width:184px"} %></div>
+    <br>
+    <div class="event_details"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="The city your event is hosted in">*City
+    <%= f.input :city, label: false,:input_html => {:style => "width:184px"} %></div>
+    <div class="event_details"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="The province or state your event is hosted in">*Province/State
+    <%= f.input :province, label: false,:input_html => {:style => "width:184px"} %></div>
+    <div class="event_details"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="The postal or zip code that your event is hosted in">*Postal/Zip Code
+    <%= f.input :postal, label: false,:input_html => {:style => "width:184px"} %></div>
+    <div class="event_details"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="The country your event is hosted in">*Country
+    <%= f.input :country, label: false,:input_html => {:style => "width:200px"} %></div>
+           <%#= f.input :date, :as => :date_picker, label: "Event Date", :input_html => {:id => 'date-pick' }, :required => false %>
+  </center>
+    <br />     
+              
+    <center>
+      <div style="display:inline-block;">
+
+        <div style="color:#000;display:inline-block"><div style="width:400px"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="Describes the particulars of your event here. (Eg. What the event is about and the purpose or goal of having it)">Description
+        <%= f.text_area :description, style:"height:90px;width:400px" %></div></div>
+        <div style="color:#000;display:inline-block;margin-left:15px"><div style="width:400px"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="Describes the details pertaining to your event here. (Eg. Dress code, parking situations, accomodations, BYOB etc...">Details
+        <%= f.text_area :details, style:"height:90px;width:400px" %></div></div>
+      </div>
+    </center>
+    <br>
+    
+    <center>
+      <div class="clear"></div>
+      <div class="dateTitle">Event Start Time</div>
+      <div class="datetime"><%= f.datetime_select :startTime, :ampm => true %></div>
+      <div class="dateTitle">Event End Time</div>
+      <div class="datetime"><%= f.datetime_select :endTime, :ampm => true %></div>
+    </center>
+      <br />
+      <center>
+      
+        <table style="width:70%">
+          <tr>
+            <td style="width:33%"><%= f.input :allow_comments,as: :boolean, label: "Allow Comments",:input_html => {:style => "float:left;"} %></td>
+            <td style="width:33%"><%= f.input :show_promotor,as: :boolean, label: "Show Planner",:input_html => {:style => "float:left;"} %></td>
+            <td style="width:33%"><%= f.input :show_attendees,as: :boolean, label: "Display Attendees",:input_html => {:style => "float:left;"} %></td>
+          </tr>
+        </table>
+      </center>
+      <br />
+      <center>
+      <div style="margin-left: 7px;width:370px">
+
+              <div class="input boolean optional">
+                <input class="boolean optional" id="event_has_capacity" style="float:left;margin-left:3px;margin-top:18px" type="checkbox" value="1" onchange="flipCapacity(this)">
+                <label class="boolean optional" for="event_has_capacity" style="width:270px;display:inline-block;margin-top:15px">This Event Has a Maximum Capacity</label>
+                <!-- <input type="number" value="0" /> -->
+                <div style="width:72px;display:inline-block;position:relative">
+                  <%=f.input :max_capacity, label: false, :input_html => {style: "width:72px;display:none;position:relative", value: @event.max_capacity || 0} %>
+                </div>
+              </div>
+
+               <td width="25%"><%= f.input :is_private,as: :boolean, label: "This Event Will Be Private And Not Searchable Through Eventastic",:input_html => {:style => "float:left;margin-left:3px"} %></td>
+               <td width="25%"><%= f.input :allow_photo_sharing,as: :boolean, label: "This Event Will Allow Photo Sharing",:input_html => {:id=> "photo_check",:style => "float:left;margin-left:3px;"} %></td>
+               <div id="auto_approve" <% if not @event.allow_photo_sharing %>style="display:none;"<% end %>>
+               <td width="25%"><%= f.input :auto_approve_photos,as: :boolean, label: "Auto Approve Submitted Photos",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+               </div>
+               <td width="25%"><%= f.input :has_registration,as: :boolean, label: "This Event Will Provide A Registration Tool On It's Page",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+               <td width="25%"><%= f.input :has_ticketing,as: :boolean, label: "This Event Will Sell Tickets",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+               <td width="25%"><%= f.input :has_donations,as: :boolean, label: "This Event Will Accept Cash Donations",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+               <td width="25%"><%= f.input :has_cash_gifting,as: :boolean, label: "This Event Will Have Cash Gifting",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+               <td width="25%"><%= f.input :include_fees,as: :boolean, label: "Charge Processing Fees To Customer Instead Of Covering It Yourself (2.9% + $0.30/transaction)",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+
+               <br />
+             </div>
+             <div style="margin-left:7px">
+              <div style="display:inline-block;"><span style="float:left;">I would Like To Have:  </span><div class="selectContainer" style="float:left;">
+                      <select id="theSelect" style="width:480px;">
+                          <option value="Nada">No Video On My Event Page</option>
+                          <option value="Youtube">A Youtube Video On My Event Page</option>
+                          <option value="Self">A Self Recorded, Personal, Video From My Webcam On My Event Page!</option>
+                      </select>
+                  </div>  </div>
+               <div class="hidden isNada"></div>
+                  <div class="hidden isYoutube">
+                    <div style="width:200px">
+                      <%= f.input :has_youtube,as: :boolean,label: "Include A Youtube Video",:input_html => {:id=> "video_check2", :style => "float:left;margin-left:3px;"} %>
+                    </div>
+                  
+                  <div id="video_message_panel2"  style="display:inline-block;margin-left: 13px;"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/youtube_ind.png"><br /><p style="color:#000;"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="Specify Your Youtube Embed Link Here!">*Youtube Embed Link</p><%= f.input :youtube, label: false,:input_html => {:style => "width:400px;height:25px"}, :required => false %></div>
+                  </div>
+                  <div class="hidden isSelf">
+                    <div style="width:200px">
+                      <%= f.input :show_video_message,as: :boolean,label: "Include A Video Message",:input_html => {:id=> "video_check", :style => "float:left;margin-left:3px;"} %>
+                    </div>
+                    <div id="video_message_panel" style="display:inline-block;margin-left: 13px;">
+                      <center>
+                      <div id="recorderContainer" class="main_content_partial2" >
+                        <div class="clear"></div>
+                        <div style="float:left;font-size:15pt">Video Recorder</div>
+                        <div class="clear"></div>
+                        <hr style="margin-top:25px;margin-bottom:20px">
+                      </div>
+                      <div id="playerContainer" class="main_content_partial2" >
+                        <div class="clear"></div>
+                        <div style="float:left;font-size:15pt">Video Preview</div>
+                        <div class="clear"></div>
+                        <hr style="margin-top:25px;margin-bottom:20px">
+                      </div>
+                      </center>
+                    </div>
+                  </div>
+             </div>
+           <%= f.hidden_field :video %>
+       <br />
+   <br />
+   <br />
+    <br />
+        <center><%= f.submit "Update Event", :class=> "btn btn-large btn-success"%></center>
+  <% end %>
+</center>
+<br><br>
+
+<%= stylesheet_link_tag 'uploadify.css' %>
+<%= javascript_include_tag "swfobject.js", "jquery.uploadify.v2.1.0.js", "flash_detect_min.js" %>
+<script src="http://static.opentok.com/v0.91/js/TB.min.js" type="text/javascript" charset="utf-8"></script>
+<script>
+if (!FlashDetect.installed) {
+    alert("We're sorry! Flash is required to use this feature. Please download the newest version of Adobe Flash to continue!");
+
+    document.getElementById("flashUpload").style.display = "none";
+    $(document).ready(function() {
+      document.getElementById("noFlashfile").onchange = uploadPaper;
+    })
+} else {
+    if (FlashDetect.major < 11) {
+        alert("Please upgrade your version of flash to at least version 11!");
+    }
+    document.getElementById("noflash").style.display = "none";
+}
+
+$(document).ready(function() {
+
+  <% if @event.max_capacity%>
+    <% if @event.max_capacity > 0 %>
+      $('#event_has_capacity').click();
+    <% end %>
+  <% end %>
+
+  $('#wallpaper_wallpaper').click(function(event){ 
+    event.preventDefault();
+  });
+
+  $('.flexslider').flexslider( {
+    pauseOnHover: true,
+    controlNav: false,
+    after: function(slide) {
+      document.getElementById("hoverGarbage").setAttribute("onclick", "deletePaper(" + slide.currentSlide + "," + slide.slides[slide.currentSlide].id + ")")
+      //deletePaper(slide.currentSlide, stuff.slides[stuff.currentSlide].id)
+      //console.log(stuff.slides[stuff.currentSlide].id)
+    }
+  });
+
+  $('#flexslider').hover(function() {
+    $("#hoverGarbage").animate({
+      top: '80px',
+      opacity: '1'
+    }, 250)
+  }, function() {
+    $("#hoverGarbage").animate({
+      top: '20px',
+      opacity: '0'
+    }, 250)
+  })
+
+  <% if @all_wallpapers.length < 2 %>
+    $('.flex-direction-nav').hide();
+  <%end%>
+
+    <% if @event.show_video_message %>
+        document.getElementById('theSelect').value="Self";
+        value = "Self";
+    <% elsif @event.has_youtube %>
+        document.getElementById('theSelect').value="Youtube";
+        value = "Youtube";
+    <% else %>
+        document.getElementById('theSelect').value="Nada";
+        value = "Nada";
+    <% end %>
+
+
+    var theDiv = $(".is" + value);
+
+    if (value == "Youtube" ){
+        document.getElementById("video_check2").checked = true;
+        document.getElementById("video_check").checked = false;
+    }
+
+    if (value == "Self" ){
+        document.getElementById("video_check2").checked = false;
+        document.getElementById("video_check").checked = true;
+    }
+
+    if (value == "Nada" ){
+        document.getElementById("video_check2").checked = false;
+        document.getElementById("video_check").checked = false;
+    }
+    theDiv.slideDown().removeClass("hidden");
+    theDiv.siblings('[class*=is_]').slideUp(function() { 
+      $(this).addClass("hidden"); 
+      priv = $('.event_is_private');
+      priv.removeClass("hidden");
+      priv.css("display", 'block');  
+    });
+
+  
+  $('#wallpaper_wallpaper').uploadify({
+    'wmode' : 'transparent',
+    hideButton: true,
+    buttonImage : " ",
+    width : 155,
+    height : 30,
+    uploader : '/uploadify/uploadify.swf',
+    cancelImg : '/uploadify/cancel.png',
+    multi : false,
+    auto : true,
+    script : '/wallpapers',
+    onComplete : function(event, queueID, fileObj, response, data) { 
+      obj = JSON.parse(response);
+      showUploadedItem();
+      appendImage(obj);
+    },
+    scriptData : {
+          '_http_accept': 'application/javascript',
+          'format' : 'json',
+          '_method': 'post',
+          'event_id' : '<%= @event.id %>'
+        }
+  });
+  
+  $('#savePaper').click(function(event){ 
+      event.preventDefault(); 
+      $('#wallpaper_wallpaper').uploadifyUpload(); 
+  });
+
+  $('#theme').change(function() {
+      var val = $("#theme option:selected")[0].value;
+
+      for (i = 1; i < 5; i++) {
+        document.getElementById("themeimg" + i).style.display = "none";
+      }
+      document.getElementById(val).style.display = "block";
+
+    });
+    
+}); 
+
+function flipCapacity(el) {
+  max_cap = $("#event_max_capacity");
+  if (el.checked) {
+    max_cap.fadeToggle(500);
+  } else {
+    max_cap.fadeToggle(500, function() {this.value = 0});
+  }
+}
+
+function readAvatar(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      document.getElementById("profile_avatar").setAttribute("src", e.target.result);
+    }
+
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function addTheme() {
+  val = $("#theme option:selected")[0].value;
+
+  $.ajax({
+        url: "/add_theme",
+        type: "POST",
+        data: {'theme': val, 'event_id': '<%= @event.id %>'},
+        "dataType":"json",
+        success: function (res) {
+          showUploadedItem();
+          appendImage(res);
+        }
+      });
+}
+  function showUploadedItem () {
+/*      var list = document.getElementById("paperContainer");
+
+      container = document.createElement("div");
+      container.id = "paperContainer" + paperCounter;
+      container.style.position = "relative";
+      container.style.display = "none";
+
+      cross = document.createElement("img");
+      cross.src = "/images/cross.png";
+      cross.setAttribute("style", "position:absolute;right:-16px;cursor: pointer;cursor:hand;");
+      cross.id = "cross" + paperCounter;
+      cross.setAttribute("onclick", paperCounter);
+
+      img  = document.createElement("img")
+      img.src = "";
+      img.setAttribute("style", "width:195px;margin-top:13px");
+      img.class = "profile_avatar";
+      img.id = "paper" + paperCounter;
+      paperCounter = paperCounter + 1;
+
+      container.appendChild(cross);
+      container.appendChild(img);
+      list.appendChild(container);*/
+  } 
+
+
+  function appendImage(res) {
+    slider = $('.flexslider').data('flexslider');
+    slider.addSlide('<li id="' + res.id + '"><div class="product-img slide2" style="max-width:none"><img src="' + res.url + '" alt="Eventastic"/></div></li>');
+
+    if (slider.slides[0].id == "default_paper") {
+      slider.flexAnimate(1);
+      slider.removeSlide(0);
+      $('#hoverGarbage').show();
+      
+    }
+
+    if (slider.count > 1) {
+      $('.flex-direction-nav').show();
+    }
+  }
+
+
+function deletePaper(index, id) {
+  slider = $('.flexslider').data('flexslider');
+  
+  console.log(slider.count);
+  if (slider.count == 1) {    
+    slider.addSlide('<li id="default_paper"><div class="product-img slide2" style="max-width:none"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/wallpaper/background/118f9a17151b9b.jpg" alt="Eventastic"/></div></li>');
+    $('#hoverGarbage').hide();
+    
+  }
+
+  console.log(slider.count);
+
+  if (slider.count <= 2) {
+    $('.flex-direction-nav').hide();
+  }
+
+
+
+  slider.flexAnimate(slider.getTarget("next"));
+  slider.removeSlide(index);
+
+  
+
+
+  $.ajax({
+        url: "/wallpapers/" + id,
+        type: "DELETE",
+        "dataType":"json",
+        processData: false,
+        contentType: false,
+        success: function (res) {
+          //console.log("deleted: " + id);
+        }
+      });
+}
+
+
+var paperCounter = <%if @all_wallpapers %><%= @all_wallpapers.length %><% else %> 0<% end %>;
+
+function uploadPaper(evt) {
+  console.log("upload paper!");
+  //file = this.files[0];
+  file = document.getElementById("noFlashfile").files[0];
+
+  if (file != undefined) {
+
+    document.getElementById("loading").style.display = "block";
+    var formdata = new FormData();
+
+    var img, reader, file;
+
+    if (!!file.type.match(/image.*/)) {
+      if ( window.FileReader ) {
+        reader = new FileReader();
+        reader.onloadend = function (e) { 
+          showUploadedItem(e.target.result, file.fileName);
+        };
+        reader.readAsDataURL(file);
+      }
+      if (formdata) {
+        formdata.append("wallpaper", file);
+        formdata.append("event_id", "<%= @event.id %>")
+      }
+    } 
+    
+  
+    if (formdata) {
+      $.ajax({
+        url: "/wallpapers",
+        type: "POST",
+        data: formdata,
+        "dataType":"json",
+        processData: false,
+        contentType: false,
+        success: function (res) {
+
+          cross = document.getElementById("cross" + parseInt(paperCounter - 1))
+          index = cross.getAttribute("onclick");
+          cross.setAttribute("onclick", "deletePaper(" + index + ", " + res.id + ")");
+
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("paper" + parseInt(paperCounter - 1)).src = res.url;
+          document.getElementById("paperContainer" + parseInt(paperCounter - 1)).style.display = "block";
+          <% unless @all_wallpapers %>
+            document.getElementById("missingPaper").style.display = "none";
+           <% else %>
+            <% if @all_wallpapers.length == 0 %>
+            document.getElementById("missingPaper").style.display = "none";
+          <% end %>
+            <% end %>
+        }
+      });
+    }
+  }
+}
+
+
+var API_KEY = "<%= OPENTOK_API_KEY %>";
+var TOKEN = "<%= OPENTOK_MODERATOR_TOKEN %>";
+var VIDEO_HEIGHT = 240;
+var VIDEO_WIDTH = 320;
+
+var player;
+var recImgData;
+
+function init() {
+    initRecorder();
+}
+
+function initRecorder() {
+    recorderManager = TB.initRecorderManager(API_KEY);
+    createRecorder();
+}
+
+function createRecorder() {
+    var recDiv = document.createElement('div');
+    recDiv.setAttribute('id', 'recorderElement');
+    document.getElementById('recorderContainer').appendChild(recDiv);
+    recorder = recorderManager.displayRecorder(TOKEN, recDiv.id);
+    recorder.addEventListener('recordingStarted', recStartedHandler);
+    recorder.addEventListener('archiveSaved', archiveSavedHandler);
+}
+
+function recStartedHandler(revent) {
+    //recImgData = recorder.getImgData();
+}
+
+function archiveSavedHandler(event) {
+    $("#event_video").val(event.archives[0].archiveId);
+    showPreview($("#event_video").val())
+}
+
+function showPreview(opentok_video_id) {
+    if (opentok_video_id == undefined || opentok_video_id == null || opentok_video_id == "") {
+	alert("A video has not been saved yet!");
+    } else {
+	loadArchiveInPlayer(opentok_video_id);
+    }
+}
+
+function loadArchiveInPlayer(archiveId) {
+    if (!player) {
+	$("#playerContainer").append("<div id='playerElement'></div>");
+        player = recorderManager.displayPlayer(archiveId, TOKEN, 'playerElement');
+  //      document.getElementById('playerContainer').style.display = 'block';
+    } else {
+        player.loadArchive(archiveId);
+    }
+    //$('#playerContainer').show();
+}
+
+function hidePreview() {
+    $('#playerContainer').hide();
+}
+var MyCheck=$("#video_check");
+
+MyCheck.change(function() {
+  $("#video_message_panel").toggle(MyCheck.is(":checked"));
+});
+
+var MyCheck2=$("#photo_check");
+
+MyCheck2.change(function() {
+  $("#auto_approve").toggle(MyCheck2.is(":checked"));
+});
+init();
+
+$('[class^=is]').hide();
+
+$("#theSelect").change(function(){
+    var value = $("#theSelect option:selected").val();
+    var theDiv = $(".is" + value);
+
+    if (value == "Youtube" ){
+        document.getElementById("video_check2").checked = true;
+        document.getElementById("video_check").checked = false;
+    }
+
+    if (value == "Self" ){
+        document.getElementById("video_check2").checked = false;
+        document.getElementById("video_check").checked = true;
+    }
+
+    if (value == "Nada" ){
+        document.getElementById("video_check2").checked = false;
+        document.getElementById("video_check").checked = false;
+    }
+    theDiv.slideDown().removeClass("hidden");
+    theDiv.siblings('[class*=is]').slideUp(function() { $(this).addClass("hidden"); });
+});
+</script>

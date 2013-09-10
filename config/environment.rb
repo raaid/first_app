@@ -2,4 +2,6 @@
 require File.expand_path('../application', __FILE__)
 
 # Initialize the rails application
-FirstApp::Application.initialize!
+Ticketacular::Application.initialize!
+OUR_PAYPAL_ACCOUNT = "admin@giftopia.me"
+FEES_PAYPAL_ACCOUNT = "admin@giftopia.me"

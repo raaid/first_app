@@ -1,0 +1,27 @@
+<div id="content_outter" class="main_content_pane_outter">
+<div id="content_inner" class="main_content_pane">
+<h1 style="font-size: 26pt;float:left"><%= pluralize(@attached.errors.count, "error") %> prohibited this file from being saved:</h1>
+<!--<input type="button" onclick="window.location='/events'" value="Back To Events" class="btn btn-primary" style="float:right;position:relative;top:5px;"></input>-->
+<div class="clearfloat"></div>
+<br>  
+  
+  
+  <%= form_for(@attached) do |f| %>
+  	<% if @attached.errors.any? %>
+    	<div id="error_explanation" style="color:#000;">
+
+      		<ul>
+      		<% @attached.errors.full_messages.each do |msg| %>
+        		<li><%= msg %></li>
+      		<% end %>
+      		</ul>
+    	</div>
+  	<% end %>
+  <% end %>
+
+
+  
+
+</div>
+</div>
+

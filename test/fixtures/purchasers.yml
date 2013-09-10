@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user: joe_blow
+  gift_id: 1
+  groupowner: john_doe
+  privacy: 1
+  status: pending
+
+two:
+  user_id: 1
+  gift_id: 1
+  groupowner: 1
+  privacy: 1
+  status: pending

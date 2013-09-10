@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  event_id: 1
+  wallpaper_file_name: MyString
+  wallpaper_content_type: MyString
+  wallpaper_file_size: MyString
+
+two:
+  event_id: 1
+  wallpaper_file_name: MyString
+  wallpaper_content_type: MyString
+  wallpaper_file_size: MyString

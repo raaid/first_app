@@ -1,0 +1,25 @@
+<%= form_for(@invitation_response) do |f| %>
+  <center>
+  <% if @invitation_response.status %>
+    You have already RSVPed for this event!
+  <% else %>
+    Please Specify Whether You Will Be Attending Or Not:
+  <% end %>
+
+  <div class="field">
+    <br />
+    <%= f.select(:status, [['Going'], ['Not Going']]) %>
+    <br />
+  </div>
+    <br />
+  <div class="field">
+    Include A Response Or Personal Message To The Couple (Optional):<br />
+    <%= f.text_field :description, :style=>'line-height: 20px;height:20px;padding:5px;' %>
+  </div>
+  <br />
+  <br />
+  <div class="actions">
+    <%= f.submit "Submit Your RSVP Response", :class=>"btn btn-success" %>
+  </div>
+  </center>
+<% end %>

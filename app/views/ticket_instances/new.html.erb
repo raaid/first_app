@@ -1,0 +1,86 @@
+<div id="content_outter" class="main_content_pane_outter">
+<div id="content_inner" class="main_content_pane">
+<h1 style="font-size: 25pt;">Buy Tickets</h1>
+<div class="clearfloat"></div>
+  <br>
+<% if @capacity < @event.capacity %>
+
+  <%= form_for(@ticket_instance) do |f| %>
+      <div class="purchaseTicketContainer">
+    <% if @ticket_instance.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@ticket_instance.errors.count, "error") %> prohibited this ticket_instance from being saved:</h2>
+
+        <ul>
+        <% @ticket_instance.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+        <center>
+    <%= f.hidden_field :guest_id %>
+    <%= f.hidden_field :host_id %>    
+          <table width="95%">
+            <tr style="margin:5px;">
+                    <td width="45%"><center><p><b>*Guest Name</b></p></center></td>
+                    <td width="10%"></td>
+                    <td width="45%"><center><p><b>*Guest Email</b></p></center></td>
+            <tr/>
+            <tr style="margin:5px;">
+                    <td width="45%"><center><%= f.text_field :guest_name, :class=>"loginFormSize" %></center></td>
+                    <td width="10%"></td>
+                    <td width="45%"><center><%= f.text_field :guest_email, :class=>"loginFormSize" %></center></td>
+            <tr/>
+          </table>
+        <br />
+        </center>
+
+          <div class="purchaseTickets">
+        <center>
+          <p><b>Tickets Available For Purchase For This Event (Select Quantity)</b></p>
+          <hr />
+    <table width="85%">
+      <tr style="margin:5px;">
+        <td width="63%"><b>Name</b></td>
+        <td width="23%"><b>Price</b></td>
+        <td width="5%"></td>
+        <td width="9%"><b>Quantity</b></td>
+      </tr>
+      </table>
+      <table width="85%">
+
+      <hr />
+      <% @quantities.each_with_index do |ticket_type, index| %>
+      <tr style="margin:3px;height:23px;">
+        <td width="63%"><%= ticket_type.name %></td>
+        <td width="23%"><%= number_to_currency(ticket_type.price) %></td>
+        <td width="5%"> X &nbsp;</td>
+        <td width="9%"><input type="hidden" size="5" name=<%= "ticket_instance[quantities][" + index.to_s + "][ticket_type]" %> value="<%= ticket_type.id %>" /><input type="text" size="5" name=<%= "ticket_instance[quantities][" + index.to_s + "][quantity]" %> /></td>
+      </tr>
+      <% end %>
+    </table>
+        </center>
+          </div>
+    <div class="actions">
+      <br />
+      <center>
+        <%= image_tag "https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/paypal2s.png"%>
+        <% if @christmas_party == 0 %>
+        <center><p style="font-size: 8pt;">*All purchases are subject to Paypal processing fees</p></center>
+        <% end %>
+        <br />
+      <%= f.submit "Buy Tickets", :class=>"btn btn-success", :style=>"width:250px;" %>
+      </center>
+    </div>
+      </div>
+  <% end %>
+
+
+
+<% else %>
+<center><h1>We're Sorry But This Event Is Sold Out!</h1></center>
+<% end %>
+
+   </div>
+   </div>

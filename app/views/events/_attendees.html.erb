@@ -1,0 +1,17 @@
+<div style="width:250px;border:solid;overflow:hidden">
+           <h3 style="margin-top:8px">Attendees</h3>
+
+           <% @attendees.each do |attendee| %>
+               <div style="border-bottom: 1px solid;width:100%;padding:7px;overflow:hidden">
+                 <div style="position:relative;width:100%;height:40px;">
+
+                 <% if attendee[:is_gravatar] == 0 %>
+                     <img src='<%= attendee[:image_data] %>' style="width:40px;display:inline-block">
+                 <% else %>
+                     <img src="http://www.gravatar.com/avatar/<%= attendee[:image_data] %>.jpg?d=mm" style="width:40px;float:left">
+                 <% end %>
+                 <h3 style="display:inline-block;text-align:left;position:relative;width:210px"><%= attendee[:name] %></h3>
+                 </div>
+               </div>
+           <% end %>
+         </div>

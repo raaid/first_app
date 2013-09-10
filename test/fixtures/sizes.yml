@@ -1,0 +1,70 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+john_doe:
+  user: john_doe
+  dress: MyString
+  shirt: MyString
+  pants: MyString
+  skirt: MyString
+  coat: MyString
+  gloves: MyString
+  bathing: MyString
+  pantl: 9.99
+  pantw: 9.99
+  shoe: 9.99
+  shoew: MyString
+  ring: 9.99
+  hat: 9.99
+  collar: 9.99
+
+joe_blow:
+  user: joe_blow
+  dress: MyString
+  shirt: MyString
+  pants: MyString
+  skirt: MyString
+  coat: MyString
+  gloves: MyString
+  bathing: MyString
+  pantl: 9.99
+  pantw: 9.99
+  shoe: 9.99
+  shoew: MyString
+  ring: 9.99
+  hat: 9.99
+  collar: 9.99
+
+jane_doe:
+  user: jane_doe
+  dress: MyString
+  shirt: MyString
+  pants: MyString
+  skirt: MyString
+  coat: MyString
+  gloves: MyString
+  bathing: MyString
+  pantl: 9.99
+  pantw: 9.99
+  shoe: 9.99
+  shoew: MyString
+  ring: 9.99
+  hat: 9.99
+  collar: 9.99
+
+jim_loner:
+  user: jim_loner
+  dress: MyString
+  shirt: MyString
+  pants: MyString
+  skirt: MyString
+  coat: MyString
+  gloves: MyString
+  bathing: MyString
+  pantl: 9.99
+  pantw: 9.99
+  shoe: 9.99
+  shoew: MyString
+  ring: 9.99
+  hat: 9.99
+  collar: 9.99
+

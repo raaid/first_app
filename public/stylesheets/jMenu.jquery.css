@@ -1,0 +1,86 @@
+
+#jMenu {
+	display:table;
+	margin:0;
+	padding:0;
+    width:738px;
+    z-index: 800;
+  /*  background-color:#322f32;  */
+    background: rgba(50, 47, 50, 0.60);
+   /* opacity:.75;*/
+    padding-top: 40px;
+}
+
+/********************/
+/** premier niveau **/
+/********************/
+#jMenu li {
+	display:table-cell;
+    background-color: transparent;
+
+	margin:0;
+    margin-right: 25px;
+	float:left;
+    z-index: 800;
+}
+	#jMenu li a {
+		padding:10px;
+		display:block;
+        background-color: transparent;
+		color:#fff;
+		text-transform:uppercase;
+		cursor:pointer;
+		font-size:18px;
+        z-index: 800;
+        font-family: 'PT Sans Narrow', sans-serif; font-weight:bold; display:inline-block; text-transform:uppercase; text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+	}
+	
+/*******************/
+/** second niveau **/
+/*******************/
+#jMenu li ul {
+	display:none;
+	position:absolute;
+	padding:0;
+	margin:0;
+    z-index: 800;
+    background-color: transparent;
+
+
+}
+	#jMenu li ul li {
+		display:block;
+		border-bottom:1px solid #484548;
+		padding:0;
+        z-index: 800;
+        background: rgba(50, 47, 50, 0.80);
+
+	}
+	#jMenu li ul li.arrow {
+		background: url('/images/menu/arrow_down.png') no-repeat center center;
+		height:6px;
+		padding:0;
+		border-bottom:none;
+		padding-bottom:10px;
+        z-index: 800;
+	}
+		#jMenu li ul li a {
+			font-size:11px;
+			text-transform:none;
+			padding:7px;
+            background:rgba(50, 47, 50, 0.80);
+			display:block;
+			border-top:1px solid transparent;
+			border-bottom:1px solid transparent;
+            z-index: 800;
+		}
+		#jMenu li ul li a.isParent {
+			background:rgba(50, 47, 50, 0.80) url('/images/menu/arrow_right.png') no-repeat right center;
+            z-index: 800;
+		}
+			#jMenu li ul li a:hover {
+                background:rgba(81, 76, 82, 0.80);
+				border-top:1px solid #322f32;
+				border-bottom:1px solid #322f32;
+                z-index: 800;
+			}

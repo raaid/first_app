@@ -1,0 +1,248 @@
+<script>
+  $('#clipcontrol').hide();
+  $('#pags').hide();
+  $('#foreground').hide();
+  $('#maincontentdiv').hide();
+  $('#maincontentdiv').animate({top: "600px"}, 0 );
+  $('#maincontentdiv').show();
+  $('#maincontentdiv').animate({top: "101px"}, 1000 );
+</script>
+<% if @album.name == 'twrlive' %>
+    <span class="btn btn-primary" style="width:200px;" onclick="window.location='/show_albums/<%=@album.user_id.to_s%>'">
+              <i class="icon-arrow-left icon-white"></i>
+              <span>Back To Albums</span>
+    	</span>
+<% else %>
+    <span class="btn btn-primary" style="width:200px;" onclick="window.location='/albums/<%=@album.id.to_s%>'">
+              <i class="icon-arrow-left icon-white"></i>
+              <span>Back To Album</span>
+    	</span>
+<% end %>
+<center><h1>Add Photos</h1></center>
+<div class="clearfloat"></div>
+<br />
+
+  <%= form_for AlbumPhoto.new({ album_id: params[:id] }), :html => { :multipart => true, :id => "fileupload"  } do |f| %>
+      <center>
+        <span class="btn btn-success fileinput-button" style="width:200px;">
+          <i class="icon-plus icon-white"></i>
+          <span>Add files...</span>
+          <%= f.file_field :album_photo %>
+	</span>
+</center>
+      <br />
+        <div style="display: none;"><button type="reset" class="btn btn-warning cancel">
+          <i class="icon-ban-circle icon-white"></i>
+          <span>Cancel upload</span>
+        </button>
+        <button type="button" class="btn btn-danger delete">
+          <i class="icon-trash icon-white"></i>
+          <span>Delete</span>
+        </button> </div>
+	<%= f.hidden_field :album_id %>
+        <div style="display: none;"> <input type="checkbox" class="toggle"> </div>
+      <div class="span5">
+        <!-- The global progress bar -->
+        <div class="progress progress-success progress-striped active fade">
+          <div class="bar" style="width:0%;"></div>
+        </div>
+      </div>
+    <!-- The loading indicator is shown during image processing -->
+    <div class="fileupload-loading"></div>
+    <br />
+    <center><table class="table table-striped"><tbody class="files" data-toggle="modal-gallery" data-target="#modal-gallery"></tbody>
+    </table> </center>
+    <!-- I left this here, because I wasn't sure if it is used behind the scenes somehow -->
+    <div style="display:none"><button type="submit" class="btn btn-primary start"></button></div>
+    <center>
+        <span class="btn btn-primary" style="width:200px;" onclick="$('.btn-upload').click();">
+          <i class="icon-plus icon-white"></i>
+          <span>Start Uploading Files</span>
+	</span>
+    <br />
+  <% end %>
+
+</div>
+
+<div style="display:none;">
+    <canvas height="72" width="80" id="canvas"></canvas>
+</div>
+
+<script>
+  var fileUploadErrors = {
+  maxFileSize: 'File is too big',
+  minFileSize: 'File is too small',
+  acceptFileTypes: 'Filetype not allowed',
+  maxNumberOfFiles: 'Max number of files exceeded',
+  uploadedBytes: 'Uploaded bytes exceed file size',
+  emptyResult: 'Empty file upload result'
+  };
+</script>
+
+<script type="text/javascript" charset="utf-8">
+function showPreview(file, img) {
+    var canvas = document.getElementById('canvas').getContext('2d');
+    var reader = new FileReader;
+
+    reader.onload = function(event) {
+//        var img = new Image;
+
+        img.onload = function() {
+            canvas.drawImage(img, 20,20);
+        };
+
+        img.src = event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+}
+
+function img_data_for_file(file, imgID) {
+    var canvas = document.getElementById('canvas').getContext('2d');
+    var reader = new FileReader;
+
+    reader.onload = function(event) {
+//        var img = new Image;
+        var img = document.getElementById(imgID);
+
+        img.onload = function() {
+            canvas.drawImage(img, 20,20);
+        };
+
+        img.src = event.target.result;
+    };
+
+    reader.readAsDataURL(file);
+}
+
+$(function () {
+    // Initialize the jQuery File Upload widget:
+    $('#fileupload').fileupload();
+    
+    var fu = $('#fileupload').data('fileupload');
+
+    fu._renderUpload = function(files) {
+        return $(uploadFilesHTML(files, fu.options)).fadeIn(500);
+    };
+
+    fu._renderDownload = function(files) {
+        return $(downloadFilesHTML(files, fu.options)).fadeOut(500);
+    };
+
+    // Load existing files:
+    $.getJSON($('#fileupload').prop('action'), function (files) {
+        var fu = $('#fileupload').data('fileupload'), 
+        template;
+        fu._adjustMaxNumberOfFiles(-files.length);
+        //console.log(files);
+
+	//        template = fu._renderDownload(files)
+	//          .appendTo($('#fileupload .files'));
+        // Force reflow:
+	//        fu._reflow = fu._transition && template.length &&
+	//          template[0].offsetWidth;
+	//        template.addClass('in');
+	//        $('#loading').remove();
+    });
+});
+
+function uploadFilesHTML(files, options) {
+    var result = "";
+    for (var i=0;i<files.length;i++) {
+	result = result + uploadFileHTML(files[i], options);
+    }
+    return result;
+}
+
+
+var incrementedID=0;
+
+function uploadFileHTML(file, options) {
+    var result = "";
+
+    var imgID="previewImage" + incrementedID;
+    incrementedID = incrementedID + 1;
+    img_data_for_file(file, imgID);
+
+    result = result + '<tr class="template-upload fade">'
+	+ '<td class="preview"><span class="fade"><img height="32" width="32" id="' + imgID + '" src=""></span></td>'
+	+ '<td class="name" style="padding-top:15px;"><span>File Name: ' + file.name + '</span></td>'
+	+ '<td class="size"><span></span></td>';
+    
+    if (file.error) {
+	result = result + '<td class="error" colspan="2"><span class="label label-important">' + file.error + '</span> ' + fileUploadErrors[file.error] || file.error + '</td>'
+    } else {
+	result = result + '    <td>      <div class="progress progress-success progress-striped active"><div class="bar" style="width:0%;">&nbsp;</div></div>    </td>    <td class="start" style="padding:5px;">'
+	if (!options.autoUpload) {
+	    result = result + '      <button class="btn btn-primary btn-upload">        <i class="icon-upload icon-white"></i>        <span>Upload Photo!</span>      </button>'
+	}
+	result = result + '</td>';
+    }
+    
+    result = result + '<td class="cancel" style="padding:5px;">';
+    result = result + '      <button class="btn btn-warning">        <i class="icon-ban-circle icon-white"></i>        <span>Cancel Upload</span>      </button>';
+    result = result + '</td>  </tr>';
+    return result;
+}
+
+function downloadFilesHTML(files, options) {
+    var result = "";
+    for (var i=0;i<files.length;i++) {
+	result = result + downloadFileHTML(files[i], options);
+    }
+    return result;
+}
+
+function downloadFileHTML(file, options) {
+    var result = "";
+
+    // After talking to Adam, we decided to disable this part.
+    if (false) {
+	result = result + '<tr class="template-download fade">'
+	    + '<td class="preview"><span class="fade"></span></td><td class="name" style="padding-top:15px;"></td> <td class="size"><span></span></td>';
+	
+	if (file.error) {
+	    result = result + '<td class="error" colspan="2">'
+		+ '<span class="label label-important">' + file.error + '</span>' + fileUploadErrors[file.error] || file.error + '</td>'
+	} else {
+	    result = result + '<td class="preview">'
+		+ '  <a href="' + file.url + '" title="Download image" rel="gallery" download="' + file.name + '"><img height="32" width="32" src="' + file.thumbnail_url + '"></a>';
+		+ '</td><td class="name">'
+		+ '  <a href="' + file.url + '" title="Download image" rel="' + file.thumbnail_url + 'gallery" download="' + file.thumbnail_url + '">Download</a>'
+		+ '</td><td colspan="2"></td>';
+
+	    result = result + '<td class="delete">'
+		+ '  <button class="btn btn-danger" data-type="DELETE" data-url="/album_photos/' + file.id  + '">'
+		+  '<i class="icon-trash icon-white"></i>'
+		+  '<span>Destroy</span>'
+		+ '</button>'
+		+ '</td>';
+	}
+	result = result + '</tr>';
+    } else {
+//	var tempID="tempID" + incrementedID;
+//	incrementedID = incrementedID + 1;
+//	result = '<span id="' + tempID + '">Done Uploading!</span>'
+//	    + '<scr' + 'ipt>$(#' + tempID + ').fadeOut(500);</scr' + 'ipt>';
+	result = "";
+    }
+    
+    return result;
+}
+
+function printObj(object) {
+  var output = '';
+  for (property in object) {
+    output += property + ': ' + object[property]+'; ';
+  }
+  alert(output);
+}
+
+function printKeys(object) {
+  var output = '';
+  for (property in object) {
+    output += property + ' ';
+  }
+  alert(output);
+}
+</script>

@@ -1,0 +1,91 @@
+<script>
+  $('#clipcontrol').hide();
+  $('#pags').hide();
+  $('#foreground').hide();
+  $('#maincontentdiv').hide();
+ // $('#maincontentdiv').fadeIn(1500);
+
+$('#maincontentdiv').animate({top: "600px"}, 0 );
+  $('#maincontentdiv').show();
+  $('#maincontentdiv').animate({top: "101px"}, 1000 );
+
+
+  $(document).ready(function () {
+  $('#pword').val('');
+  $('#pwordc').val('');
+  });
+</script>
+
+<h1>Manage And Redeem Your Tickets</h1>
+<hr />
+<br />
+
+<center>
+  <div class="purchaseTicketContainer">
+<p><b>Redeem By Ticket ID:</b></p>
+<%= form_tag "/redeem_ticket" do -%>
+  <br />
+  <%= number_field :ticket, :id , :class=>"loginFormSize" %>
+  <div class="clearfloat"></div>
+  <br />
+  <%= submit_tag "Redeem"  ,:class=>"btn btn-success", :style=>"width:270px;"%>
+  <br />
+<% end %>
+      </div>
+</center>
+<hr />
+<br />
+<div class="purchaseTicketContainer3">
+  <center><p><b>Or Redeem Directly From A List:</b></p></center>
+  <hr />
+  <br />
+
+  <%@ticket_type.each do |tt| %>
+      <div class="purchaseTickets">
+      <table width="95%">
+        <tr>
+          <td width="31%"><%= tt.name %> ($<%= tt.price %>)</td>
+          <td width="45%">From: <%= tt.sell_from %> - <%= tt.sell_to %> (<%= tt.event_name %>)</td>
+          <td width="7%"><%= "(Groupable)" if tt.groupable? %></td>
+          <td width="12%"></td>
+          <td width="5%"><%= link_to 'Edit', edit_ticket_type_path(tt) %></td>
+        </tr>
+      </table>
+      </div>
+      <hr />
+        <table width="95%">
+
+        <tr>
+                                <th width="19%">Guest Information</th>
+                                <th width="20%"></th>
+                                <th width="41%">Ticket Information</th>
+                                <th width="10%">Status</th>
+                                <th width="10%"></th>
+                              </tr>
+          </table>
+      <hr />
+      <center>
+
+      <% @ticket_instances.each do |ticket_instance| %>
+      <% if ticket_instance.ticket_type_id == tt.id %>
+             <table width="95%">
+              <tr>
+                  <td width="45%"><%= ticket_instance.guest_name %> (<%= ticket_instance.guest_email %>)</td>
+                  <td width="5%"></td>
+                  <td width="30%"><%= ticket_instance.ticket_type.name %> X <%= ticket_instance.quantity %> = $<%= ticket_instance.price_paid %></td>
+                  <td width="10%"><%= ticket_instance.status %></td>
+                  <td width="10%"><%= link_to 'Redeem', controller: :ticket_instances, action: :redeem, event_id: params[:event_id], ticket_type_id: params[:ticket_type_id], id: ticket_instance.id if ticket_instance.status == "paid"%><%= link_to 'X',  ticket_instance, method: :delete if ticket_instance.status == "unpaid"%><%= ":)" if ticket_instance.status == "redeemed"%></td>
+                </tr>
+
+             </table>
+       <% end %>
+       <% end %>
+       <br />
+       <br />
+      </center>
+
+  <% end %>
+
+  </div>
+<br />
+

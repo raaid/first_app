@@ -1,0 +1,34 @@
+<%= form_for(@registration_member) do |f| %>
+   <center>
+    <%= f.hidden_field :registration_list_id %>
+    <%= f.label :name %>
+    <%= f.text_field :name, :required=>true %>
+    <%= f.label :email %>
+    <%= f.text_field :email, :required=>true  %><br /><br />
+     <input type="button" value="Register For This Event" class="btn btn-success" onclick="ajaxSubmitRegister()"/>
+     </center>
+<% end %>
+
+
+
+<script>
+    function ajaxSubmitRegister() {
+      name = document.getElementById("registration_member_name").value;
+      email = document.getElementById("registration_member_email").value;
+      registration_list_id = document.getElementById("registration_member_registration_list_id").value;
+      data = {'name': name, 'email': email, 'registration_list_id': registration_list_id};
+
+      $.post('/registration_members', data, function(response) {
+        data = JSON.parse(response);
+        if (data['created_at']){
+            flash_notice("Registration was successful!");
+            document.getElementById("registration_member_name").value='';
+            document.getElementById("registration_member_email").value='';
+            $('#registrationPanel').toggle(500);
+        } else{
+            flash_notice('Registration was unsuccessful, please check the email and or name you\'ve entered!');
+            $('#registrationPanel').toggle(500);
+        }
+      }, 'html');
+    }
+</script>

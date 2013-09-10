@@ -1,0 +1,289 @@
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner" style="background:#333;">
+    <div class="container">
+      <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="brand" href="<%=root_path%>">Eventastic</a>
+
+      <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li class="">
+                  <%= link_to "Home", root_path %>
+                </li>
+                <li class=""><%= link_to "Search Events", mobile_search_path %></li>
+                <% if authenticated? %><li class="active"><%= link_to "Manage Events", events_path %></li><% end %>
+                <% if authenticated? %><li class=""><%= link_to "Edit Profile", edit_user_path %></li><% end %>
+                <li class="">
+                  <% unless authenticated? %><li class=""><%= link_to "Login/Register", new_user_path %></li><% else %><li><%= link_to "Logout", logout_path, :method=>"get" %></li><% end %>
+                </li>
+                <li class="">
+                  <%= link_to "Contact Us", contact_path %>
+                </li>
+              </ul>
+            </div>
+    </div>
+  </div>
+</div>
+
+<div class="jumbotron masthead" style="padding: 15px 0px 80px;padding-bottom: 10px;background:#000 url(https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/newbg3.png);background-size: 100% 100%;">
+  <div class="container">
+    <h1>My Events</h1>
+  </div>
+</div>
+
+<div class="container">
+  <div class="marketing">
+    <br />
+    <p class="marketing-byline">Manage Your Events Below<br />Or</p>
+    <center><input type="button" id="buttonslide" class="btn btn-large btn-success" value="Create A New Event" /></center>
+    <div class="row-fluid">
+    <br />
+      <span id="neweventform" style="display:none;">
+        <span class="main_content_partial" style="display:inline-block;width:90%;">
+           <div style="display:inline-block;">
+      <%= simple_form_for :event, html: { multipart: true }, url: events_path, method: :post do |f| %>
+
+              <%= f.input :name, label: "Event Name",:input_html => {:style => "width:200px"} %>
+                 <%= f.input :category, priority: Event::CATEGORY_PERSONAL, collection: [ Event::CATEGORY_PERSONAL, Event::CATEGORY_ENTERTAINMENT, Event::CATEGORY_CHARITY, Event::CATEGORY_BUSINESS],label: "Event Category",include_blank: false,:input_html => {:style => "width:200px"}  %>
+                         <%= f.input :venue_name, label: "Venue Name (Optional)",:input_html => {:style => "width:200px"} %>
+
+            <%= f.input :address, label: "Event Address",:input_html => {:style => "width:200px"} %>
+                     <%= f.input :city, label: "Event City",:input_html => {:style => "width:200px"} %>
+                     <%= f.input :province, label: "Event Province/State",:input_html => {:style => "width:200px"} %>
+                     <%= f.input :postal, label: "Event Postal/Zip",:input_html => {:style => "width:200px"} %>
+                     <%= f.input :country, label: "Event Country",:input_html => {:style => "width:200px"} %>
+        <br />
+                </div>
+                  <div style="display:inline-block;">
+                    <center>
+          <p style="color:#000;font-size: 9pt">Select a display photo for your event page (Recommended: 500x500)</p>
+        <div class="profile_avatar" style="width:150px;"><%= image_tag @event.event_image.url(:feed), :style=>"height:150px;width:150px;", id: "profile_avatar"%></div>
+        <%= f.file_field :event_image, label: false, onchange: "readAvatar(this)", required: false%><br /><br />
+                      <p style="color:#000;font-size: 9pt;">Select a cover photo photo for your event page (Recommended: 1950x900)</p>
+            <!-- <div class="profile_avatar" style="width:195px;"><%= image_tag @event.event_poster.url(:preview), :style=>"height:90px;width:195px;" %></div>
+            <%= f.file_field :event_poster, label: false, required: false%> -->
+            <img id="missingPaper" src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/theme0.jpg" class="profile_avatar", style="height:90px;width:195px;margin-top:13px;" />
+            <div id="wallpaperContainer" style="width:200px;"></div>
+            <div id="fileContainer">
+              <%= file_field_tag :custom0, label: false, onchange: "readURL(this)", required: false%>
+            </div>
+                    </center>
+                </div>
+                  <div style="display:inline-block;">
+                    <label for="event_description">Description</label>
+                    <%= f.text_area :description, class: 'bio', style:"height:175px;" %>
+                    <label for="event_details">Details</label>
+                    <%= f.text_area :details, class: 'bio', style:"height:175px;" %>
+                  </div>
+          <div class="clearfloat"></div>
+                 <center><div class="dateTitle">Event Start Time</div>
+                           <div class="datetime"><%= f.datetime_select :startTime, :ampm => true %></div>
+                           <div class="dateTitle">Event End Time</div>
+                           <div class="datetime"><%= f.datetime_select :endTime, :ampm => true %></div> </center>
+                 <br />
+                 <div style="display:inline-block;margin-left: 10px;">
+                <table width="90%;">
+                <tr>
+                  <td width="33%"><%= f.input :allow_comments,as: :boolean, label: "Allow Comments",:input_html => {:style => "float:left;"} %></td>
+                  <td width="33%"><%= f.input :show_promotor,as: :boolean, label: "Show Planner",:input_html => {:style => "float:left;"} %></td>
+                  <td width="34%"><%= f.input :show_attendees,as: :boolean, label: "Display Attendees",:input_html => {:style => "float:left;"} %></td>
+                </tr>
+              </table>
+              </div>
+                   <br />
+                   <div style="margin-left: 7px;">
+                     <td width="25%"><%= f.input :is_private,as: :boolean, label: "This Event Will Be Private And Not Searchable Through Eventastic",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+                     <td width="25%"><%= f.input :allow_photo_sharing,as: :boolean, label: "This Event Will Allow Photo Sharing",:input_html => {:id=> "photo_check",:style => "float:left;margin-left:3px;"} %></td>
+                     <div id="auto_approve" style="display:none;">
+                     <td width="25%"><%= f.input :auto_approve_photos,as: :boolean, label: "Auto Approve Submitted Photos",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+                     </div>
+                     <td width="25%"><%= f.input :has_registration,as: :boolean, label: "This Event Will Provide A Registration Tool On It's Page",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+                     <td width="25%"><%= f.input :has_ticketing,as: :boolean, label: "This Event Will Sell Tickets",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+                     <td width="25%"><%= f.input :has_donations,as: :boolean, label: "This Event Will Accept Cash Donations",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+                     <td width="25%"><%= f.input :has_cash_gifting,as: :boolean, label: "This Event Will Have Cash Gifting",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+                     <td width="25%"><%= f.input :include_fees,as: :boolean, label: "Charge Processing Fees To Customer Instead Of Covering It Yourself (2.9% + $0.30/transaction)",:input_html => {:style => "float:left;margin-left:3px;"} %></td>
+
+
+                     <br />
+                                  <span>I would Like To Have:  </span>
+                     <div class="selectContainer">
+                                          <select id="theSelect" style="width:270px;">
+                                              <option value="Nada">No Video On My Event Page</option>
+                                              <option value="Youtube">A Youtube Video On My Event Page</option>
+                                              <option value="Self">A Self Recorded, Personal, Video From My Webcam On My Event Page!</option>
+                                          </select>
+                                      </div>
+                                   <div class="hidden isNada"></div>
+                  <div class="hidden isYoutube"><%= f.input :has_youtube,as: :boolean,label: "Include A Youtube Video",:input_html => {:id=> "video_check2", :style => "float:left;margin-left:3px;"} %></td>
+                    <div id="video_message_panel2"  style="display:inline-block;margin-left: 13px;"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/youtube_ind.png"><br /><p style="color:#000;"><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/info_icon.png" width="15px" class="tooltip_hover" title="Specify Your Youtube Embed Link Here!">*Youtube Embed Link</p><%= f.input :youtube, label: false,:input_html => {:style => "width:300px"}, :required => false %></div></div>
+                                      <div class="hidden isSelf">
+                                        <td width="25%"><%= f.input :show_video_message,as: :boolean,label: "Include A Video Message",:input_html => {:id=> "video_check", :style => "float:left;margin-left:3px;"} %></td>
+                                        <div id="video_message_panel"  style="display:inline-block;margin-left: 13px;"><p>Recording personal videos can only be performed via a computer.  Please try this action again, no from a mobile device.</p></div>
+                                      </div>
+
+
+                   </div>
+                 <%= f.hidden_field :video %>
+                 <%= f.hidden_field :first_view %>
+                 <%= f.hidden_field :has_been_deleted %>
+             <br />
+             <br />
+             <br />
+          <center><%= f.submit "Add Event", class: "btn btn-large btn-success"%></center>
+    <% end %>
+    </span>
+        <br />
+        </span>
+      <% @events.each do |event| %>
+           <span class="main_content_partial" style="display:inline-block;margin-top: 10px; width:90%">
+           <% tt = TicketType.find_all_by_event_id(event.id) %>
+           <center><h1 style="margin-bottom: 10px;"><%= event.name %></h1></center>
+             <span style="display:inline-block;">
+                          <p style="color:#474747;">Date: <%= event.startTime.strftime("%Y-%m-%d %-I:%M %P") %> to <%= event.endTime.strftime("%Y-%m-%d %-I:%M %P") %></p>
+                            <p style="color:#474747;">Location: <%= event.address if event.address %>, <%= event.city if event.city %>, <%= event.province if event.province %>, <%= event.country if event.country %></p>
+                          <p style="color:#474747;">Description:<br /><%= event.description %></p>
+                          <p style="color:#474747;">Details:<br /><%= event.details %></p>
+                          </span>
+             <div class="main_content_partial2" style="<%if event.event_image_file_name %>background:url(<%=event.event_image.url(:standard)%><% end %>)">
+               <span style="display:inline-block;">
+         <%= button_to "Go To Event Page", event_path(event), :method=>"get",:class=>"btn btn-primary", :style=>"width:240px;"%>
+         <%= button_to "Edit Event Details", edit_event_path(event), :method=>"get",:class=>"btn btn-primary", :style=>"width:240px;"%>
+         <%= button_to "Clone This Event", clone_event_path(event.id), :method=>"get",:class=>"btn btn-primary", :style=>"width:240px;"%>
+         <%= button_to "Add Files To Download", manage_attached_path(:e_id => event.id), :method=>"get",:class=>"btn btn-primary", :style=>"width:240px;"%>
+           <%#= button_to "Promote This Event", event_path(event), :method=>"get",:class=>"btn btn-primary", :style=>"width:240px;"%>
+          <!-- <input type="button" class="btn btn-primary" value="Promote This Event" onclick="window.location='/rsvp?id=<%=event.id%>'" style="width:240px;"><div class="clearfloat"></div><br />      -->
+          <% if event.has_donations or event.has_cash_gifting %><input type="button" class="btn btn-primary" value="Manage <% if event.has_cash_gifting %>Cash Gifts<% end %> <% if event.has_donations and event.has_cash_gifting %>&<% end %> <% if event.has_donations %>Donations<% end %>" onclick="window.location='<%=cg_path(:id => event.id)%>'" style="width:240px;"><div class="clearfloat"></div><br /><% end %>
+           <% if event.has_registration %>
+           <% regList = (RegistrationList.where(:event_id => event.id).first).id %>
+            <input type="button" value="View Registration List" onclick="window.location = '<%=registration_list_path(:id => regList)%>'"class= "btn btn-primary", style="width:240px;" />
+            <div class="clearfloat"></div>
+            <br />
+           <% end %>
+         <!--  <%#= button_to "Thank Attendants From Event", thank_yous_path(event), :method=>"get",:class=>"btn btn-primary", :style=>"width:240px;"%> -->
+          <!-- <input type="button" class="btn btn-primary" value="Thank Attendants From Event" onclick="window.location='/thank_yous?id=<%=event.id%>'" style="width:240px;"><div class="clearfloat"></div><br /> -->
+           <% if event.has_ticketing %><input type="button" value=<% if event.ticket_types.length <= 0 then %>"Add Tickets To Sell!"<% else %>"Manage Ticket Sales"<% end %>onclick="window.location = '/event/<%=event.id%>/ticket_types'"class= "btn btn-primary", style="width:240px;" /><div class="clearfloat"></div><br /><% end %>
+           <%= button_to "Delete This Event", delete_event_path(:id => event.id), method: :delete, confirm: "Are you sure you want to delete this event?", id: "delete" + event.id.to_s, class:"btn btn-danger", :style=>"width:240px;" %>
+           </span></div>
+           </span>
+          <div class="clearfloat"></div><br />
+         <% end %>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+$(document).ready(function() {
+    $('#neweventform').slideToggle(10);
+    $('#neweventform').slideToggle(10);
+    $('#buttonslide').click(function() {
+      $('#neweventform').slideToggle(1000);
+    });
+});
+
+function readAvatar(input) {
+
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      document.getElementById("profile_avatar").setAttribute("src", e.target.result);
+    }
+
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function readURL(input) {
+  index = input.name.charAt(input.name.length - 1);
+  index = parseInt(index) + 1;
+  input.style.display = "none";
+
+  divs = document.getElementById("wallpaperContainer").getElementsByTagName("div");
+  if (divs.length > 0) {
+    lastDiv = divs[divs.length - 1];
+    idindex = lastDiv.id.charAt(lastDiv.id.length - 1);
+    idindex = parseInt(idindex) + 1;
+  } else {
+    idindex = 0
+  }
+
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function (e) {
+      document.getElementById("missingPaper").style.display = "none";
+      $("#wallpaperContainer").append("<div id='paperContainer" + idindex + "' style='position:relative;width:200px'><img src='/images/cross.png' style='position:absolute;right:-16px;top:-10px;cursor:pointer;cursor:hand;' onclick='deleteFile(" + idindex + ", " + index + ")'><img class='profile_avatar' src='" + e.target.result + "' style='height:90px;width:195px;margin-top:13px'></div>");
+      $("#fileContainer").append("<input id='custom" + index + "' name='custom" + index + "' onchange='readURL(this)' type='file'>");
+    }
+
+    reader.readAsDataURL(input.files[0]);
+    
+  } else {
+    //internet explorer < 10 no preview img
+    filename = input.value.replace(/^.*[\\\/]/, '');
+    $("#wallpaperContainer").append("<div style='text-align:left;width:200px;word-wrap:break-word;position:relative'><img src='/images/checkmark2.png' /><span style='margin-left:8px;top:3px;position:relative;''>" + filename + "</span><img src='/images/cross.png' style='position:absolute;right:-30px;top:-3px;cursor:pointer;cursor:hand' onclick='deleteIE(\"" + input.id + "\", this.parentNode)'></div><br>");
+    document.getElementById("themeimg0").style.display = "none";
+
+  }
+}
+
+function deleteFile(index, id) {
+  paper = document.getElementById("paperContainer" + index);
+  paper.parentNode.removeChild(paper);
+
+  num = document.getElementById("wallpaperContainer").getElementsByTagName("div").length;
+  if (num == 0) {
+    document.getElementById("missingPaper").style.display = "block";
+  }
+
+  id = parseInt(id) - 1;
+  el = document.getElementById("custom" + id);
+  el.parentNode.removeChild(el);
+  
+}
+
+var MyCheck3=$("#video_check2");
+
+MyCheck3.change(function() {
+  $("#video_message_panel2").toggle(MyCheck3.is(":checked"));
+});
+
+var MyCheck=$("#video_check");
+
+MyCheck.change(function() {
+  $("#video_message_panel").toggle(MyCheck.is(":checked"));
+});
+
+var MyCheck2=$("#photo_check");
+MyCheck2.change(function() {
+  $("#auto_approve").toggle(MyCheck2.is(":checked"));
+});
+
+$('[class^=is]').hide();
+
+$("#theSelect").change(function(){
+    var value = $("#theSelect option:selected").val();
+    var theDiv = $(".is" + value);
+
+    if (value == "Youtube" ){
+        document.getElementById("video_check2").checked = true;
+        document.getElementById("video_check").checked = false;
+    }
+
+    if (value == "Self" ){
+        document.getElementById("video_check2").checked = false;
+        document.getElementById("video_check").checked = true;
+    }
+
+    if (value == "Nada" ){
+        document.getElementById("video_check2").checked = false;
+        document.getElementById("video_check").checked = false;
+    }
+    theDiv.slideDown().removeClass("hidden");
+    theDiv.siblings('[class*=is]').slideUp(function() { $(this).addClass("hidden"); });
+});
+</script>
+

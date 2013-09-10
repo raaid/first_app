@@ -1,0 +1,36 @@
+<div id="wrap">
+  <table id="layout" border="0" cellspacing="0" cellpadding="0" width="600">
+    <tr><td>
+	<img src="http://gallery.mailchimp.com/0d61bb2ec9002f0e9872b8c36/images/beauty_reminder_header.1.png" style="max-width: 600px;">
+    </td></tr>
+    <tr style="position:relative;top:-5px;">
+      <td id="content">
+        <center><a href="http://www.theweddingregistry.me"><img src="https://s3.amazonaws.com/storage.production.giftopia.cdn/logowedding.png" style="max-width: 600px;"></a></center>
+        <center><p style="color:#89c8be;">You've  received  video wedding invitation from <%= @owner.display_name %>!<br /><br />
+            <% if @invitation_message.text and @invitation_message.text != "" %>
+            <!-- A note is attached:<br />
+                 <%= @invitation_message.text %>
+                 <br />    -->
+            <% end %>
+
+            <% if @invitation_message.video %>
+            <!--  And a video is attached:<br />-->
+	    
+            <%= @video_html.html_safe %>
+            <% end %>
+        </p></center>
+      </td>
+    </tr>
+    <tr>
+      <td id="page_curl">
+	<img src="http://gallery.mailchimp.com/0d61bb2ec9002f0e9872b8c36/images/beauty_coupon_footer.png" />
+      </td>
+    </tr>
+    <tr>
+      <td id="footer">
+	<p>Copyright (C) <%= Time.now.year %> Giftopia Inc. All rights reserved.</p>
+      </td>
+    </tr>
+  </table>
+</div>
+<span style="padding: 0px;"></span>

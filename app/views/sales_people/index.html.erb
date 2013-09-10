@@ -1,0 +1,245 @@
+<script type="text/javascript" src="/javascripts/html5slider.js" ></script>
+
+<section>
+  <div class="container">
+<h1>Manage Sales People</h1>
+<br/>
+<center>
+<div class="peopleTable">
+<table style="width:100%">
+  <tr>
+    <td></td>
+    <td style="width:140px">Name</td>
+    <td>Email</td>
+    <td>Commission</td>
+    <td style="width:100px">Total Ticket Sales</td>
+    <td style="width:40px">Money Made</td>
+    <!-- <td></td> -->
+  </tr>
+
+<% @info.each_with_index do |person, index| %>
+  <tr>
+    <td style="width:1px;cursor:pointer" onclick="showStats('<%=person[:contract_id]%>', <%=person[:sales].length - 1%>)">
+      <img id="right<%=person[:contract_id]%>" src="/images/right.png" style="width:17px;float:right;position:absolute;<%if index == 0%>display:none<%end%>"/>
+      <img id="down<%=person[:contract_id]%>" src="/images/next.png" style="width:17px;float:right;position:absolute;<%if index > 0%>display:none<%end%>"/>
+    </td>
+    <td class="sales_person" onclick="showStats('<%=person[:contract_id]%>', <%=person[:sales].length - 1%>)"><b><%= person[:fname] %> <%= person[:lname] %></b></td>    
+    <td class="sales_person" onclick="showStats('<%=person[:contract_id]%>', <%=person[:sales].length - 1%>)"><b><%= person[:email] %></b></td>
+    <td class="sales_person" >
+        <div style="width:230px">
+        <input id="slider<%=person[:contract_id]%>" type="range" min="0" max="100" step="0.1" style="width:145px" value="<%= person[:commission] %>" onchange="updateNumber(this.value, 'number', <%=person[:contract_id]%>)">
+        <span style="margin-top:5px;margin-left:40px;position:absolute">%</span>
+        <input id="number<%=person[:contract_id]%>" type="number" value="<%= person[:commission] %>" step="0.1" style="width:61px" onchange="updateNumber(this.value, 'slider', <%=person[:contract_id]%>)"/>
+        </div>
+    </td>
+    <td class="sales_person" onclick="showStats('<%=person[:contract_id]%>', <%=person[:sales].length - 1%>)"><b><%= person[:total_sold] %></b></td>
+    <td id="totalAmt<%=person[:contract_id]%>" class="sales_person" style="font-weight:bold" onclick="showStats('<%=person[:contract_id]%>', <%=person[:sales].length - 1%>)"></td>
+    <td><%= button_to "delete", {:controller => :contracts, :action => 'destroy', :id => person[:contract_id] }, class: "btn btn-danger", confirm: "This action will remove this sales person, as well as disallow them from receiving any commission.  This cannot be undone.  Continue?", :method => :delete %></td>
+   <!--  <td><%#= link_to 'Show', sales_person %></td>
+    <td><%#= link_to 'Edit', edit_sales_person_path(sales_person) %></td>
+    <td><%#= link_to 'Destroy', sales_person, method: :delete, data: { confirm: 'Are you sure?' } %></td> -->
+  </tr>
+  <% person[:sales].each_with_index do |sale, i| %>
+  <tr class="sales_<%=person[:contract_id]%><%=i%>" <%if index > 0%>style="display:none"<%end%>>
+    <td></td>
+    <td></td>
+    <td><%=sale[:name]%>($<%=number_with_precision(sale[:ticket_price], :precision => 2)%>)</td>
+    <td id="amount<%=person[:contract_id]%><%=sale[:id]%>" class="ticket<%=sale[:id]%>"></td>
+    <td id="total<%=person[:contract_id]%><%=sale[:id]%>" class="total<%=sale[:id]%>"><%=sale[:total]%></td>
+  </tr>
+  <% end %>
+<% end %>
+
+<tr onclick="showStats('a', <%=@ticket_types.length - 1%>)" style="cursor: pointer;cursor:hand;">
+  <td style="width:1px">
+      <img id="righta" src="/images/right.png" style="width:17px;float:right;position:absolute"/>
+      <img id="downa" src="/images/next.png" style="width:17px;float:right;position:absolute;display:none"/>
+    </td>
+  <td >Total From Sales People</td>
+  <td></td>
+  <td></td>
+  <td id="totalSalesFromPeople"></td>
+  <td id="totalMoneyFromPeople"></td>
+</tr>
+
+<% @ticket_types.each_with_index do |type, i| %>
+  <tr class="sales_a<%=i%>" style="display:none;">
+    <td></td>
+    <td></td>
+    <td><%=type[:name]%>($<%=number_with_precision(type[:price], :precision => 2)%>)</td>
+    <td id="salesTicket<%=type.id%>">$0</td>
+    <td id="salesTotal<%=type.id%>"></td>
+  </tr>
+<% end %>
+
+<tr onclick="showStats('b', <%=@ticket_types.length - 1%>)" style="cursor: pointer;cursor:hand;">
+  <td style="width:1px">
+      <img id="rightb" src="/images/right.png" style="width:17px;float:right;position:absolute"/>
+      <img id="downb" src="/images/next.png" style="width:17px;float:right;position:absolute;display:none"/>
+    </td>
+  <td>Global Total</td>
+  <td></td>
+  <td></td>
+  <td><%=@globalTicketCount%></td>
+  <td>$<%=number_with_precision(@globalTicketAmount, :precision => 2)%></td>
+</tr>
+
+<% @ticket_types.each_with_index do |type, i| %>
+  <tr class="sales_b<%=i%>" style="display:none">
+    <td></td>
+    <td></td>
+    <td><%=type[:name]%>($<%=number_with_precision(type[:price], :precision => 2)%>)</td>
+    <td>$<%=number_with_precision(@tickets["price"][type.id], :precision => 2)%></td>
+    <td><%=@tickets["quantity"][type.id]%></td>
+  </tr>
+<% end %>
+
+<tr>
+  <td></td>
+  <td>Event Planner Total</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td id="plannerTotal" style="font-weight:bold;color:#000"></td>
+</tr>
+
+</table>
+</div>
+</center>
+
+<br />
+
+<%= render 'form' %>
+<%#= link_to 'New Sales person', new_sales_person_path %>
+</div>
+</section>
+
+<script>
+
+prices = new Object();
+<% @ticket_types.each do |type| %>
+  prices["<%=type.id%>"] = <%=type.price%>;
+<% end %>
+
+$(document).ready(function() {
+  totalSales = 0;
+  <% @info.each do |person| %>
+    totalSales += <%=person[:total_sold]%>;
+    updateNumber(<%= person[:commission] %>, 'number', <%=person[:contract_id]%>);    
+  <% end %>
+  document.getElementById("totalSalesFromPeople").innerHTML = totalSales;
+ 
+ updateTotalsFromPeople();
+
+ <% @ticket_types.each do |type| %>
+    els = document.getElementsByClassName("total<%=type.id%>");
+
+    total = 0;
+    for (i = 0; i < els.length; i++) {
+      total += parseInt(els[i].innerHTML);
+    }
+    document.getElementById("salesTotal<%=type.id%>").innerHTML = total;
+ <% end %>
+})
+
+function updateTotalsFromPeople() {
+  total = 0;
+  <% @info.each do |person| %>    
+     dollarVal = document.getElementById("totalAmt<%=person[:contract_id]%>").innerHTML;
+     total += parseFloat(dollarVal.substring(1));
+  <% end %>
+
+  total = (Math.round(total*100)/100).toFixed(2);
+  document.getElementById("totalMoneyFromPeople").innerHTML = "$" + total;
+  plannerMoney = (Math.round((<%=@globalTicketAmount%> - total)*100)/100).toFixed(2);
+  document.getElementById("plannerTotal").innerHTML = "$" + plannerMoney;
+
+  <% @ticket_types.each do |type| %>
+    tickets = document.getElementsByClassName("ticket<%=type.id%>");
+    total = 0;
+    for (i = 0; i < tickets.length; i++) {
+      dollarVal = tickets[i].innerHTML;
+      total += parseFloat(dollarVal.substring(1));
+    }
+    total = (Math.round(total*100)/100).toFixed(2);
+    document.getElementById("salesTicket<%=type.id%>").innerHTML = "$" + total;
+  <% end %>
+
+}
+
+function showStats(ID, current) {
+    fadeStats(ID, current);
+    $("#right" + ID).fadeToggle(400);
+    $("#down" + ID).fadeToggle(400);
+}
+
+function fadeStats(ID, current) {
+  if (current >= 0) {
+        el = $(".sales_" + ID + current);
+        el.fadeToggle(400, function() {
+            fadeStats(ID, current - 1);
+        })
+    }
+}
+
+
+
+function updateNumber(val, type, id) {
+  amt = Math.round(val*10)/10;
+  document.getElementById(type + id).value = amt;
+
+  total = 0;
+  for (key in prices) {
+    process_fee = 0.0
+
+    if (prices[key] == 0) {
+      process_fee = 0
+    } else if (prices[key] < 5.0) {
+      process_fee = 0.25
+    } else if (prices[key] < 10.0) {
+      process_fee = 0.5
+    } else if (prices[key] < 20.0) {
+      process_fee = 0.75
+    } else {
+      process_fee = 0.99
+    }
+
+    sales = parseInt(document.getElementById("total" + id + key).innerHTML);
+
+    fee = ((prices[key] * sales) * 0.025) + (process_fee * sales);
+
+    newAmount = ((sales * prices[key]) - fee) * (val / 100);
+    newAmount = (Math.round(newAmount*100)/100).toFixed(2);
+
+    total = total + parseFloat(newAmount);
+    document.getElementById("amount" + id + key).innerHTML = "$" + newAmount;
+  }
+
+  total = (Math.round(total*100)/100).toFixed(2);
+  document.getElementById("totalAmt" + id).innerHTML = "$" + total;
+
+  updateTotalsFromPeople();
+
+  formdata = new FormData();
+  formdata.append("commission", val);
+
+  $.ajax({
+      url: "/contracts/" + id,
+      type: "PUT",
+      data: formdata,
+      "dataType":"json",
+      processData: false,
+      contentType: false
+  });
+
+  return total;
+}
+
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+</script>

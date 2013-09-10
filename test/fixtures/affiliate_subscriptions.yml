@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user: 
+  transaction: 
+  expiry: 2012-10-25
+
+two:
+  user: 
+  transaction: 
+  expiry: 2012-10-25

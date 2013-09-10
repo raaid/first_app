@@ -1,0 +1,281 @@
+<div class="side_panel_inner">
+  <span style="display: inline-block;">
+  <span style="float:left;width:325px;overflow:hidden;padding: 25px;">
+  <br /><br /><br />
+  <div class="search_partial">
+  <center><h1 style="font-size: 15pt;margin-left:-15px">Search By Name/Venue</h1></center><div class="clearfloat"></div>
+  <hr>
+  
+  <center>
+  <%= form_tag(search_events_path) do |form| %>
+        <span style="font-size:14pt;">Category:</span><br />
+        <%= select_tag :category, options_for_select([ "All", Event::CATEGORY_ENTERTAINMENT, Event::CATEGORY_PERSONAL, Event::CATEGORY_BUSINESS, Event::CATEGORY_CHARITY], "All"), style: "margin-top:10px" %>
+
+        <br /><br>
+        <span style="font-size:14pt;margin-top:10px">Event Name or Venue Name:</span><br />
+                  <%= text_field_tag :name, params[:name], placeholder: "Search By Event Name/Venue", class: "searchFormSize2", style: "margin-top:10px"%>
+      <br />
+        <button type="submit" class="btn btn-large btn-success" style="width:170px;"><i class="icon-search icon-white"></i><span>Search</span></button>
+  <% end %>
+  </center>
+  </div>
+  <br>
+  <span>
+ <!-- <center><h1 style="color:#fff;font-size: 20pt;">Search By Date</h1></center><div class="clearfloat"></div>
+  <hr />
+  <center>
+  <%= simple_form_for( :date, :url => search_by_date_path) do |f| %>
+
+              Event After:<%= f.input :from, :as => :date_picker, label:false, :input_html => {:size => 15, :id => 'date-pick'}, :required => true %>
+              Event Before:<%= f.input :to, :as => :date_picker, label:false, :input_html => {:size => 15, :id => 'date-pick3'}, :required => true %>
+      <br />
+        <button type="submit" class="btn btn-large btn-success" style="width:170px;"><i class="icon-search icon-white"></i><span>Search</span></button>
+  <% end %>
+  </center> -->
+  </span>
+  
+  <!-- <span>
+    <center><h4 id="lightsright3" style="font-size: 20pt;">Search By City</h4></center>
+    <hr />
+    <center>
+    <%= simple_form_for( :location, :url => search_by_city_path) do |form| %>
+                    <%= text_field_tag :city, params[:city], placeholder: "Search By Event City!", class: "searchFormSize"%>
+        <br />
+          <button type="submit" class="btn btn-success" style="width:170px;"><i class="icon-search icon-white"></i><span>Search</span></button>
+    <% end %>
+    </center>
+    </span> -->
+  </span>
+    <!-- <span style="float:right;">
+    <br />
+    <center>
+     <img src="/images/matrix.png" style="margin-left: 10px;-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;
+                           -moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;
+                           box-shadow:rgba(0,0,0,0.6) 0 6px 15px;
+                           -moz-border-radius: 22px;
+                           -webkit-border-radius: 22px;
+                           border-radius: 22px;
+                        border: solid 2px rgba(00, 00, 00, 1.0);overflow:hidden;">
+    </center>
+    </span> -->
+    <div class="closeEventsOutter" style="overflow:hidden">
+      <h1 style="font-size:25pt;font-weight:bold;color:#fff;margin-top:-33px">Events Near You</h1>
+      <select id="selectkm" class="selectkm" onchange="changeKM(this)">
+        <option value="25">Within 25 km</option>
+        <option value="50">Within 50 km</option>
+        <option value="100" selected="true">Within 100 km</option>
+        <option value="150">Within 150 km</option>
+        <option value="200">Within 200 km</option>
+        <option value="300">Within 300 km</option>
+        <option value="500">Within 500 km</option>
+      </select>
+      <div class="clearfloat"></div>
+      <hr>
+      <div class="closeEvents">
+      <div id="eventList"></div>
+      </div>
+    </div>
+
+
+    <div class="closeEventsOutter2" style="overflow:hidden">
+         <h1 style="font-size:25pt;font-weight:bold;color:#fff;margin-top:-30px">Recently Added:</h1>
+         <select id="selecttype" class="selectkm">
+           <option value="<%= Event::CATEGORY_ENTERTAINMENT %>" selected="true"><%= Event::CATEGORY_ENTERTAINMENT %></option>
+           <option value="<%= Event::CATEGORY_PERSONAL %>"><%= Event::CATEGORY_PERSONAL %></option>
+           <option value="<%= Event::CATEGORY_BUSINESS %>"><%= Event::CATEGORY_BUSINESS%></option>
+           <option value="<%= Event::CATEGORY_CHARITY %>"><%= Event::CATEGORY_CHARITY%></option>
+         </select>
+         <div class="clearfloat"></div>
+         <hr>
+         <div class="closeEvents">
+         <div id="eventListType"></div>
+         </div>
+       </div>
+  </span>
+</div>
+
+<script>
+    function lightup1(){//document.getElementById('lightsright').className = 'animate';//
+    //
+    }
+    function lightoff1(){//document.getElementById('lightsright').className = 'lightsout';
+    }
+    function lightup2(){//document.getElementById('lightsright2').className = 'animate';
+    }
+    function lightoff2(){//document.getElementById('lightsright2').className = 'lightsout';
+    }
+    function lightup3(){//document.getElementById('lightsright3').className = 'animate';
+    }
+    function lightoff3(){//document.getElementById('lightsright3').className = 'lightsout';
+    }
+
+    var cur_position;
+    var all_events = [];
+    $(document).ready(function() {
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(initialize, fail);
+      } else {
+        document.getElementById("map").innerHTML = "Geolocation is not supported by this browser.";
+      }
+
+      $('#selecttype').change(function() {
+        type = $("#selecttype option:selected").val();
+          clearDiv(document.getElementById("eventListType"));
+          for (i = 0; i < all_events.length; i ++) {
+            if (all_events[i][5] == type) {
+              addEvent2(all_events[i][0], all_events[i][1], all_events[i][3], all_events[i][4]);
+            }
+        }
+
+      });
+
+      /*$('#selectkm').change(function(e) {
+        distance = e.target.value;
+        clearDiv(document.getElementById("eventList"));
+          for (i = 0; i < all_events.length; i ++) {
+            if (parseInt(all_events[i][2]) < distance) {
+              addEvent(all_events[i][0], all_events[i][1], all_events[i][3], all_events[i][4]);
+            }
+        }
+      })*/
+
+
+    })
+
+    function changeKM(e) {
+      distance = e.value;
+        clearDiv(document.getElementById("eventList"));
+          for (i = 0; i < all_events.length; i ++) {
+            if (parseInt(all_events[i][2]) < distance) {
+              addEvent(all_events[i][0], all_events[i][1], all_events[i][3], all_events[i][4]);
+            }
+        }
+    }
+
+    function clearDiv(a) {
+      while (a.hasChildNodes()) {
+        a.removeChild(a.lastChild)
+      }
+     // a.parentNode.removeChild(a);
+    }
+
+    function initialize(position) {
+      <% if @events%>
+        <% @events.each_with_index do |event, i| %>
+          <% if event.category ==  Event::CATEGORY_ENTERTAINMENT %>
+            addEvent2("<%= escape_javascript event.name %>", "<%= event.date %>", <%= event.id %>, "<%= event.event_url(:feed) %>");
+          <% end %>
+                  
+          if (position != "fail") {
+            dist = getDistance(position.coords.latitude, position.coords.longitude, parseFloat("<%=event.lat%>"), parseFloat("<%=event.lon%>"));
+            all_events[<%= i %>] = ["<%= escape_javascript event.name %>", "<%= event.date %>", dist, <%= event.id %>, "<%= event.event_url(:feed) %>", "<%= event.category %>"];
+
+            if (dist < 100) {
+              addEvent("<%= escape_javascript event.name %>", "<%= event.date %>", <%= event.id %>, "<%= event.event_url(:feed) %>");
+            }
+          } 
+        
+      
+        <% end %>
+      <% end %>
+    }
+
+    function fail(error) {
+      document.getElementById("eventList").innerHTML = "Please turn on location services to use this feature";
+      document.getElementById("selectkm").removeAttribute("onchange");
+      initialize("fail");
+          error_msg = "";
+          switch (error.code) {
+              case error.PERMISSION_DENIED:
+                  error_msg = "User denied the request for Geolocation."
+                  break;
+              case error.POSITION_UNAVAILABLE:
+                  error_msg = "Location information is unavailable."
+                  break;
+              case error.TIMEOUT:
+                  error_msg = "The request to get user location timed out."
+                  break;
+              case error.UNKNOWN_ERROR:
+                  error_msg = "An unknown error occurred."
+                  break;
+          }
+          console.log(error_msg);
+      }
+
+      function addEvent(name, date, id, source) {
+        list = document.getElementById("eventList");
+
+        container = document.createElement("div");
+        container.setAttribute("class", "eventContainer");
+        container.setAttribute("style", "width:95%");
+        container.setAttribute("onclick", "window.location = '/events/" + id + "'");
+
+        //<img src="http://s3.amazonaws.com/storage.production.ticketacular.me/event_image/feed/RackMultipart20130219-6912-10new2c.jpg" class="imgpreview"/>
+
+        imgprev = document.createElement("img");
+        imgprev.setAttribute("class", "imgpreview");
+        imgprev.setAttribute("src", source);
+
+        nameCont = document.createElement("div");
+        nameCont.setAttribute("class", "eventName");
+        nameCont.innerHTML = name;
+
+        dateCont = document.createElement("div");
+        dateCont.setAttribute("class", "eventDate");
+        dateCont.innerHTML = date;
+
+        container.appendChild(imgprev);
+        container.appendChild(nameCont);
+        container.appendChild(dateCont);
+        list.appendChild(container);
+
+      }
+
+    function addEvent2(name, date, id, source) {
+      list = document.getElementById("eventListType");
+
+      container = document.createElement("div");
+      container.setAttribute("class", "eventContainer");
+      container.setAttribute("style", "width:95%");
+      container.setAttribute("onclick", "window.location = '/events/" + id + "'");
+
+      imgprev = document.createElement("img");
+      imgprev.setAttribute("class", "imgpreview");
+      imgprev.setAttribute("src", source);
+
+      nameCont = document.createElement("div");
+      nameCont.setAttribute("class", "eventName");
+      nameCont.innerHTML = name;
+
+      dateCont = document.createElement("div");
+      dateCont.setAttribute("class", "eventDate");
+      dateCont.innerHTML = date;
+
+      container.appendChild(imgprev);
+      container.appendChild(nameCont);
+      container.appendChild(dateCont);
+      list.appendChild(container);
+
+    }
+
+    function getDistance(lat1,lon1,lat2,lon2) {
+      var R = 6371; // km
+      var dLat = (lat2-lat1).toRad();
+      var dLon = (lon2-lon1).toRad(); 
+      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * 
+            Math.sin(dLon/2) * Math.sin(dLon/2); 
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+      return R * c;
+    }
+
+    if (typeof(Number.prototype.toRad) === "undefined") {
+      Number.prototype.toRad = function() {
+        return this * Math.PI / 180;
+      }
+    }
+
+
+</script>
+

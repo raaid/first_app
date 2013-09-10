@@ -1,0 +1,59 @@
+<div id="content_outter" class="main_content_pane_outter">
+<div id="content_inner" class="main_content_pane">
+  <h1 style="font-size:25pt;float:left;">Invitation Messages</h1>
+  <input type="button" value="Back To Promotion Management Panel"  onclick="window.location='<%=rsvp_path(:id => @event.id)%>'" class="btn btn-success" style="float:right;"></input>
+<div class="clearfloat"></div>
+  <br>
+<div class="contentarea">
+  <center><input type="button" value="Create A New Video Message" onclick="window.location='<%=new_invitation_message_path(:event_id => @event.id)%>'" class="btn btn-success"></input></center>
+  <hr />
+  <br />
+<div id='list_elements'>
+  <% if @invitation_messages.count > 0 %>
+  <h3>Already Recorded Video Messages</h3>
+  <br />
+  <% end %>
+  <% @invitation_messages.each do |element| %>
+  <div id='existing_element_<%= element['id'] %>_container'>
+    <div style="float:left;position:relative;top:6px;">Message Title: <b><%= element['name'] %></b></div>
+   <!-- <input type='button' class='btn btn-success' style='float:right;margin-left:5px;' value='Delete' onclick='delete_element_by_id(<%= element['id'] %>)'></input>   -->
+  	<input type='button' class='btn btn-success' style='float:right;' value='Edit Video Message' onclick="window.location='<%=edit_invitation_message_path(element['id'], :event_id => @event.id) %>'"></input>
+  </div>
+  <div class="clearfloat"></div>
+  <br />
+  <% end %>
+</div>
+
+<script>
+function delete_element_by_id(id) {
+    // Disable the element once it has been clicked.
+    start_pending('#existing_element_' + id + '_container');
+
+    $.ajax({ "url":"/invitation_messages/" + id,
+             "type":"delete",
+             "dataType":"json",
+             "success":function () {
+		 $('#existing_element_' + id + '_container').html("");
+             },
+             "failure":function () {
+                 alert("The invitation message failed to delete! It is still saved, and it is a safe to retry.");
+
+		 // Redisplay the element, since it failed.
+		 stop_pending('#existing_element_' + id + '_container');
+             }});
+}
+
+function start_pending(container_name) {
+    $(container_name).attr('disabled', 'disabled');
+}
+
+function stop_pending(container_name) {
+    $(container_name).removeAttr('disabled');
+}
+</script>
+<br />
+<br />
+  <br />
+</div>
+</div>
+</div>

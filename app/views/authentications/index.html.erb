@@ -1,0 +1,63 @@
+<h1>My Social</h1>
+<hr />
+<br />
+<% if @authentications %>
+  <% unless @authentications.empty? %>
+            <center><p><strong>You can currently sign in to Ticketacular with these services:</strong></p></center>
+    <div style="margin-left: 50%;position:relative;left:-290px;">
+    <div class="authenticationso">
+      <br />
+      <% for authentication in @authentications %>
+        <div class="authenticationo">
+          <%= image_tag "#{authentication.provider}_64.png", :size => "64x64" %>
+          <div class="providero"><h1><%= authentication.provider.titleize %></h1></div>
+       <!--   <div class="uido"><%= authentication.uid %></div>  -->
+          <br />
+         <!-- <%= link_to "Import Profile", authentication_path(authentication), :class => "remove2" %> -->
+          <% if authentication.provider == "twitter" %>
+          <% end %>
+          <% if authentication.provider == "facebook" %>
+              <center><%#= button_to "Invite Friends To Join Ticketacular", invite_facebook_path, :method=>"get", :class => "btn btn-primary" %></center>
+          <% end %>
+          <%= link_to "X", authentication, :confirm => 'Are you sure you want to remove the link to this social account?', :method => :delete, :class => "remove" %>
+        </div>
+          <div class="clearfloat"></div>
+          <br />
+      <% end %>
+      <div class="clear"></div>
+    </div>
+    </div>
+  <% end %>
+  <div class="clearfloat"></div>
+  <br />
+  <% if @authentications.count != 1 %>
+  <center><p><strong>Click to add another social service to sign in or invite friends to The Wedding Registry with:</strong></p></center>
+  <br />
+  <% end %>
+<% else %>
+  <p><strong>Sign in through one of these services:</strong></p>
+<% end %>
+
+<% @providers = @authentications.map{|a| a.provider} %>
+<!--<% if !@providers.include?('twitter') %>
+<a href="/auth/twitter" class="auth_provider">
+  <%= image_tag "/images/twitter_64.png", :size => "64x64", :alt => "Twitter" %>Twitter
+</a>
+<% end %> -->
+<% if !@providers.include?('facebook') %>
+<center>
+<a href="/auth/facebook" class="auth_provider"><%= image_tag "facebook_64.png", :size => "64x64", :alt => "Facebook" %></a>
+<a href="/auth/facebook" class="auth_provider" style="width:150px;"><h1>Facebook</h1></a>
+</center>
+<% end %>
+<!--<a href="/auth/google_apps" class="auth_provider">
+  <%= image_tag "google_64.png", :size => "64x64", :alt => "Google" %>
+  Google
+</a>
+<a href="/auth/open_id" class="auth_provider">
+  <%= image_tag "openid_64.png", :size => "64x64", :alt => "OpenID" %>
+  OpenID
+</a>     -->
+<div class="clear"></div>
+
+

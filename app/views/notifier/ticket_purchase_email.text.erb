@@ -1,0 +1,8 @@
+Exciting news <%= @base_ticket.guest_name %>! Your tickets for the event named "<%= @base_ticket.event_name %>" are ready!
+
+<% for ticket in @tickets %>
+Event Name: <%= @base_ticket.event_name %>
+Good For <%= ticket.quantity %> <%= ticket.ticket_type.name %> Tickets
+ID: <%= ticket.id %>
+Total Price Paid: <%= number_to_currency ticket.price_paid %>
+<% end %>

@@ -1,0 +1,29 @@
+<div id="sendapple">
+  <% if @partial_is_popup %>
+  <a href="#" onclick="close_vcf()">x Close Window</a>
+  <% end %>
+
+  <center>
+    <p><b>To upload an Apple Address Book style VCF file of contacts</b></p>
+    <br />
+    <p>To export a VCF or VCard file from Apple Mail:</p>
+    <br />
+    <p>  1. Open Mac OS X Address Book</p>
+    <p>  2. Select the contacts you would like to export (You can press "Select All" in the "Edit" menu to make this easier) </p>
+    <p>  3. Select "Export vCards..." from the File menu</p>
+    <p>  4. Choose a filename and a place to save the file (for instance, "Contacts.vcf" on the Desktop), then click "Save"</p>
+    <br />
+    <p>To upload your file to TheWeddingRegistry, simply hit "Browse" below and select the contact file you've just created.</p>
+    <br />
+    <p>Apple style VCF files can be exported from other mail providers and used on TheWeddingRegistry as well!</p>
+    <p>Some of these are: Entourage and Palm Desktop</p>
+    <br />
+    <%= form_tag({:controller => :contact_lists,:action => :import_from_apple_mail_post}, :multipart => true) do %>
+    <div id="vcf_import" style="display: inline;">
+      <p>Apple VCF file: <input name="vcf" type="file"></p>
+      <br />
+      <%= submit_tag "Browse",class: "btn btn-success" %>
+    </div>
+    <% end %>
+  </center>
+</div>

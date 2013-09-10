@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Event:</b>
+  <%= @wallpaper.event_id %>
+</p>
+
+<p>
+  <b>Wallpaper file name:</b>
+  <%= @wallpaper.wallpaper_file_name %>
+</p>
+
+<p>
+  <b>Wallpaper content type:</b>
+  <%= @wallpaper.wallpaper_content_type %>
+</p>
+
+<p>
+  <b>Wallpaper file size:</b>
+  <%= @wallpaper.wallpaper_file_size %>
+</p>
+
+
+<%= link_to 'Edit', edit_wallpaper_path(@wallpaper) %> |
+<%= link_to 'Back', wallpapers_path %>

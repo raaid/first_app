@@ -1,0 +1,3564 @@
+<link href="/css_temp/tooltipster.css" rel="stylesheet">
+<link href="/css_temp/jquery-ui-edited.css" rel="stylesheet">
+
+<style>
+.uploadifyQueue {
+  display:none
+}
+</style>
+
+<script type="text/javascript" src="/js/jquery.tooltipster.min.js"></script>
+<script type="text/javascript" src="/javascripts/html5slider.js" ></script>
+
+<section>
+<div class="container">
+<h1>Manage Your Event</h1>
+<br/>
+
+<div style="display:inline-block;">
+<!--onclick="showPanel('detail')"-->
+<div class="fixedDetails2" style="float:left;margin-bottom: 10px;">
+  <div id="detailPanel"  class="detailActive" onclick="show_page('details')"><i id="detailPanel_icon" class="icon-check green" ></i> Event Summary</div>
+  <div id="optionPanel" class="detailActive" onclick="show_page('options')"><i id="optionPanel_icon" class="icon-check green"></i> Event Details</div>
+  <div id="ticketPanel" class="detail" onclick="show_page('tickets')"><i id="ticketPanel_icon" class="icon-check inactive_icon"></i> Tickets/Registration</div>
+  <div id="donationPanel" class="detail" onclick="show_page('donations')"><i id="donationPanel_icon" class="icon-check inactive_icon"></i> Donations</div>
+  <div id="cgPanel" class="detail" onclick="show_page('cg')"><i id="cgPanel_icon" class="icon-check inactive_icon"></i> Cash Gifts</div>
+  <div id="videoPanel" class="detail" onclick="show_page('video')"><i id="videoPanel_icon" class="icon-check inactive_icon"></i> Videos</div>
+  <div id="photoPanel" class="detail" onclick="show_page('photo')"><i id="photoPanel_icon" class="icon-check inactive_icon"></i> Photo Options</div>
+  <div id="socialPanel" class="detail" onclick="show_page('social')"><i id="socialPanel_icon" class="icon-check inactive_icon"></i> Social Profile</div>
+  <div id="filePanel" class="detail" onclick="show_page('file')"><i id="filePanel_icon" class="icon-check inactive_icon"></i> Upload Files</div>
+  <div id="metricPanel" class="detail" onclick="show_page('metric')"><i id="metricPanel_icon" class="icon-check inactive_icon"></i> Publish</div>
+
+  <div style="background-color:#79AF00; width: 200px; height:2px"></div>
+
+  <div id="eventsalesPanel" class="detail" onclick="show_page('eventsales')"><i id="eventsalesPanel_icon" class="icon-check inactive_icon"></i> Event Dashboard</div>
+  <div id="salesPanel" class="detail" onclick="show_page('sales')"><i id="salesPanel_icon" class="icon-check inactive_icon"></i> Event Rep Setup</div>
+</div>
+<div class="info_container">
+<%= simple_form_for(@event) do |f| %>
+
+    <div id="details" style="display:none">
+      <h1>Event Summary</h1>
+      <div style="color:#000;display:inline-block">
+        <div class="tooltip" title="Name of your event!">
+          <img src="/images/button-info.png" width="15px" >*Name
+        </div>
+          <img src="/images/button-info.png" width="15px" >*Name
+      <%= f.input :name, label: false, :input_html => {:style => "width:250px"}, required: true %></div>
+
+      <div style="color:#000;display:inline-block">
+        <div class="tooltip" title="The name of your events venue!">
+          <img src="/images/button-info.png" width="15px" >Venue Name (Optional)
+        </div>
+          <img src="/images/button-info.png" width="15px" >Venue Name (Optional)
+      <%= f.input :venue_name, label: false, :input_html => {:style => "width:250px"} %></div><br>
+
+      <div style="color:#000;display:inline-block">
+        <div class="tooltip" title="Category of your event!">
+          <img src="/images/button-info.png" width="15px">*Event Category
+        </div>
+          <img src="/images/button-info.png" width="15px">*Event Category
+        <%= f.input :category, priority: Event::CATEGORY_PERSONAL, collection: [Event::CATEGORY_PERSONAL, Event::CATEGORY_ENTERTAINMENT, Event::CATEGORY_CHARITY, Event::CATEGORY_BUSINESS], label: false, include_blank: false, :input_html => {:style => "width:265px"}, required: true %>
+      </div>
+
+      <div style="color:#000;display:inline-block;height:60px">
+        <div class="tooltip" title="URL of your event. For example, an event with an URL handle of 'example' would have an address of www.eventastic.com/promote/example!">
+          <img src="/images/button-info.png" width="15px" >*URL Handle <span style="font-size:7pt;"><i>(www.eventastic.com/promote/_____)</i></span><p>
+        </div>
+           <img src="/images/button-info.png" width="15px" >*URL Handle <span style="font-size:7pt;"><i>(www.eventastic.com/promote/_____)</i></span><p>
+          <input as="string" error="false" id="url_handle" label="false" name="url_handle" onkeyup="urlConfirm(this.value)" required="required" type="text" value="<%=@event.url_handle%>" style="width: 250px;">
+          <div style="position:relative;float:right;display:inline-block;left:25px;top:-39px;">
+            <img id="notuniqueurl" src='/images/minus.png' style="position: relative;display:inline-block;display:none;opacity:1;bottom:9px"/>
+            <img id="uniqueurl" src='/images/checkmark2.png' style="position: relative;display:inline-block;bottom:7px"/>
+      </div></div><br>
+
+      <div style="color:#000;display:inline-block">
+        <div class="tooltip" title="Address of your event!">
+          <img src="/images/button-info.png" width="15px" >*Event Address
+        </div>
+          <img src="/images/button-info.png" width="15px" >*Event Address
+      <%= f.input :address, label: false, :input_html => {:style => "width:250px"} %></div>
+
+      <div style="color:#000;display:inline-block">
+        <div class="tooltip" title="The city your event is hosted in">
+          <img src="/images/button-info.png" width="15px" >*City
+        </div>
+          <img src="/images/button-info.png" width="15px" >*City
+      <%= f.input :city, label: false, :input_html => {:style => "width:250px"} %></div><br>
+
+      <div style="color:#000;display:inline-block">
+        <div class="tooltip" title="The province or state your event is hosted in">
+          <img src="/images/button-info.png" width="15px" >*Province/State
+        </div>
+          <img src="/images/button-info.png" width="15px" >*Province/State
+      <%= f.input :province, label: false, :input_html => {:style => "width:116px"} %></div>
+
+      <div style="color:#000;display:inline-block">
+        <div class="tooltip" title="The postal or zip code that your event is hosted in">
+          <img src="/images/button-info.png" width="15px">*Postal/Zip Code
+        </div>
+          <img src="/images/button-info.png" width="15px">*Postal/Zip Code
+      <%= f.input :postal, label: false, :input_html => {:style => "width:116px"} %></div>
+
+      <div style="color:#000;display:inline-block">
+        <div class="tooltip" title="The country your event is hosted in">
+          <img src="/images/button-info.png" width="15px" >*Country
+        </div>
+          <img src="/images/button-info.png" width="15px" >*Country
+        <%= f.input :country, label: false, :input_html => {:style => "width:265px"} %></div><br>
+      <div style="width:533px;text-align:center">
+        <div class="datetime">
+          <div class="dateTitle">Event Start Time</div>
+          <input type="text" id="startTime" value="<%= @event.startTime.strftime('%Y-%m-%d %l:%M %P') %>" onchange="checkTime($('#realStartTime'), this)"/>
+          <input type="hidden" id="realStartTime" value="<%= @event.startTime.strftime('%Y-%m-%d %l:%M %P') %>" name="startTime"/>
+        </div>
+        <div class="datetime">
+          <div class="dateTitle">Event End Time</div>
+          <input type="text" id="endTime" value="<%= @event.endTime.strftime('%Y-%m-%d %l:%M %P') %>" onchange="checkTime($('#realEndTime'), this)"/>
+          <input type="hidden" id="realEndTime" value="<%= @event.endTime.strftime('%Y-%m-%d %l:%M %P') %>" name="endTime"/>
+        </div>
+        <input type="button" class="btn btn-success" style="width:175px;" value="Save & Continue" onclick="updateDetails()" id="saveButton">
+      </div>
+    </div>
+
+
+    <div id="options" style="display:none">
+      <h1>Event Details</h1>
+      <%#= form_for Wallpaper.new, :html => {:multipart => true}, :remote => true do |form| %>
+      <div class="flex-container" style="max-width: 390px !important;">
+        <div class="flexslider teaser" id="flexslider">
+          <div id="hoverGarbage" class="garbage"<% if @all_wallpapers.length > 0 %>onclick="deletePaper(0, <%=@all_wallpapers[0].id%>)"<% else %>style="display:none"<% end %>><img src="/images/garbage.png" style="width:17px;margin-top:-9px;margin-left:6px"/></div>
+          <ul class="slides" id="paperContainer">
+            <% if @all_wallpapers.try(:length) > 0 %>
+                <% @all_wallpapers.each do |paper| %>
+                    <li id="<%= paper.id %>"><div class="product-img slide2" style="max-width:none"><img src="<%= paper.wallpaper_url(:background) %>" alt="Eventastic"/></div></li>
+                <% end %>
+            <% else %>
+                <li id="default_paper"><div class="product-img slide2" style="max-width:none"><img src="/images/wallpaper/missing/missing_wallpaper.jpg" alt="Eventastic"/></div></li>
+            <% end %>
+          </ul>
+        </div>
+        <center>
+          <div style="color:#000;font-size:11pt;margin-top:5px">       <div style="position:absolute; margin-left: -2px" >
+                  <div class="tooltip" title="These photos work like a background slideshow and serve as a great marketing tool - (Recommended: 1950x900)" style="width:30px">
+                    <img src="/images/button-info.png" width="15px;" >
+                  </div>
+            <img src="/images/button-info.png" width="15px;" >
+                </div>Upload As Many Cover Photos As You'd Like</div>
+          <div class="btn btn-success" id="flashUpload" style="height:21px;z-index:0">
+            <a style="color:#fff;z-index:0" id="uploadText">Upload <%if @all_wallpapers.length > 0%>Another<%else%>New<%end%> Cover Photo</a>
+            <div class="UploadifyObjectWrapper" style="position:relative;top:-22px;"><input type="file" id="wallpaper_wallpaper"><%#= form.file_field :wallpaper, :label => false, :required => false %></div>
+          </div>
+          <input type="button" id="noflash" onclick="$('#noFlashfile').click()" value="Upload New Cover Photo" class="btn btn-success">
+          <input type="file" id="noFlashfile" style="display:none"/>
+        </center>
+        <%#= form.hidden_field :event_id, :value => @event.id %>
+      </div>
+      <div class="avatar-container2" style="top:5px;position:relative">
+        <center>
+          <div style="height:150px;width:150px;position:relative" id="displayPic">
+            <div class="profile_avatar" id="displayPhoto" style="width:150px;"><%= image_tag @event.event_image.url(:feed), :style => "height:150px;width:150px;", id: "profile_avatar" %></div>
+            <div id="hoverGarbage2" class="garbage" style="right:15px;top:-10px" onclick="deleteDisplayPic()"><img src="/images/garbage.png" style="width:17px;margin-top:-9px"/></div>
+          </div>
+
+          <p style="color:#000;margin-top:17px"><div style="position:absolute; margin-left: 10px" >
+                            <div class="tooltip" title="(Recommended: 500x500)" style="width:30px">
+                              <img src="/images/button-info.png" width="15px;" >
+                            </div>
+                      <img src="/images/button-info.png" width="15px;" >
+                          </div>Upload A Display Photo</p>
+          <input type="button" class="btn btn-success" value="Choose File" style="width:150px;margin-top:-5px" onclick="$('#event_event_image').click()"/>
+          <img src="/images/loading.gif" id="loading" style="margin-top:14px;display:none"/>
+        </center>
+      </div>
+      <div id="event_image_container">
+        <%= f.file_field :event_image, label: false, onchange: "readAvatar(this)", style: "display:none", required: false %>
+      </div>
+      <br />
+      <div style="color:#000;display:inline-block">
+        <div style="width:250px">
+          <div class="tooltip" title="Describes the particulars of your event here. (Eg. What the event is about and the purpose or goal of having it)">
+            <img src="/images/button-info.png" width="15px" >Description
+          </div>
+            <img src="/images/button-info.png" width="15px" >Description
+          <%= f.text_area :description, style: "height:90px;width:250px;max-width:250px" %></div>
+      </div>
+
+      <div style="color:#000;display:inline-block;margin-left:15px">
+        <div style="width:250px">
+          <div class="tooltip" title="Describes the details pertaining to your event here. (Eg. Dress code, parking situations, accomodations, BYOB etc...">
+            <img src="/images/button-info.png" width="15px">Details
+          </div>
+            <img src="/images/button-info.png" width="15px">Details
+          <%= f.text_area :details, style: "height:90px;width:250px" %></div>
+      </div>
+      <br>
+      <div style="position:absolute; margin-left: 15px" >
+       <div class="tooltip" title="Allow Comments" style="width:30px">
+             <img src="/images/button-info.png" width="15px" >
+       </div>
+       <img src="/images/button-info.png" width="15px;" >
+     </div>
+      <%= f.input :allow_comments, as: :boolean, label: "Allow Comments", :input_html => {:style => "float:left; width: 15px;width: 15px;margin-right:18px;"} %>
+       <div style="position:absolute; margin-left: 15px" >
+        <div class="tooltip" title="Display the event planner's name" style="width:30px">
+              <img src="/images/button-info.png" width="15px" >
+        </div>
+        <img src="/images/button-info.png" width="15px;" >
+      </div>
+      <%= f.input :show_promotor, as: :boolean, label: "Show Planner", :input_html => {:style => "float:left; width: 15px;width: 15px;margin-right:18px;"} %>
+      <div style="position:absolute; margin-left: 15px" >
+        <div class="tooltip" title="Display all members attending the event" style="width:30px">
+            <img src="/images/button-info.png" width="15px" >
+        </div>
+        <img src="/images/button-info.png" width="15px;" >
+      </div>
+      <%= f.input :show_attendees, as: :boolean, label: "Display Attendees", :input_html => {:style => "float:left; width: 15px;width: 15px;margin-right:18px;"} %>
+      <div style="position:absolute; margin-left: 15px" >
+       <div class="tooltip" title="Charge Processing Fees To Customer Instead Of Covering It Yourself (2.9% + $0.30/transaction)" style="width:30px">
+             <img src="/images/button-info.png" width="15px" >
+       </div>
+       <img src="/images/button-info.png" width="15px;" >
+     </div>
+      <%= f.input :include_fees, as: :boolean, label: "Charge Processing Fees", :input_html => {:style => "float:left; width: 15px;width: 15px;margin-right:18px;"} %>
+
+
+      <input class="boolean optional" id="event_has_capacity" style="float: left; width:15px" type="checkbox" value="1" onchange="flipCapacity(this)">
+      <div style="position:absolute; margin-left: 15px" >
+       <div class="tooltip" title="This Event Has a Maximum Capacity - Set & Specify The Max Capacity Of Your Venue Here." style="width:30px">
+             <img src="/images/button-info.png" width="15px" >
+       </div>
+       <img src="/images/button-info.png" width="15px;" >
+     </div>
+      <label class="boolean optional" for="event_has_capacity" style="width:270px;display:inline-block;margin-left:18px;position:relative;top:-8px;">This Event Has a Maximum Capacity</label>
+      <div style="width:72px;display:inline-block;position:relative">
+        <%= f.input :max_capacity, label: false, :input_html => {style: "width:72px;position:relative;top:-8px;", value: @event.max_capacity || 0, disabled: "disabled"} %>
+      </div>
+      <center><input type="button" class="btn btn-success" style="margin-right: 10px;width:175px;" value="Back" onclick="show_page('details')"><input type="button" class="btn btn-success" style="width:175px;" value="Save & Continue" onclick="updateOptions()"></center>
+    </div>
+
+
+
+    <div id="tickets" style="display:none;">
+      <h1>Tickets/Registration</h1>
+
+      <div style="display:inline-block;"><span style="float:left;padding-top:5px;">This Event Will: </span>
+        <div class="optionContainer" style="float:left;">
+          <select id="theOption" style="width:480px;">
+            <option value="Nothing">Not Sell Tickets/Register Attendee</option>
+            <option value="Tickets">Sell Tickets</option>
+            <option value="Register">Register Attendees</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="hidden isNothing">I am not selling tickets or registering people</div>
+
+      <div class="hidden isTickets">
+        <div style="width:200px;display:none">
+          <%= f.input :has_ticketing, as: :boolean, label: "I will Sell Tickets", :input_html => {:id => "has_ticketing", :style => "float:left;margin-left:3px;"} %>
+        </div>
+
+        <div style="max-width:815px">
+          <div id="ticket_container">
+            <% @ticket_types.each do |type| %>
+              <div id="ticketType<%=type.id%>" style="max-width:760px">
+
+                <div class="ticketBar" style="width:170px"><span id="name<%=type.id%>" class="blue"><%= type.name %></span></div>
+
+                <div id="price<%=type.id%>" class="ticketBar" style="width:90px"><%= number_to_currency(type.price) %> <%= type.currency %></div>
+
+                <div id="group<%=type.id%>" class="ticketBar" style="width:40px"><% if type.groupable %>Groupable<% end %></div>
+
+                <div id="occupancy<%=type.id%>" class="ticketBar" style="width:90px"><% if type.count_towards_occupancy %>Occupancy <% end %></div>
+
+           
+
+                <div class="ticketBar" style="width:50px"><%#= link_to "Edit", edit_ticket_type_path(type), class: "btn btn-success" %><input id="edit<%=type.id%>" type="button" value="Edit" class="btn btn-success" style="width:70px" onclick="editTicket(<%=type.id%>, '<%= type.name %>', '<%= type.price %>', '<%= type.currency %>', '<%= type.description %>', '<%= type.groupable %>', '<%= type.count_towards_occupancy %>', '<%=type.capacity%>', '<%=type.sell_from%>', '<%=type.sell_to%>', '<%=type.group_size%>', '<%=type.show_remaining%>')"></div>
+
+                <div class="ticketBar" style="width:50px">
+                  <input type="button" value="Delete" onclick="deleteTicket(<%=type.id%>)" class="btn btn-danger" style="width:70px" >
+                </div>
+
+                <div style="margin-left:40px">
+                  <div style="cursor:pointer" onclick="showDescription(<%=type.id%>)">
+                    <span>Description</span>
+                    <div style="position:relative;display:inline-block;width:15px;height:12px">
+                       <img id="right<%= type.id %>" src="/images/right.png" style="width:15px;position:absolute">
+                       <img id="down<%= type.id %>" src="/images/next.png" style="width:15px;position:absolute;display:none">
+                    </div>
+                    <div style="display:none" id="description<%= type.id %>"><%= type.description %></div>
+                  </div>
+                </div>
+
+                <div id="editSection<%=type.id%>" style="border: 1px solid;border-radius:20px;padding:15px;display:none">
+                  <center>
+                    <h2>Edit Ticket</h2>
+                  </center>
+                  <div style="color:#000">
+                  <div style="display:inline-block">
+                      <%= text_field_tag :edit_name, "", :placeholder =>"Ticket Name", :id => "edit_name_#{type.id}"  %>
+                  </div>
+
+                  <div style="display:inline-block">
+                    <%= number_field_tag :edit_price, "", min: 0, step: "0.01", style: "width:100px", :placeholder =>  "Price", :id => "edit_price_#{type.id}" %>
+                  </div>
+
+                  <div style="display:inline-block">
+                    <%= select_tag(:edit_currency, options_for_select([["USD", "USD"], ["CAD", "CAD"]]), style: "width:80px", :id => "edit_currency_#{type.id}") %>
+                  </div>
+
+                  <div style="display:inline-block">
+                    <%= text_field_tag :edit_description, "", :placeholder => "Description", :id => "edit_description_#{type.id}" %>
+                  </div>
+                  <br />
+
+                  <div style="display:inline-block;">
+                    <label><b>Sell From</b></label>
+                    <%#= date_select :sell_from %>
+                    <% @the_date = Time.now %>
+                    <input type="text" id="edit_sell_from<%=type.id%>" value="<%= Time.now.strftime('%Y-%m-%d') %>" style="width:130px;" onchange="modifyEndDate(this, edit_sell_to<%=type.id%>)"/>
+                  </div>
+
+                  <div style="display:inline-block">                
+                    <label><b>Sell Until</b></label>
+                  <%#= date_select :sell_to %>
+                    <input type="text" id="edit_sell_to<%=type.id%>" value="<%= Time.now.strftime('%Y-%m-%d') %>" style="width:130px;" onchange="checkEndDate(edit_sell_from<%=type.id%>,this)"/>
+                  </div>
+              
+                  <div class="clearfloat">
+                  </div>
+                  <br />
+                  </div><!--Color Div -->
+                
+                <div style="width:453px;position:relative;left:50%;margin-left:-223px">
+
+                  <div style="color:#000;width:500px">
+                  <%= check_box_tag :edit_count_towards_occupancy, 1, false, onchange: "disableInput('edit_group_size_#{type.id}')", :id => "edit_count_towards_occupancy_#{type.id}" %>
+                  <div style="display:inline-block"><b>&nbsp;This Ticket Counts As </b></div>
+                    <%= number_field_tag :edit_group_size, 1, disabled: "disabled", min: 1, style: "display:inline-block;width:50px" , :id => "edit_group_size_#{type.id}"%>
+                  <div style="display:inline-block"><b>&nbsp;Attendees For Max Occupancy Limit</b></div>
+                  </div>
+
+                <div style="color:#000;width:500px">
+                  <%= check_box_tag :capacity_input, 1, false, onchange: "disableInput('edit_capacity_#{type.id}', #{type.id})", :id => "capacity_input#{type.id}"%>
+                  <div style="display:inline-block"><b>&nbsp;Limit The Number Of Tickets Sold For This Ticket Type</b></div>
+                  <%= number_field_tag :edit_capacity, 1, disabled: "disabled", min: 1, style: "display:inline-block;width:50px", :id => "edit_capacity_#{type.id}" %>
+                </div> 
+
+                <div style="color:#000;width:500px; margin-bottom:10px; margin-left:30px; display:none" id="show_remaining<%=type.id%>">
+                  <%= check_box_tag :show_remaining, 1, false,  :id => "edit_show_remain#{type.id}"%>
+                  <div style="display:inline-block"><b>&nbsp;Show remaining Tickets</b></div>
+                  <% sold = TicketInstance.where(:ticket_type_id => type.id, :status => ["paid", "redeemed"]).count %>
+                  <%remaining = type.capacity - sold %>
+                  <%= number_field_tag :amnt_remaining, 1, disabled: "disabled", style: "display:inline-block;width:50px" , :value => remaining, :id => "amnt_remaining#{type.id}"%>
+                </div> 
+
+            <!--     <div style="width:500px;height:40px;position:relative">
+                    <span style="color:#000;float:left">
+                      <input type="checkbox" value="1" id="capacity_input<%=type.id%>" onchange="disableInput('edit_capacity')">
+                      <b>&nbsp;Limit The Number Of Tickets Sold For This Ticket Type</b>
+                    </span> 
+              
+                    <%= number_field_tag :edit_capacity, 1, min: 1, disabled: 'disabled', style: "width:70px;float:right;position:relative;top:-5px", :id => "edit_capacity_#{type.id}"%>
+                  </div>  -->
+
+                  <div style="width:430px">
+                    <div style="color:#000">
+                      <%= check_box_tag :edit_groupable, 1, false, style: "width:18px", :id => "edit_groupable_#{type.id}" %> 
+                      <span style="display:inline-block"><b>&nbsp;This Ticket Is Groupable</b></span>
+                      <div  class="tooltip" style="opacity:1;display:inline-block;margin-left:8px" title="A Groupable ticket is one which, when sent to the buyer, will be redeemable for multiple items with one barcode (Eg. Ten drink tickets can be emailed as one ticket redeemable for ten drinks to a guest rather than sending 10 individual tickets.)">
+                      <img src="/images/button-info.png" width="15px" style="float:left" >
+                      </div>
+                    </div><!--Colr div -->
+                  </div><!-- Width div -->
+
+                  <center><p style="font-size: 8pt;color:#000">*Organizers & Guests are subject to the fees outlined in Eventastics <a href="/terms_of_service#fees"><u>Terms Of Service</u></a></p></center>
+                  <br>
+                  <center>
+                    <input type="button" value="Cancel" onclick="editSectionToggle('<%=type.id%>')" class="btn btn-success" id="edit_cancel<%=type.id%>" style="display:inline-block;width:130px">
+                    <input type="button" value="Submit" id="updateTicket<%=type.id%>" class="btn btn-success" style="display:inline-block;width:130px;margin-left:20px">
+                  </center>
+                </div><!--Bottom three lines -->
+                </div><!-- Entire Edit Ticket Section -->
+
+
+
+                <div class="clearfloat"></div><br />
+              </div><!--tickettype id -->
+            <% end %><!--End of List Tickets -->
+          </div><!--Ticket Container -->
+        </div><!-- Max Width Div around everything -->
+        <br>
+
+<!--THIS COMMENT SEPEARTES THE CREATE TICKET TYPE AND EDIT TICKET TYPE -->
+
+    <div class="clearfloat"></div>
+    <center><input id="new_ticket_btn" type="button" value="Create a New Ticket" class="btn btn-success" style="width:175px;margin-bottom:5px;" onclick="newTicketForm()"></center>
+    <div id="new_ticket" style="border: 1px solid;border-radius:20px;padding:15px;display:none;margin-bottom:13px">
+      <center><h2>Create New Ticket</h2></center>
+      <br />
+      <center>
+      <div style="color:#000">
+        <div style="display:inline-block">
+          <%= text_field_tag :type_name, "", :placeholder => "Ticket Name"%>
+        </div>
+        <div style="display:inline-block">
+          <%= number_field_tag :type_price, "", min: 0, step: "0.01", style: "width:60px", :placeholder => "Price" %>
+        </div>
+        <div style="display:inline-block">
+          <%= select_tag(:type_currency, options_for_select([["USD", "USD"], ["CAD", "CAD"]]), style: "width:80px") %>
+        </div>
+        <div style="display:inline-block">
+          <%= text_field_tag :type_description,"", :placeholder => "Description" %>
+        </div>
+        <br />
+        
+        <div style="display:inline-block;">
+          <label><b>Sell From</b></label>
+          <%#= date_select :sell_from %>
+          <% @the_date = Time.now %>
+          <input type="text" id="new_ticket_from" value="<%= Time.now.strftime('%Y-%m-%d') %>" style="width:130px;" onchange="modifyEndDate(this, new_ticket_to)"/>
+        </div>
+
+        <div style="display:inline-block;">
+          <label><b>Sell Until</b></label>
+          <%#= date_select :sell_to %>
+          <input type="text" id="new_ticket_to" value="<%= Time.now.strftime('%Y-%m-%d') %>" style="width:130px;" onchange="checkEndDate(new_ticket_from,this)"/>
+        </div>
+      
+      <div class="clearfloat"></div>
+      <br />
+      </div>
+      </center>
+
+      <div style="width:453px;position:relative;left:50%;margin-left:-223px">
+      
+            <div style="color:#000;width:500px">
+            <%= check_box_tag :count_towards_occupancy, 1, false, onchange: "disableInput('group_size')" %>
+            <div style="display:inline-block"><b>&nbsp;This Ticket Counts As </b></div>
+            <%= number_field_tag :group_size, 1, disabled: "disabled", min: 1, style: "display:inline-block;width:50px" %>
+            <div style="display:inline-block"><b>&nbsp;Attendees For Max Occupancy Limit</b></div>
+           </div>
+
+           <div style="color:#000;width:500px">
+            <%= check_box_tag :type_limit_input, 1, false, onchange: "disableInput('type_limit_size')" %>
+            <div style="display:inline-block"><b>&nbsp;Limit The Number Of Tickets Sold For This Ticket Type</b></div>
+            <%= number_field_tag :type_limit_size, 1, disabled: "disabled", min: 1, style: "display:inline-block;width:50px" %>
+           </div>
+
+           <div style="color:#000;width:500px; margin-bottom:10px; margin-left:30px; display:none" id="show_remaining">
+              <%= check_box_tag :type_show_remaining, 1, false %>
+            <div style="display:inline-block"><b>&nbsp;Show remaining Tickets</b></div>
+            </div> 
+
+ <!--          <div style="width:500px;height:40px;position:relative">
+            <span style="color:#000;float:left">
+              <input type="checkbox" value="1" id="type_capacity_input" onchange="disableInput('type_capacity')">
+              <b>&nbsp;Limit The Number Of Tickets Sold For This Ticket Type</b>
+            </span>
+            <%= number_field_tag :type_capacity, 1, min: 1, disabled: 'disabled', style: "width:70px;float:right;position:relative;top:-5px"%>
+           </div> -->
+
+           <div style="width:430px">
+              <div style="color:#000">
+                <%= check_box_tag :type_groupable, style: "width:10px" %> 
+                <span style="display:inline-block"><b>&nbsp;This Ticket Is Groupable</b></span>
+                <div  class="tooltip" style="opacity:1;display:inline-block;margin-left:8px" title="A Groupable ticket is one which, when sent to the buyer, will be redeemable for multiple items with one barcode (Eg. Ten drink tickets can be emailed as one ticket redeemable for ten drinks to a guest rather than sending 10 individual tickets.)">
+                  <img src="/images/button-info.png" width="15px" style="float:left" >
+                </div>
+              </div>
+           </div>
+      </div>
+    
+  
+    <center><p style="font-size: 8pt;color:#000">*Organizers & Guests are subject to the fees outlined in Eventastics <a href="/terms_of_service#fees"><u>Terms Of Service</u></a></p></center>
+    <br />
+    <center>
+      <input type="button" value="Cancel" onclick="$('#new_ticket').slideToggle()" class="btn btn-success" style="display:inline-block;width:130px">
+      <input type="button" value="Create Ticket" class="btn btn-success" onclick="createTicketType()" style="width:130px;margin-left:20px" >
+    </center>
+
+           </div>
+         </div>
+
+
+         <div class="hidden isRegister">
+            <div style="width:200px;display:none">
+             <%= f.input :has_registration, as: :boolean, label: "I Will be Registering Attendees", :input_html => {:id => "has_registration", :style => "float:left;margin-left:3px;width: 20px"} %>
+            </div>
+            <center><input id="show_attendee_btn" type="button" value="View List of Attendees" class="btn btn-success" style="width:175px;margin-bottom:5px;" onclick="$('#show_attendee').slideToggle();"></center>
+            <div id="show_attendee" style="border: 1px solid;border-radius:20px;padding:15px;display:none;">
+            <center>
+              <h2>List of Attendees</h2>
+              <% @registration_members.each do |rm| %>
+                <div style="color:#000;float:left;font-size:12pt"><%= rm.name %></div>
+                <div style="color:#000;float:right;font-size:12pt"><%= rm.email %></div>
+                <% if rm.message %>
+                  <div class="clearfloat"></div>
+                  <div style="color:#000;font-size:11pt;margin-left:20px;float:left">Message: <%= rm.message %></div>
+                <%end%>
+                <div class="clearfloat"></div>
+                <hr noshade size='3'>
+              <% end %>
+              <h4>Total: <%=@registration_members.length%></h4>
+              <br />
+              <input type="button" value="Close" onclick="$('#show_attendee').slideToggle()" class="btn btn-success" style="display:inline-block;width:130px">
+          </center>
+        </div>
+         </div>
+       <center>
+          <input type="button" class="btn btn-success" style="margin-right: 10px;width:175px;" value="Back" onclick="show_page('options')">
+          <input type="button" class="btn btn-success" style="width:175px;" value="Save & Continue" onclick="updateTickets()">
+        </center>
+</div>
+        <div id="sales" style="display:none;max-width:880px">
+<h1>Manage Sales People</h1>
+<br/>
+<center>
+<div class="peopleTable">
+<table style="width:100%">
+  <tr>
+    <td></td>
+    <td style="width:140px">Name</td>
+    <td>Email</td>
+    <td>Commission</td>
+    <td style="width:100px">Total Ticket Sales</td>
+    <td style="width:40px">Money Made</td>
+    <!-- <td></td> -->
+  </tr>
+
+<%if @info%>
+<% @info.each_with_index do |person, index| %>
+  <tr id="person<%=person[:contract_id]%>">
+    <td style="width:1px;cursor:pointer" onclick="showStats('<%=person[:contract_id]%>', <%=person[:sales].length - 1%>)">
+      <img id="right<%=person[:contract_id]%>" src="/images/right.png" style="width:17px;float:right;position:absolute;<%if index == 0%>display:none<%end%>"/>
+      <img id="down<%=person[:contract_id]%>" src="/images/next.png" style="width:17px;float:right;position:absolute;<%if index > 0%>display:none<%end%>"/>
+    </td>
+    <td class="sales_person" onclick="showStats('<%=person[:contract_id]%>', <%=person[:sales].length - 1%>)"><b><%= person[:fname] %> <%= person[:lname] %></b></td>    
+    <td class="sales_person" onclick="showStats('<%=person[:contract_id]%>', <%=person[:sales].length - 1%>)"><b><%= person[:email] %></b></td>
+    <td class="sales_person" >
+        <div style="width:230px">
+        <input id="slider<%=person[:contract_id]%>" type="range" min="0" max="100" step="0.1" style="width:145px" value="<%= person[:commission] %>" onchange="updateNumber(this.value, 'number', <%=person[:contract_id]%>)">
+        <span style="margin-top:5px;margin-left:40px;position:absolute">%</span>
+        <input id="number<%=person[:contract_id]%>" type="number" value="<%= person[:commission] %>" step="0.1" style="width:61px" onchange="updateNumber(this.value, 'slider', <%=person[:contract_id]%>)"/>
+        </div>
+    </td>
+    <td class="sales_person" onclick="showStats('<%=person[:contract_id]%>', <%=person[:sales].length - 1%>)"><b><%= person[:total_sold] %></b></td>
+    <td id="totalAmt<%=person[:contract_id]%>" class="sales_person" style="font-weight:bold" onclick="showStats('<%=person[:contract_id]%>', <%=person[:sales].length - 1%>)"></td>
+    <td><input type="button" value="delete" class="btn btn-danger" style="width:70px" onclick="deletePerson(<%=person[:contract_id]%>, <%=person[:sales].length%>)"></td>
+      <%#= button_to "delete", {:controller => :contracts, :action => 'destroy', :id => person[:contract_id] }, class: "btn btn-danger", style: "width:70px", confirm: "This action will remove this sales person, as well as disallow them from receiving any commission.  This cannot be undone.  Continue?", :method => :delete %></td>
+   <!--  <td><%#= link_to 'Show', sales_person %></td>
+    <td><%#= link_to 'Edit', edit_sales_person_path(sales_person) %></td>
+    <td><%#= link_to 'Destroy', sales_person, method: :delete, data: { confirm: 'Are you sure?' } %></td> -->
+  </tr>
+  <% person[:sales].each_with_index do |sale, i| %>
+  <tr class="sales_<%=person[:contract_id]%><%=i%>" <%if index > 0%>style="display:none"<%end%>>
+    <td></td>
+    <td></td>
+    <td><%=sale[:name]%>($<%=number_with_precision(sale[:ticket_price], :precision => 2)%>)</td>
+    <td id="amount<%=person[:contract_id]%><%=sale[:id]%>" class="ticket<%=sale[:id]%>"></td>
+    <td id="total<%=person[:contract_id]%><%=sale[:id]%>" class="total<%=sale[:id]%>"><%=sale[:total]%></td>
+  </tr>
+  <% end %>
+<% end %>
+<%end%>
+
+<tr id="insertHere" style="display:none"></tr>
+<tr onclick="showStats('a', <%=@ticket_types.length - 1%>)" style="cursor: pointer;cursor:hand;">
+  <td style="width:1px">
+      <img id="righta" src="/images/right.png" style="width:17px;float:right;position:absolute"/>
+      <img id="downa" src="/images/next.png" style="width:17px;float:right;position:absolute;display:none"/>
+    </td>
+  <td >Total From Sales People</td>
+  <td></td>
+  <td></td>
+  <td id="totalSalesFromPeople"></td>
+  <td id="totalMoneyFromPeople"></td>
+</tr>
+
+<% @ticket_types.each_with_index do |type, i| %>
+  <tr class="sales_a<%=i%>" style="display:none;">
+    <td></td>
+    <td></td>
+    <td><%=type[:name]%>($<%=number_with_precision(type[:price], :precision => 2)%>)</td>
+    <td id="salesTicket<%=type.id%>">$0</td>
+    <td id="salesTotal<%=type.id%>"></td>
+  </tr>
+<% end %>
+
+<tr onclick="showStats('b', <%=@ticket_types.length - 1%>)" style="cursor: pointer;cursor:hand;">
+  <td style="width:1px">
+      <img id="rightb" src="/images/right.png" style="width:17px;float:right;position:absolute"/>
+      <img id="downb" src="/images/next.png" style="width:17px;float:right;position:absolute;display:none"/>
+    </td>
+  <td>Global Total</td>
+  <td></td>
+  <td></td>
+  <td><%=@globalTicketCount%></td>
+  <td>$<%=number_with_precision(@globalTicketAmount, :precision => 2)%></td>
+</tr>
+
+<% @ticket_types.each_with_index do |type, i| %>
+  <tr class="sales_b<%=i%>" style="display:none">
+    <td></td>
+    <td></td>
+    <td><%=type[:name]%>($<%=number_with_precision(type[:price], :precision => 2)%>)</td>
+    <td>$<%=number_with_precision(@tickets["price"][type.id], :precision => 2)%></td>
+    <td><%=@tickets["quantity"][type.id]%></td>
+  </tr>
+<% end %>
+
+<tr>
+  <td></td>
+  <td>Event Planner Total</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td id="plannerTotal" style="font-weight:bold;color:#000"></td>
+</tr>
+
+</table>
+</div>
+</center>
+
+<br />
+
+<center><input id="new_salesPerson_btn" type="button" value="Add a Sales Person" class="btn btn-success" style="width:170px;" onclick="newSalesForm()"></center>
+<br />
+<div id="new_salesPerson" style="border: 1px solid;border-radius:20px;padding:15px;display:none">
+  <%= render 'sales_people/form' %>
+  <%#= link_to 'New Sales person', new_sales_person_path %>
+</div>
+<br />
+
+
+  <center>
+    <input type="button" class="btn btn-success" style="margin-right: 10px;width:175px;" value="Back" onclick="show_page('tickets')">
+    <input type="button" class="btn btn-success" style="width:175px;" value="Save & Continue" onclick="updateSales()">
+  </center>
+</div>
+
+    <div id="donations" style="display:none;">
+      <h1>Donations</h1>
+      <img src="/images/icons/loader.gif" style="position: fixed; display: none; left: 50%; top:50%" id="loader">
+       <select style="width:325px" onchange="setDonations(this)">
+          <option value="false">Do Not Include Cash Donations</option>
+          <option value="true" <%if @event.has_donations%>selected="selected"<%end%>>This Event Will Accept Cash Donations</option>
+      </select>
+      <%= f.input :has_donations, as: :boolean, label: false, :input_html => {:style => "display:none"} %>
+      <br/>
+      <div id="include_donations" <%unless @event.has_donations %>style="display:none"<%end%>>
+      <% if @donationtypes.size <= 0 %>
+        <div id="not_donation_container">
+          <p>You have not created any "Donation Types" for you guests to give to as of yet.</p>
+        </div>
+        <div id="donation_container"></div>
+      <% else %>
+
+          <div id="donation_container">
+            <% @donationtypes.each do |cgt| %>
+                
+                <div class="ticketBar" style="width:50px;margin-right:10px;margin-left:27px">
+                  <img id="optionFrame<%=cgt.id%>" src="<%= cgt.cgp_url(:thumb) %>">
+                  <input type="button" value="Choose File" style="width:107px;margin-left:-30px" onclick="$('#choosefile<%=cgt.id%>').click()" class="btn btn-success" >
+                  <input type="file" id="choosefile<%=cgt.id%>" style="display:none" onchange="edit_donation(<%= cgt.id %>,this.files[0],'cgp'), changeframe(this,'optionFrame<%=cgt.id%>')"></input>
+                </div>
+                <div class="ticketBar" style="width:150px; margin-bottom:30px">
+                  <input type="textbox" style="width:150px; margin-left:-2px" value="<%= cgt.title %>" onchange="edit_donation(<%= cgt.id %>
+                  ,this.value,'title')"></input>
+                </div>
+                <div class="ticketBar" style="width:50px">
+                  <input type="number" style="width:50px;" onchange="edit_donation(<%= cgt.id %>,this.value,'goal')" value="<%= cgt.goal %>"></input>
+                </div>
+                <div class="ticketBar" style="width:70px">
+                  <input type="checkbox" <% if cgt.shown %>checked="checked"<%end%> onchange="edit_donation(<%= cgt.id %>, this.checked, 'shown')">Include as Option</input>
+                </div>
+                <div class="ticketBar" style="width:100px">
+                  <textarea cols="25" rows="2" style="max-width:150px" onchange="edit_donation(<%= cgt.id %>,this.value,'description')"><%= cgt.description %></textarea>
+                </div>
+                <br>
+            <% end %>
+          </div>
+      <% end %>
+      </br>
+    
+      <center><input type="button" class="btn btn-success" value="Add A New Donation Option" onclick="showDon()"></input></center>
+   <br />
+<center>
+<div id="don" style="border: 1px solid;border-radius:20px;padding:15px; max-width:500px; display:none">
+  <div style="width:100%;color: #6d5669;">
+
+    <h2> Create New Donation</h2>
+
+    <div style="display:inline-block">
+      <center>
+        <div style="float:left; margin-right:20px">
+          <p>*Name Of Donation</p>
+          <input type="text" id="title" class="LoginFormSize">
+        </div>
+    
+        <div style="float:left">
+          <div class="tooltip" title="The amount of money you would like to raise for this particular type of donation" style="float:left">
+            <p><img src="/images/button-info.png" style="max-width:15px"> ($)Goal </p>
+          </div>
+            <p><img src="/images/button-info.png" style="max-width:15px"> ($)Goal </p>
+          <input type="number" id="goal" style="max-width:105px" class="LoginFormSize">
+            <select id="currency" style="max-width:70px">
+              <option value="USD">US</option>
+              <option value="CAD">CAD</option>
+            </select>
+        </div>
+      </center>
+    </div>
+    <br /><br />
+    
+
+    <div style="display:inline-block">
+      <div style="float:left"> 
+        <center>
+          <img src="/images/cgp/newsfeed/missing.jpg" id="frame" style="-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;width:100px;height:100px;">
+        </center>
+        <center style="margin-top:20px" id="picture2">
+          <input type="file" id="picture" onchange="changeframe(this, 'frame')"></input>
+        </center>
+      </div>
+
+      <div style="float:left">
+        <p style="color: #6d5669;">Description</p>
+        <textarea row="75" cols="2" id="description"></textarea>
+      </div>
+
+    </div>
+  </div>
+  <br />
+
+  <div style="display:inline-block">
+    <center>
+    <div style="float:left">
+      <input type="button" class="btn btn-success" value="Add" onclick="create_donation()" style="max-width:130px; margin-right:20px; margin-bottom:20px"></input>
+    </div>
+    <div style="float:left">
+      <input type="button" class="btn btn-success" value="Cancel" onclick="showDon()" style="max-width:130px;"></input>
+    </div>
+    <br/><br/>
+    </center>
+  </div>
+</div>
+</div>
+</center>
+
+<br />
+      <center>
+        <input type="button" class="btn btn-success" style="margin-right: 10px;width:175px; margin-bottom:10px" value="Back" onclick="show_page('tickets')">
+        <input type="button" class="btn btn-success" style="margin-right: 10px;width:175px; margin-bottom:10px;" value="Save & Continue" onclick="updateDonations()">
+      </center>
+    </div>
+
+    <div id="cg" style="display:none;">
+      <h1>Cash Gifts</h1>
+      <img src="/images/icons/loader.gif" style="position: fixed; display: none; left: 50%; top:50%" id="loaderCG">
+      <select style="width:325px" onchange="setCashGifting(this)">
+          <option value="false">Do Not Include Cash Gifts</option>
+          <option value="true" <%if @event.has_cash_gifting%>selected="selected"<%end%>>This Event Will Accept Cash Gifts</option>
+      </select>
+      <%= f.input :has_cash_gifting, as: :boolean, label: false, :input_html => {:style => "display:none"} %>
+      <br/>
+      <div id="include_cg" <%unless @event.has_cash_gifting %>style="display:none"<%end%>>
+      <% if @cashgifttypes.size <= 0 %>
+         <div id="not_cg_container">
+          <p>You have not created any "Cash Gift Types" for you guests to give to as of yet.</p>
+          </div>
+          <div id="cg_container">
+          </div>
+      <% else %>
+          <br/>
+
+          <div id="cg_container">
+            <% @cashgifttypes.each do |cgt| %>
+                
+                <div class="ticketBar" style="width:50px;margin-right:10px;margin-left:27px">
+                  <img id="optionCGFrame<%=cgt.id%>" src="<%= cgt.cgp_url(:thumb) %>">
+                  <input type="button" value="Choose File" style="width:107px;margin-left:-30px" onclick="$('#chooseCGfile<%=cgt.id%>').click()" class="btn btn-success" >
+                  <input type="file" id="chooseCGfile<%=cgt.id%>" style="display:none" onchange="edit_donation(<%= cgt.id %>,this.files[0],'cgp'), changeframe(this,'optionCGFrame<%=cgt.id%>')"></input>
+                </div>
+                <div class="ticketBar" style="width:150px; margin-bottom:30px">
+                  <input type="textbox" style="width:150px; margin-left:-2px" value="<%= cgt.title %>" onchange="edit_donation(<%= cgt.id %>
+                  ,this.value,'title')"></input>
+                </div>
+                <div class="ticketBar" style="width:50px">
+                  <input type="number" style="width:50px;" onchange="edit_donation(<%= cgt.id %>,this.value,'goal')" value="<%= cgt.goal %>"></input>
+                </div>
+                <div class="ticketBar" style="width:70px">
+                  <input type="checkbox" <% if cgt.shown %>checked="checked"<%end%> onchange="edit_donation(<%= cgt.id %>, this.checked, 'shown')">Include as Option</input>
+                </div>
+                <div class="ticketBar" style="width:100px">
+                  <textarea cols="25" rows="2" style="max-width:150px" onchange="edit_donation(<%= cgt.id %>,this.value,'description')"><%= cgt.description %></textarea>
+                </div>
+                <br>
+            <% end %>
+          </div>
+      <% end %>
+      </br>
+    
+
+      <center><input type="button" class="btn btn-success" value="Add A New Cash Gift Option"onclick="showCash()"></input></center>
+<br>
+<center>
+<div id="cashgift" style="border: 1px solid;border-radius:20px;padding:15px; max-width:500px; display:none">
+  <br />
+  
+  <div style="width:100%;color: #6d5669;">
+
+  <h2> Create New Cash Gift </h2>
+
+    <div style="display:inline-block">
+      <center>
+        <div style="float:left; margin-right:20px">
+          <p>*Name Of Cash Gift</p>
+          <input type="text" id="titleCG" class="LoginFormSize">
+        </div>
+    
+        <div style="float:left">
+          <div class="tooltip" title="The amount of money you would like to raise for this particular type of donation" style="float:left">
+            <p><img src="/images/button-info.png" style="max-width:15px"> ($)Goal </p>
+          </div>
+            <p><img src="/images/button-info.png" style="max-width:15px"> ($)Goal </p>
+          <input type="number" id="goalCG" style="max-width:105px" class="LoginFormSize">
+          <select id="currencyCG" style="max-width:70px">
+            <option value="USD">US</option>
+            <option value="CAD">CAD</option>
+          </select>
+        </div>
+      </center>
+    </div>
+    <br /><br />
+
+    <div style="display:inline-block">     
+      <div style="float:left"> 
+        <center>
+          <img src="/images/cgp/newsfeed/missing.jpg" id="frameCG" style="-webkit-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;-moz-box-shadow:rgba(0,0,0,0.6) 0 6px 15px;box-shadow:rgba(0,0,0,0.6) 0 6px 15px;width:100px;height:100px;">
+        </center>
+        <center style="margin-top:20px" id="picture2CG">
+          <input type="file" id="pictureCG" onchange="changeframe(this, 'frameCG')"></input>
+        </center>
+      </div>
+
+      <div style="float:left">
+        <p style="color: #6d5669;">Description</p>
+        <textarea row="75" cols="2" id="descriptionCG"></textarea>
+      </div>
+
+    </div>
+  </div>
+  <br />
+
+  <div style="display:inline-block">
+    <center>
+    <div style="float:left">
+      <input type="button" class="btn btn-success" value="Add" onclick="create_cg()" style="max-width:130px; margin-right:20px; margin-bottom:20px"></input>
+    </div>
+
+    <div style="float:left">
+      <input type="button" class="btn btn-success" value="Cancel" onclick="showCash()" style="max-width:130px;"></input>
+    </div>
+    <br/><br/>
+    </center>
+  </div>
+
+</div>
+</div>
+</center>
+
+
+<br />
+
+      <center>
+        <input type="button" class="btn btn-success" style="margin-right: 10px;width:175px; margin-bottom:10px" value="Back" onclick="show_page('donations')">
+        <input type="button" class="btn btn-success" style="margin-right: 10px;width:175px; margin-bottom:10px;" value="Save & Continue" onclick="updateCG()">
+      </center>
+    </div>
+
+    
+    <div id="video" style="display:none;">
+      <h1>Video</h1>
+      <select style="width:325px" onchange="setVideo(this)">
+          <option value="false">Do Not Include Videos</option>
+          <option value="true" <%if @event.has_videos%>selected="selected"<%end%>>This Event Will Have Videos</option>
+      </select>
+      <%= f.input :has_videos, as: :boolean, label: false, :input_html => {:style => "display:none", id: "event_has_videos"} %>
+      <div id='include_video' style="<%unless @event.has_videos%>display:none;<%end%>max-width:765px">
+        
+        <div id="videoContainer">
+          <%@videos.each do |video|%>
+            <%unless video.has_youtube%>
+              <div class="videoContainer" id="videoContainer<%=video.id%>">
+                <div id="video<%=video.id%>" style="display:inline-block;margin-left:20px"></div>
+                <input type="button" value="Delete" class="btn btn-danger" style="width:70px" onclick="deleteVideo(<%=video.id%>)">
+                <%unless video.default%>
+                  <input type="button" value="Select As Featured" class="btn btn-success" style="width:155px" onclick="featureVideo(<%=video.id%>, this)">
+                <%else%>
+                  <input type="button" value="Deselect Featured" class="btn btn-success featured" style="width:155px" onclick="featureVideo(<%=video.id%>, this)">
+                <%end%>
+              </div>
+            <%end%>
+          <%end%>
+        </div>
+
+        <div id="youtubeContainer">
+        <%@videos.each do |video|%>
+          <%if video.has_youtube%>
+            <div class="youtubeContainer" id="videoContainer<%=video.id%>">
+              <embed width="230" height="170" src="http://www.youtube.com/v/<%=video.youtube.split('/').last%>" type="application/x-shockwave-flash"></embed>
+              <input type="button" value="Delete" class="btn btn-danger" style="width:70px" onclick="deleteVideo(<%=video.id%>)">
+              <%unless video.default%>
+                  <input type="button" value="Select As Featured" class="btn btn-success" style="width:155px" onclick="featureVideo(<%=video.id%>, this)">
+                <%else%>
+                  <input type="button" value="Deselect Featured" class="btn btn-success featured" style="width:155px" onclick="featureVideo(<%=video.id%>, this)">
+                <%end%>
+            </div>
+          <%end%>
+        <%end%>
+        </div>
+        <br>
+
+        <input type="button" value="Add YouTube Video" class="btn btn-success" onclick="$('#video_message_panel2').slideToggle();$('#video_message_panel').slideUp()">
+        <input type="button" value="Add Self Recorded Video" class="btn btn-success" onclick="$('#video_message_panel').slideToggle();$('#video_message_panel2').slideUp()">
+
+          <input type="hidden" id="posterurl">
+              <br>
+                <div style="width:200px;display:none">
+                  <%= f.input :has_youtube, as: :boolean, label: "Include A Youtube Video", :input_html => {:id => "video_check2", :style => "float:left;margin-left:3px;width: 20px"} %>
+                </div>
+
+                <div id="video_message_panel2" style="display:none;margin-left: 13px;">
+                  <img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/youtube_ind.png"><br/>
+
+                  <p style="color:#000;">
+                    <div class="tooltip" title="Specify Your Youtube Embed Link Here!">               
+                      <img src="/images/button-info.png" width="15px" >*Youtube Embed Link
+                    </div>
+                    <img src="/images/button-info.png" width="15px" >*Youtube Embed Link
+                  </p>
+                  <%= f.input :youtube, label: false, :input_html => {:style => "width:400px;height:25px"}, :required => false %>
+                  <input type="button" value="Create YouTube Video" class="btn btn-success" onclick="createYoutube()">
+                </div>
+              
+              
+                <div style="width:200px;display:none">
+                  <%= f.input :show_video_message, as: :boolean, label: "Include A Video Message", :input_html => {:id => "video_check", :style => "float:left;margin-left:3px; width: 20px"} %>
+                </div>
+                <div id="video_message_panel" style="display:none;margin-left: 13px;">
+                  <center>
+                    <div id="recorderContainer" class="main_content_partial2">
+                      <div class="clear"></div>
+                      <div style="float:left;font-size:15pt">Video Recorder</div>
+                      <div class="clear"></div>
+                      <hr style="margin-top:25px;margin-bottom:20px">
+                    </div>
+                  </center>
+                </div>
+              
+      <%= f.hidden_field :video %>
+      <br />
+    </div>
+        <center><input type="button" class="btn btn-success" style="margin-right: 10px;width:175px;" value="Back" onclick="show_page('cg')"><input type="button" class="btn btn-success" style="width:175px;" value="Save & Continue" onclick="updateVideo()"></center>
+    </div>
+    <div id="photo" style="display:none;">
+      <h1>Photo Options</h1>
+      <select style="width:325px" onchange="setPhotoSharing(this)">
+          <option value="false">Do Not Include Photo Sharing</option>
+          <option value="true" <%if @event.allow_photo_sharing%>selected="selected"<%end%>>This Event Will Allow Photo Sharing</option>
+      </select>
+      <%= f.input :allow_photo_sharing, as: :boolean, label: false, :input_html => {:id => "photo_check", :style => "display:none"} %>
+      <div id="include_photo_sharing" <%unless @event.allow_photo_sharing%>style="display:none"<%end%>>
+
+        <!-- <input type="button" value="Manage Photos" onclick="window.location = '<%=album_show_path(Album.find_by_event_id(@event.id))%>'" class= "btn btn-success" style="width:165px;margin:5px;margin-left:0px;"/> -->
+
+        <div style="position:absolute; margin-left: 15px" >
+         <div class="tooltip" title="Auto Approve Submitted Photos" style="width:30px">
+               <img src="/images/button-info.png" width="15px" >
+         </div>
+         <img src="/images/button-info.png" width="15px;" >
+       </div>
+        <%= f.input :auto_approve_photos, as: :boolean, label: "Auto Approve Submitted Photos", :input_html => {:style => "float:left; width: 15px;width: 15px;margin-right:18px;"} %>
+
+
+
+
+    <% totalApproved = 0
+  @allphotos.each do |photo| 
+    if photo.approved == 1
+      totalApproved = totalApproved + 1
+    end
+  end %>
+
+
+      <div id="approvePopup" style="display:none">
+        <div class="enlargedOverlay2" onclick="$('#approvePopup').hide()"></div>
+        <img src="/images/cross.png" class="fixedCross2" onclick="$('#approvePopup').hide()" />          
+     
+        <div id="approveBox" class="approveBox">
+        <div style="font-size:20pt;font-weight:bold;text-shadow: 1px 1px 1px rgba(0, 0, 0, 1.0);">Photos To Be Approved</div>
+        
+        <% @allphotos.each do |photo| %>
+          <% if photo.approved == 0 %>
+            <div id="photo<%= photo.id %>" class="hoverDelete">
+              <img class="showimg" src="<%= photo.photo_url(:cover) %>"/>
+              <input type="button" value="Approve" class="btn btn-success" style="width:100px" onclick="approve(<%=photo.id%>, '<%=photo.photo_url(:display)%>')">
+              <%#= link_to "Approve", approve_path(:id => photo.id), :data => { :remote => true, :type => 'html'}, class: "btn btn-success", style: "width:100px;margin-left:-10px" %>
+              <img style="position:absolute;top:2px;right:0" src="/images/cross.png" onclick="disapprove('<%=photo.id%>')">
+              <%#= link_to(image_tag("/images/remove-icon.png", :class => 'hoverRemoveIcon', :style=>'display:none;'), "/album_photos/" + photo.id.to_s, :data => {:method => "delete", :remote => true, :type => 'html'}) %>
+            </div>
+          <% end %>
+        <% end %>
+        </div>
+      </div>
+    <center>
+      <div class="flex-container" style="min-height:330px;max-width:880px;margin-top:2px">
+        <div class="flexslider teaser" id="flexsliderAlbums">
+          <div id="hoverGarbageAlbum" class="garbage"<% if @allphotos.length > 0 %>onclick="deletePic(0, <%=@allphotos[0].id%>)"<% else %>style="display:none"<% end %>><img src="/images/garbage.png" style="width:17px;margin-top:-9px"/></div>
+          <ul class="slides" id="picContainer">
+            <% if totalApproved > 0 %>
+                <% @allphotos.each do |pic| %>
+                  <% if pic.approved == 1 %>
+                    <li id="<%= pic.id %>"><div class="product-img slide2" style="max-width:none;margin-top:0"><img src="<%= pic.photo_url(:display) %>" alt="Eventastic"/></div></li>
+                  <%end%>
+                <% end %>
+            <% else %>
+                <li id="default_pic"><div class="product-img slide2" style="max-width:none;margin-top:0"><img src="/images/wallpaper/missing/missing_wallpaper.jpg" alt="Eventastic"/></div></li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
+
+      <br>
+      <div class="btn btn-success" id="flashUpload" style="height:21px;width:200px">
+        <i class="icon-camera icon-white"></i>
+        <a style="color:#fff;z-index:0">Add Photos To Album</a>
+        <div class="UploadifyObjectWrapper">
+          <input type="file" id="addFile" />
+        </div>
+      </div>
+
+      <input id="downbtn" type="button" class="btn btn-success" style="width:200px" value="Download Images" onclick="window.location = '<%=choose_images_path(:id => @album.id)%>'"/>
+    </center>
+    </div>
+    <br>
+
+        <center><input type="button" class="btn btn-success" style="margin-right: 10px;width:175px;" value="Back" onclick="show_page('video')"><input type="button" class="btn btn-success" style="width:175px;" value="Save & Continue" onclick="updatePhoto()"></center>
+    </div>
+
+    <div id="social" style="display:none;">
+          <h1>Social Profile</h1>
+
+          <div style="display:inline-block;width:220px;">
+            <div class="tooltip" title="Include a Social message">
+              <img src="/images/button-info.png" width="15px"  style="float:left;">
+            </div>
+              <img src="/img/social-icons/grey_message.png" width="25px"  style="float:left;">
+          <%= f.input :has_social_message, as: :boolean, label: false, :input_html => {:style => "float:left;margin-left:8px;margin-right:1px;display:inline-block;width:15px;"} %> Include a Social message 
+        </div>
+        <div style="display:inline-block"><%= f.text_area :social_message, label: false, style: "height:90px;width:250px" %></div><br>
+
+          <div style="display:inline-block;width:220px;">
+            <div  class="tooltip" title="Include a Facebook link">
+              <img src="/images/button-info.png" width="15px" style="float:left;" >
+            </div>
+              <img src="/img/social-icons/grey_facebook.png" width="25px" style="float:left;" >
+          <%= f.input :has_social_facebook, as: :boolean, label: false, :input_html => {:style => "float:left;margin-left:8px;margin-right:1px;display:inline-block;width:15px;"} %> Include a Facebook link </div><div style="display:inline-block"><%= f.input :social_facebook, label: false, :input_html => {:style => "width:250px"} %></div><br>
+
+          <div style="display:inline-block;width:220px;">
+            <div class="tooltip" title="Include a Twitter link">
+              <img src="/images/button-info.png" width="15px" style="float:left;">
+            </div>
+              <img src="/img/social-icons/grey_twitter_bird.png" width="25px" style="float:left;" >
+          <%= f.input :has_social_twitter, as: :boolean, label: false, :input_html => {:style => "float:left;margin-left:8px;margin-right:1px;display:inline-block;width:15px;"} %> Include a Twitter link </div><div style="display:inline-block"><%= f.input :social_twitter, label: false, :input_html => {:style => "width:250px"} %></div><br>
+
+          <div style="display:inline-block;width:220px;">
+            <div class="tooltip" title="Include a Youtube link">
+              <img src="/images/button-info.png" width="15px"  style="float:left;">
+            </div>
+              <img src="/images/icon-youtube-grey.png" width="25px"  style="float:left;">
+          <%= f.input :has_social_youtube, as: :boolean, label: false, :input_html => {:style => "float:left;margin-left:8px;margin-right:1px;display:inline-block;width:15px;"} %> Include a Youtube link </div><div style="display:inline-block"><%= f.input :social_youtube, label: false, :input_html => {:style => "width:250px"} %></div><br>
+
+
+          <div style="display:inline-block;width:220px;">
+            <div class="tooltip" title="Include a Pinterest link">
+              <img src="/images/button-info.png" width="15px"  style="float:left;">
+            </div>
+              <img src="/img/social-icons/grey_pinterest.png" width="25px"  style="float:left;">
+          <%= f.input :has_social_pinterest, as: :boolean, label: false, :input_html => {:style => "float:left;margin-left:8px;margin-right:1px;display:inline-block;width:15px;"} %> Include a Pinterest link </div><div style="display:inline-block"><%= f.input :social_pinterest, label: false, :input_html => {:style => "width:250px"} %></div><br>
+
+          <div style="display:inline-block;width:220px;">
+            <div class="tooltip" title="Include a Website link">
+              <img src="/images/button-info.png" width="15px"  style="float:left;">
+            </div>
+              <img src="/img/social-icons/grey_wifi.png" width="25px"  style="float:left;">
+          <%= f.input :has_social_website, as: :boolean, label: false, :input_html => {:style => "float:left;margin-left:8px;margin-right:1px;display:inline-block;width:15px;"} %> Include a Website Link </div><div style="display:inline-block"><%= f.input :social_website, label: false, :input_html => {:style => "width:250px"} %></div><br>
+
+          <div style="display:inline-block;width:220px;">
+            <div class="tooltip" title="Include an Email address">
+              <img src="/images/button-info.png" width="15px"  style="float:left;">
+            </div>
+              <img src="/img/social-icons/grey_email.png" width="25px"  style="float:left;">
+          <%= f.input :has_social_email, as: :boolean, label: false, :input_html => {:style => "float:left;margin-left:8px;margin-right:1px;display:inline-block;width:15px;"} %> Include an Email link </div><div style="display:inline-block"><%= f.input :social_email, label: false, :input_html => {:style => "width:250px"} %></div><br>
+
+
+
+          <div style="display:inline-block;width:220px;">
+            <div class="tooltip" title="Include a Hashtag">
+              <img src="/images/button-info.png" width="15px" style="float:left;">
+            </div>
+              <img src="/img/social-icons/grey_hash.png" width="25px" style="float:left;">
+          <%= f.input :has_social_hastag, as: :boolean, label: false, :input_html => {:style => "float:left;margin-left:8px;margin-right:1px;display:inline-block;width:15px;"} %> Include a Hashtag </div><div style="display:inline-block"><%= f.input :social_hastag, label: false, :input_html => {:style => "width:250px"} %></div><br>
+
+            <center>
+
+                  <input type="button" class="btn btn-success" style="margin-right: 10px;width:175px; margin-bottom:10px" value="Back" onclick="show_page('photo')">
+
+                  <input type="button" class="btn btn-success" style="margin-right: 10px;width:175px; margin-bottom:10px;" value="Save & Continue" onclick="updateSocial()">
+
+            </center>
+        </div>
+    <div id="file" style="display:none">
+
+<h1>Manage & Upload Files</h1>
+<div class="clearfloat"></div>
+  <br>
+
+  <center>
+  <div class="filesCurrent">Current Files</div>
+  <br>  
+  <div class="filesTable">
+    <table id="filesTable">
+      <% @attacheds.each do |doc| %>
+        <tr id="attached<%=doc.id%>">
+          <td style="width:430px;padding:10px"><%= link_to doc.name, attached_path(doc.id), target: "_blank", class: "fileOpen" %></td>
+          <td onclick="deleteFile(<%=doc.id%>)" class="btn btn-danger"><%#= button_to "Delete", doc, :method => :delete, class: "fileDeletebtn" %>Delete</td>
+        </tr>
+      <% end %>
+    </table>
+    <img src="/images/loading.gif" id="loading" style="margin-top:14px;display:none"/>
+
+      <input type="hidden" id="attached_event_id" value="<%=@event.id%>" >
+      <div class="btn btn-success" id="flashUpload" style="height:22px;z-index:0">
+        <a style="color:#fff;z-index:0">Upload New File</a>
+        <div class="UploadifyObjectWrapper">
+          <input type="file" id="attached_attached">
+        </div>
+      </div>
+      <input type="button" class="btn btn-success" value="Upload New File" id="noflashbtn" style="display:none" onclick="$('#noflashUpload').click()"/>
+      <input type="file" id="noflashUpload" style="display:none" />
+      
+      <br />
+  </div>
+  <br>
+  <input type="button" class="btn btn-success" style="margin-right: 10px;width:175px;" value="Back" onclick="show_page('social')">
+  <input type="button" class="btn btn-success" style="width:175px;" value="Save & Continue" onclick="updateFile()">
+  </center>  
+
+</div>
+<div id="eventsales" style="display:none">
+      <h1>Event Sales For: <%= @event.name %></h1>
+      <br />
+      <h4> Tickets </h4>
+
+      <center>
+      <% if @event.ticket_types.length > 0 then %>
+      <% overalltotal = 0 %>
+      <div id="ticketList" style="max-width:850px">
+        <% @ticket_types.each do |ticket_type| %>
+          <table width="90%">
+            <tr>
+              <td width="43%"><%= ticket_type.name %> (<%= ticket_type.price %> <%= ticket_type.currency %>)</td>
+              <td width="40%">From: <%= ticket_type.sell_from %> - <%= ticket_type.sell_to %></td>
+              <td width="5%"><%= "(Groupable)" if ticket_type.groupable? %></td>
+              <td width="12%">Total Sold: <%= TicketInstance.where(:ticket_type_id => ticket_type.id, :status => ["paid", "redeemed"]).count %></td>
+            </tr>
+          </table>
+          <hr />
+          <% instances = TicketInstance.where(:ticket_type_id => ticket_type.id, :status => ["paid", "redeemed"]) %>
+          <% total = 0 %>
+          <% instances.each do |ticket| %>
+            <table width="90%">
+              <tr>
+                <td width="60%"><%= ticket.guest_name %> (<%= ticket.guest_email %>) X <%= ticket.quantity %></td>
+                <td width="5%"></td>
+                <td width="10%">Paid: $</td>
+                <td width="7%"><%= ticket.price_paid %></td>
+                <td width="13%"><input type="button" value="Resend Ticket" style="width:125px" class="btn btn-success" id="<%=ticket.id%>" onclick="resendTicket(<%=ticket.id%>)"></td>
+                <!-- <td width="13%"><%= link_to 'Resend Ticket', resend_path(ticket.id), class: "btn btn-success", id: ticket.id %></td> -->
+              </tr>
+            </table>
+            <br />
+            <% total = total+ ticket.price_paid%>
+          <% end %>
+            <br />
+            <table width="90%">
+              <tr>
+                <td width="60%"></td>
+                <td width="10%"></td>
+                <% overalltotal = overalltotal + total %>
+                <td width="30%">Total: $<%= total %></td>
+              </tr>
+            </table>
+            <br />
+            <br />
+            <br />
+            <br />
+          <% end %>
+          </div>
+        <% end %>
+      
+
+      </center>
+      <center>
+        Ticket Total: $<%= overalltotal %><br>
+        <input type="button" class="btn btn-success" value="Request Ticket Cashout" onclick="setCashout('tickets')">
+      </center>
+      
+
+      <br />
+      <h4> Cash Gifts & Donations </h4>
+
+      <center>
+        <div style="width:95%">
+          <div style="text-align:left">
+            <div style="width:54%;display:inline-block">From</div>
+            <div style="width:17%;display:inline-block">Date</div>
+            <div style="width:18%;display:inline-block">Amount</div>
+          </div>
+        </div>
+        <br />
+
+        <div width="95%">
+          <% @cashgifts.each do |cg| %>
+              <div style="text-align:left">
+                <div style="width:54%;display:inline-block"><% unless cg.privacy%><%= cg.guest_name %> (<%= cg.guest_email %>)<% else %>Anonymously Made<% end %></div>
+                <div style="width:17%;display:inline-block"><%= cg.created_at.to_date %></div>
+                <!-- <div style="width:9%;display:inline-block"><% if cg.message %><%= link_to 'Show',cg, :class=>"linked" %><% end %></div> -->
+                <div style="width:18%;display:inline-block"><%= cg.amount %>0</div>
+                <br>
+                <%if cg.message.length > 0%>
+                  <div style="cursor:pointer;margin-left:40px" onclick="showMsg(<%=cg.id%>)">
+                    <span>Show Message</span>
+                    <div style="position:relative;display:inline-block;width:15px;height:12px">
+                       <img id="rightmsg<%= cg.id %>" src="/images/right.png" style="width:15px;position:absolute">
+                       <img id="downmsg<%= cg.id %>" src="/images/next.png" style="width:15px;position:absolute;display:none">
+                    </div>
+                   <div style="display:none;max-width:560px" id="msg<%= cg.id %>"><%= cg.message %></div>
+                  </div>
+                <%end%>
+              </div>
+          <% end %>
+        </div>
+        <input type="button" class="btn btn-success" value="Request Cashout" onclick="setCashout('cg')">
+      </center>
+
+      <br />
+      <br />
+      <center>
+        <input type="button" class="btn btn-success" style="margin-right: 10px;width:175px;" value="Back" onclick="show_page('file')">
+        <input type="button" class="btn btn-success" style="width:175px;" value="Save & Continue" onclick="updateEventSales()">
+      </center>
+    </div>
+  
+    <div id="metric" style="display:none;">
+      <h1>Publish Event</h1>
+      <p>Uncheck The Box Below & Save To Publish This Event!</p>
+      <%= f.input :is_private, as: :boolean, label: "This Event Will Be Private And Not Searchable Through Eventastic", :input_html => {:style => "float:left;margin-left:3px; width: 20px"} %>
+
+        <center><input type="button" class="btn btn-success" style="margin-right: 10px;width:175px;" value="Back" onclick="show_page('file')"><input type="button" class="btn btn-success" style="width:175px;" value="Save & Complete" onclick="window.location='/events'"></center>
+    </div>
+    </div>
+
+<center style="display:none"><%= f.submit "Update Event", :class => "btn btn-large btn-success" %></center>
+<% end %>
+<br><br>
+<br>
+</div>
+</div>
+</div>
+
+
+
+ <div id="securityBox" class="side_panel3" style="width:650px;right:-325px;padding:15px;color:#000;top:130px;height:250px;display:none">
+    <div onclick="$('#securityBox').fadeToggle()" class="testcashoutclose" style="top:7px">X</div>
+    <center>
+    <% if current_user.cg_key2 and current_user.cg_key2 != '' %>
+      <%= simple_form_for :cashout, html: { multipart: true }, url: cashout_path, method: :put do |f| %>
+        <div style="font-size:17pt;font-weight:bold">Please answer the security question</div>
+        <hr><br>
+        <div style="font-size:15pt"><%= current_user.cg_key1 %></div>
+        <br>
+        <%= f.input :cg_key2, label: false, :input_html => {onkeyup: 'checkAnswer(this)'} %>
+        <img id="red" src='/images/minus.png' style="position:relative;top:-37px;left:-124px;display:block;opacity:0"/>
+        <img id="green" src='/images/checkmark2.png' style="position:relative;top:-37px;left:-124px;display:none"/>
+        <%= f.hidden_field :id, :value => @event.id %>
+        <br>
+        <input class="btn btn-success" id="requestCash" style="width:300px" value="Request Event Cash Out!" disabled="disabled">
+        <%#= f.submit 'Request Event Cash Out!', id: "requestCash", :class => 'btn btn-success', :style=>"width:300px;", disabled: true%>
+      <% end %>
+    <% else %>
+      <div style="font-size:17pt;font-weight:bold">Please create a security question to cash out</div>
+      <hr><br>
+      <p>With a security question set, you can allow your friends and family to log into your account, without fear of anyone cashing out on your events.  Once set, keep the answer secret.</p>
+      <input class="btn btn-success" style="width:150px;left:50%;display:inline-block" value="Later" onclick="$('#securityBox').fadeToggle()">
+      <input class="btn btn-success" style="width:150px;left:50%;display:inline-block" value="Set Question Now" onclick="window.location='<%=edit_user_path(:id => current_user.id)%>'"> 
+    <% end %>
+    <img id="securitycloser" onclick="$('#securityBox').fadeToggle()" src="/images/cross.png" class="securityCross" style="display:none" />
+  </center>
+  </div>
+<img src="/images/icons/loader.gif" style="position: fixed; display: none; left: 50%; top:50%" id="loaderGlobal">
+
+
+<%= stylesheet_link_tag 'uploadify.css' %>
+<%= javascript_include_tag "swfobject.js", "jquery.uploadify.v2.1.0.js", "flash_detect_min.js" %>
+<%= javascript_include_tag 'jquery-ui-1.9.2.min.js', 'jquery-timepicker.js' %>
+<script src="http://static.opentok.com/v0.91/js/TB.min.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    if (!FlashDetect.installed) {
+        alert("We're sorry! Flash is required to use this feature. Please download the newest version of Adobe Flash to continue!");
+
+        document.getElementById("flashUpload").style.display = "none";
+        $(document).ready(function () {
+            document.getElementById("noFlashfile").onchange = uploadPaper;
+        })
+    } else {
+        if (FlashDetect.major < 11) {
+            alert("Please upgrade your version of flash to at least version 11!");
+        }
+        document.getElementById("noflash").style.display = "none";
+    }
+
+    $(document).ready(function () {
+
+      videoIndex = 0;
+      <%@videos.each do |video| %>
+        <% unless video.has_youtube %>
+            player[videoIndex] = recorderManager.displayPlayer('<%=video.video%>', TOKEN, 'video<%=video.id%>', {width:230,height:230});
+            videoIndex++;
+        <%end%>
+      <%end%>
+
+      $('.tooltip').tooltipster({
+    animation: 'fade',
+   arrow: true,
+   arrowColor: '',
+   content: '',
+   delay: 0,
+   fixedWidth: 0,
+   maxWidth: 0,
+   functionBefore: function(origin, continueTooltip) {
+      continueTooltip();
+   },
+   functionReady: function(origin, tooltip) {},
+   functionAfter: function(origin) {},
+   icon: '(?)',
+   iconDesktop: false,
+   iconTouch: false,
+   iconTheme: '.tooltipster-icon',
+   interactive: false,
+   interactiveTolerance: 350,
+   offsetX: 0,
+   offsetY: 0,
+   onlyOne: true,
+   position: 'top',
+   speed: 0,
+   timer: 0,
+   theme: '.tooltipster-default',
+   touchDevices: true,
+   trigger: 'hover',
+   updateAnimation: true
+   });
+
+
+        $('#startTime').datetimepicker({
+            dateFormat:'yy-mm-dd',
+            timeFormat:'hh:mm tt',
+            minDate: 0
+        });
+        $('#endTime').datetimepicker({
+            dateFormat:'yy-mm-dd',
+            timeFormat:"hh:mm tt",
+            minDate: 0
+        });
+        $('#new_ticket_from').datepicker({
+            dateFormat:'yy-mm-dd',
+            minDate: 0
+        });
+        $('#new_ticket_to').datepicker({
+            dateFormat:'yy-mm-dd',
+            minDate: 1
+        });
+
+         <% @ticket_types.each do |type| %>
+        $('#edit_sell_from<%=type.id%>').datepicker({
+            dateFormat:'yy-mm-dd',
+            minDate: 0
+        });
+        $('#edit_sell_to<%=type.id%>').datepicker({
+            dateFormat:'yy-mm-dd',
+            minDate: 1
+        });
+        <% end %>
+
+        $("#ticket_from").datepicker();
+        $("#ticket_to").datepicker();
+
+        <% if @event.max_capacity%>
+        <% if @event.max_capacity > 0 %>
+        $('#event_has_capacity').click();
+        <% end %>
+        <% end %>
+
+        $('#wallpaper_wallpaper').click(function (event) {
+            event.preventDefault();
+        });
+
+        $('#flexslider').flexslider({
+            pauseOnHover:true,
+            controlNav:false,
+            after:function (slide) {
+                document.getElementById("hoverGarbage").setAttribute("onclick", "deletePaper(" + slide.currentSlide + "," + slide.slides[slide.currentSlide].id + ")")
+            }
+        });
+
+        $('#flexsliderAlbums').flexslider({
+            pauseOnHover:true,
+            controlNav:false,
+            after:function (slide) {
+                document.getElementById("hoverGarbageAlbum").setAttribute("onclick", "deletePic(" + slide.currentSlide + "," + slide.slides[slide.currentSlide].id + ")")
+            }
+        });
+
+
+        $('#flexslider').hover(function () {
+            $("#hoverGarbage").animate({
+                top:'80px',
+                opacity:'1'
+            }, 250)
+        }, function () {
+            $("#hoverGarbage").animate({
+                top:'20px',
+                opacity:'0'
+            }, 250)
+        });
+
+        $('#flexsliderAlbums').hover(function () {
+            $("#hoverGarbageAlbum").animate({
+                top:'20px',
+                opacity:'1'
+            }, 250)
+        }, function () {
+            $("#hoverGarbageAlbum").animate({
+                top:'-20px',
+                opacity:'0'
+            }, 250)
+        });
+
+        $('#displayPic').hover(function () {
+            $("#hoverGarbage2").animate({
+                top:'20px',
+                opacity:'1'
+            }, 250)
+        }, function () {
+            $("#hoverGarbage2").animate({
+                top:'-10px',
+                opacity:'0'
+            }, 250)
+        })
+        
+
+        <% if @all_wallpapers.length < 2 %>
+        $('#flexslider .flex-direction-nav').hide();
+        <%end%>
+
+        <% if @event.has_registration %>
+               document.getElementById('theOption').value = "Register";
+               value = "Register";
+               <% elsif @event.has_ticketing %>
+               document.getElementById('theOption').value = "Tickets";
+               value = "Tickets";
+               <% else %>
+               document.getElementById('theOption').value = "Nothing";
+               value = "Nothing";
+               <% end %>
+
+               var theDiv = $(".is" + value);
+
+               if (value == "Tickets") {
+                   document.getElementById("has_ticketing").checked = true;
+                   document.getElementById("has_registration").checked = false;
+               }
+
+               if (value == "Register") {
+                   document.getElementById("has_ticketing").checked = false;
+                   document.getElementById("has_registration").checked = true;
+               }
+
+               if (value == "Nothing") {
+                   document.getElementById("has_ticketing").checked = false;
+                   document.getElementById("has_registration").checked = false;
+               }
+               theDiv.slideDown().removeClass("hidden");
+               theDiv.siblings('[class*=is_]').slideUp(function () {
+                   $(this).addClass("hidden");
+                   priv = $('.event_is_private');
+                   priv.removeClass("hidden");
+                   priv.css("display", 'block');
+               });
+
+
+        $('#wallpaper_wallpaper').uploadify({
+            'wmode':'transparent',
+            hideButton:true,
+            buttonImage:" ",
+            width:155,
+            height:30,
+            uploader:'/uploadify/uploadify.swf',
+            cancelImg:'/uploadify/cancel.png',
+            multi:false,
+            auto:true,
+            script:'/wallpapers',
+            onComplete:function (event, queueID, fileObj, response, data) {
+                $('#loaderGlobal').hide();
+                obj = JSON.parse(response);
+                //showUploadedItem();
+                appendImage(obj);
+                document.getElementById("uploadText").innerHTML = "Upload Another Cover Photo";
+            },
+            onSelect:function (){
+              $('#loaderGlobal').show();
+            },
+            scriptData:{
+                '_http_accept':'application/javascript',
+                'format':'json',
+                '_method':'post',
+                'event_id':'<%= @event.id %>'
+            }
+        });
+
+        $('#addFile').uploadify({
+            'wmode':'transparent',
+            hideButton:true,
+            buttonImage:" ",
+            width:155,
+            height:30,
+            uploader:'/uploadify/uploadify.swf',
+            cancelImg:'/uploadify/cancel.png',
+            multi:false,
+            auto:true,
+            script:'/album_photos',
+            onComplete:function (event, queueID, fileObj, response, data) {
+                obj = JSON.parse(response);
+                //showUploadedItem();
+                appendImageAlbum(obj.id, obj.url);
+                //document.getElementById("uploadText").innerHTML = "Upload Photo";
+            },
+            scriptData:{
+                '_http_accept':'application/javascript',
+                'format':'json',
+                '_method':'post',
+                'album_id':'<%=@album.id%>'
+            }
+        });
+
+        $('#savePaper').click(function (event) {
+            event.preventDefault();
+            $('#wallpaper_wallpaper').uploadifyUpload();
+        });
+
+        $('#theme').change(function () {
+            var val = $("#theme option:selected")[0].value;
+
+            for (i = 1; i < 5; i++) {
+                document.getElementById("themeimg" + i).style.display = "none";
+            }
+            document.getElementById(val).style.display = "block";
+
+        });
+
+
+        <% if @event.set_options%>
+        document.getElementById('ticketPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('ticketPanel_icon').setAttribute("class", "icon-check green");
+        show_page("tickets");
+        <% else %>
+        show_page("options");
+        <% end %>
+        <% if @event.set_tickets%>
+        document.getElementById('salesPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('salesPanel_icon').setAttribute("class", "icon-check green");
+        show_page("sales");
+        <% end %>
+        <% if @event.set_sales%>
+        document.getElementById('donationPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('donationPanel_icon').setAttribute("class", "icon-check green");
+        show_page("donations");
+        <% end %>
+        <% if @event.set_donations%>
+        document.getElementById('cgPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('cgPanel_icon').setAttribute("class", "icon-check green");
+        show_page("cg");
+        <% end %>
+        <% if @event.set_cg%>
+        document.getElementById('socialPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('socialPanel_icon').setAttribute("class", "icon-check green");
+        show_page("social");
+         <% end %>
+        <% if @event.set_social%>
+        document.getElementById('videoPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('videoPanel_icon').setAttribute("class", "icon-check green");
+        show_page("video");
+         <% end %>
+        <% if @event.set_video%>
+        document.getElementById('photoPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('photoPanel_icon').setAttribute("class", "icon-check green");
+        show_page("photo");
+         <% end %>
+        <% if @event.set_photo%>
+        document.getElementById('filePanel').setAttribute("class", "detail detailActive");
+        document.getElementById('filePanel_icon').setAttribute("class", "icon-check green");
+        show_page("file");
+         <% end %>
+         <% if @event.set_file%>
+        document.getElementById('eventsalesPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('eventsalesPanel_icon').setAttribute("class", "icon-check green");
+        show_page("eventsales");
+         <% end %>
+         <% if @event.set_event_sales%>
+        document.getElementById('metricPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('metricPanel_icon').setAttribute("class", "icon-check green");
+        show_page("metric");
+         <% end %>
+        <% if @event.set_metric%>
+        show_page("complete");
+         <% end %>
+    });
+      
+
+function deleteVideo(id) {
+  $.ajax({
+        url: "/videos/" + id,
+        type: "DELETE",
+        "dataType":"json",
+        processData: false,
+        contentType: false,
+        success: function() {
+          $('#videoContainer' + id).remove()
+        }
+  });
+}
+
+function appendImageAlbum(ID, url) {
+  slider = $('#flexsliderAlbums').data('flexslider');
+  slider.addSlide('<li id="' + ID + '"><div class="product-img slide2" style="max-width:none;margin-top:0"><img src="' + url + '" alt="Eventastic"/></div></li>');
+
+  if (slider.slides[0].id == "default_pic") {
+    slider.flexAnimate(1);
+    slider.removeSlide(0);
+    $('#hoverGarbageAlbum').show();
+  }
+
+  if (slider.count > 1) {
+    $('#flexsliderAlbums .flex-direction-nav').show();
+  }
+}
+
+function approve(ID, url) {
+  $('#photo' + ID).remove();
+  appendImageAlbum(ID, url);
+  if (countTheKids() == 0) {
+    $('#approvePopup').hide()    
+  }
+  $.ajax({
+        url: "/approve/" + ID,
+        type: "DELETE",
+        "dataType":"json",
+        processData: false,
+        contentType: false
+  });
+}
+
+function disapprove(id) {
+  $('#photo' + id).remove();
+  if (countTheKids() == 0) {
+    $('#approvePopup').hide()    
+  }
+  $.ajax({
+        url: "/album_photos/" + id,
+        type: "DELETE",
+        "dataType":"json",
+        processData: false,
+        contentType: false
+  });
+}
+
+function deletePic(index, id) {
+  slider = $('#flexsliderAlbums').data('flexslider');
+  
+  if (slider.count == 1) {    
+    slider.addSlide('<li id="default_pic"><div class="product-img slide2" style="max-width:none"><img src="/images/wallpaper/missing/missing_wallpaper.jpg" alt="Eventastic"/></div></li>');
+    $('#hoverGarbageAlbum').hide();    
+  }
+
+  if (slider.count <= 2) {
+    $('#flexsliderAlbums .flex-direction-nav').hide();
+  }
+
+  slider.flexAnimate(slider.getTarget("next"));
+  slider.removeSlide(index);
+
+  $.ajax({
+        url: "/album_photos/" + id,
+        type: "DELETE",
+        "dataType":"json",
+        processData: false,
+        contentType: false
+  });
+}
+
+function countTheKids(){
+  i = 0;
+  realKids = 0;
+  parent = document.getElementById("approveBox");
+  kids = parent.childNodes.length;
+       
+  while(i < kids){
+    if(parent.childNodes[i].nodeType != 3){
+      realKids++;
+    }
+    i++;
+  }
+  return realKids - 1;
+}
+
+
+    function resendTicket(ID) {
+      $.ajax({ "url":"/ticket_instances/resend/" + ID,
+           "dataType":"json",
+           "success": function (data) {
+              alert('The ticket has been sent');
+            },
+           "failure":function () {
+             console.log("The code did not submit successfully! It is safe to retry.");
+        }});
+    }
+
+    function setCashout(type) {
+      $('#securityBox').fadeToggle();
+      if (type == 'cg') {
+        document.getElementById("requestCash").setAttribute("onclick", "requestCGCashout()");
+      } else {
+        document.getElementById("requestCash").setAttribute("onclick", "requestTicketCashout()");
+      }
+    }
+
+    function requestCGCashout() {
+      key = $('#cashout_cg_key2').val();
+
+       $.ajax({ "url":"/giftcashout",
+           "dataType":"json",
+           data: {cg_key2: key},
+           "success": function (data) {
+              console.log("success");
+              console.log(data);
+            },
+            "complete": function (data) {
+              if (data.responseText != "success" && data.responseText != '') {
+                alert(data.responseText)
+              } else {
+                alert("Cash Out Complete!");
+              }
+              $('#securityBox').fadeToggle();
+            },
+           "failure":function () {
+             console.log("The code did not submit successfully! It is safe to retry.");
+        }});
+    }
+
+    function requestTicketCashout() {
+      key = $('#cashout_cg_key2').val();
+
+       $.ajax({ "url":"/cashout",
+           "dataType":"json",
+           data: {id: <%=@event.id%>, cg_key2: key},
+           "success": function (data) {
+              console.log("success");
+              console.log(data);
+            },
+            "complete": function (data) {
+              if (data.responseText != "success" && data.responseText != '') {
+                alert(data.responseText)
+              } else {
+                alert("Cash Out Complete!");
+              }
+              $('#securityBox').fadeToggle();
+            },
+           "failure":function () {
+             console.log("The code did not submit successfully! It is safe to retry.");
+        }});
+    }
+
+    function checkAnswer(e) {
+      answer = e.value;
+
+      $.ajax({ "url":"<%=checkSecurityAnswer_path%>",
+           "dataType":"json",
+           "data": {'answer': answer, 'id': '<%= current_user.id %>'},
+           "success": function (data) {
+              if (data) {
+                document.getElementById("red").style.display = "none";
+                document.getElementById("green").style.display = "block";
+                document.getElementById("requestCash").removeAttribute("disabled");
+              } else {
+                red = document.getElementById("red");
+                red.style.display = "block";
+                red.style.opacity = 1;
+                document.getElementById("green").style.display = "none";
+                document.getElementById("requestCash").setAttribute("disabled", "disabled");
+              }
+            },
+           "failure":function () {
+             console.log("The code did not submit successfully! It is safe to retry.");
+        }});
+    }
+
+  function setPhotoSharing(el) {
+    $('#include_photo_sharing').slideToggle();
+    if (el.value == "true") {
+      $('#photo_check').attr('checked',true);
+    } else {
+      $('#photo_check').attr('checked',false);
+    }
+  }
+
+  function setVideo(el) {
+    $('#include_video').slideToggle();
+    if (el.value == "true") {
+      $('#event_has_videos').attr('checked',true);
+    } else {
+      $('#event_has_videos').attr('checked',false);
+    }
+  }
+
+  function setDonations(el) {
+    $('#include_donations').slideToggle();
+    if (el.value == "true") {
+      $('#event_has_donations').attr('checked',true);
+    } else {
+      $('#event_has_donations').attr('checked',false);
+    }
+  }
+
+  function setCashGifting(el) {
+    $('#include_cg').slideToggle();
+    if (el.value == "true") {
+      $('#event_has_cash_gifting').attr('checked',true);
+    } else {
+      $('#event_has_cash_gifting').attr('checked',false);
+    }
+  }
+
+  function modifyEndDate(date_from, date_to) {
+      if (date_from.value != '') {
+
+        if(date_to.value == '' || date_to.value < date_from.value) {
+          date_to.value = date_from.value;
+
+        }
+        $(date_to).datepicker('option', 'minDate', new Date(date_from.value), 0);
+      }
+
+      else {
+        date_to.value = '';
+      }
+    }
+
+    function checkEndDate(date_from, date_to) {
+
+      start = date_from.value;
+      end = date_to.value;
+
+      if (start != '') {
+        startdate = start.split('-');
+        startDateParse = new Date(start[0], start[1], start[2]);
+
+        enddate = end.split('-');
+        endDateParse = new Date(end[0], end[1], end[2]);
+
+        if (end < start) {
+          date_to.value = '';
+        }
+      }
+    }
+
+  function createTicketType() {
+    formdata = new FormData();
+    start =  $('#new_ticket_from').val()
+    end = $('#new_ticket_to').val()
+    
+    formdata.append("event_name", "<%=@event.name%>");
+    formdata.append("event_id", "<%=@event.id%>");
+    formdata.append("name", $('#type_name').val());
+    formdata.append("price", $('#type_price').val());
+    formdata.append("description", $('#type_description').val());
+
+    startdate = start.split('-');
+    enddate = end.split('-');
+
+    formdata.append("sell_from(1i)", startdate[0]);
+    formdata.append("sell_from(2i)", startdate[1]);
+    formdata.append("sell_from(3i)", startdate[2]);
+
+    formdata.append("sell_to(1i)", enddate[0]);
+    formdata.append("sell_to(2i)", enddate[1]);
+    formdata.append("sell_to(3i)", enddate[2]);
+                                                 
+    e = document.getElementById("type_currency");
+    cur = e.options[e.selectedIndex].value;
+
+    formdata.append("currency", cur);
+
+    formdata.append("count_towards_occupancy", $('#count_towards_occupancy').prop('checked'));
+    formdata.append("show_remaining", $('#type_show_remaining').prop('checked'));
+
+    if ($('#count_towards_occupancy').prop('checked')) {
+      formdata.append("group_size", $('#group_size').val());
+    } else {
+      formdata.append("group_size", 0);
+    }
+
+    if ($('#type_limit_input').prop('checked')) {
+      formdata.append("capacity", $('#type_limit_size').val());
+    } else {
+      formdata.append("capacity", 0);
+      formdata.append("show_remaining", false);
+    }
+    formdata.append("groupable", $('#type_groupable').prop('checked'));
+
+    $.ajax({
+           type: "POST",
+           url: "/ticket_types",
+           dataType: "json",
+           data: formdata,
+           processData: false,
+           contentType:false,
+           success: function(data) {
+               container = $("#ticket_container");
+               content = "<div id='ticketType" + data.id +"' style='max-width:760px'>";
+
+               content += '<div class="ticketBar" style="width:176px"><span id="name' + data.id + '" class="blue">' + data.name + '</span></div>';
+               content += '<div class="ticketBar" id="price' + data.id + '" style="width:90px">$' + parseFloat(data.price).toFixed(2) + ' ' + data.currency + '</div>';
+               if (data.groupable) {
+                 content += '<div class="ticketBar" id="group' + data.id + '" style="width:50px">Groupable</i></div>';
+               } else {
+                 content += '<div class="ticketBar" id="group' + data.id + '" style="width:50px"></div>';
+               }               
+
+               if (data.count_towards_occupancy) {
+                content += '<div class="ticketBar" id="occupancy' + data.id + '" style="width:90px">Occupancy</div>';
+               } else {
+                content += '<div class="ticketBar" id="occupancy' + data.id + '" style="width:90px"></div>';
+               }
+
+               content += "<div class='ticketBar' style='width:57px'><input type='button' id='edit" + data.id + "' value='Edit' class='btn btn-success' style='width:70px' onclick='editTicket("+data.id+",\""+data.name+"\", \""+data.price+"\", \""+data.currency+"\", \""+data.description+"\", "+String(data.groupable)+", "+String(data.count_towards_occupancy)+", "+data.capacity+", \""+data.sell_from+"\", \""+data.sell_to+"\", \""+data.group_size+"\", "+data.show_remaining+")'></div>";
+               content += "<div class='ticketBar' style='width:50px'><input type='button' value='Delete' onclick='deleteTicket(" + data.id + ")' class='btn btn-danger' style='width:70px'></div>";
+               content += "<div style='margin-left:40px'><div style='cursor:pointer' onclick='showDescription(" + data.id + ")'><span>Description</span><div style='position:relative;display:inline-block;width:15px;height:12px'><img id='right" + data.id + "' src='/images/right.png' style='width:15px;position:absolute'><img id='down" + data.id + "' src='/images/next.png' style='width:15px;position:absolute;display:none'></div><div style='display:none' id='description" + data.id + "'>" + data.description + "</div></div></div><br>";
+
+               content += "<div id='editSection"+data.id+"' style='border: 1px solid;border-radius:20px;padding:15px;display:none'><center><h2>Edit Ticket</h2></center><div style='color:#000'><div style='display:inline-block'><input id='edit_name_"+data.id+"' name='edit_name' placeholder='Ticket Name' type='text' value='' /></div><div style='display:inline-block'><input id='edit_price_"+data.id+"' min='0' name='edit_price' placeholder='Price' step='0.01' style='width:100px' type='number' value='' /></div>";
+
+               content +=  "<div style='display:inline-block'><select id='edit_currency_"+data.id+"' name='edit_currency' style='width:80px'><option value='USD'>USD</option><option value='CAD'>CAD</option></select></div>";
+
+               content += "<div style='display:inline-block'><input id='edit_description_"+data.id+"' name='edit_description' placeholder='Description' type='text' value='' /></div><br />";
+
+               content += "<div style='display:inline-block;'><label><b>Sell From</b></label><input type='text' id='edit_sell_from"+data.id+"' value='<%= Time.now.strftime('%Y-%m-%d') %>' style='width:130px;' onchange='modifyEndDate(this, edit_sell_to"+data.id+")'/></div>";
+
+               content += "<div style='display:inline-block'><label><b>Sell Until</b></label><input type='text' id='edit_sell_to"+data.id+"' value='<%= Time.now.strftime('%Y-%m-%d') %>' style='width:130px;' onchange='checkEndDate(edit_sell_from"+data.id+",this)'/></div>";
+              
+               content += "<div class='clearfloat'></div><br /></div><!--Color Div -->";
+                
+               content += "<div style='width:453px;position:relative;left:50%;margin-left:-223px'>";
+
+               content += "<div style='color:#000;width:500px'><input id='edit_count_towards_occupancy_"+data.id+"' name='edit_count_towards_occupancy' onchange='disableInput(&#x27;edit_group_size_"+data.id+"&#x27;)' type='checkbox' value='1' />";
+
+               content += "<div style='display:inline-block'><b>&nbsp;This Ticket Counts As </b></div><input disabled='disabled' id='edit_group_size_"+data.id+"' min='1' name='edit_group_size' style='display:inline-block;width:50px' type='number' value='1' /><div style='display:inline-block'><b>&nbsp;Attendees For Max Occupancy Limit</b></div></div>";
+
+               content += "<div style='color:#000;width:500px'><input id='capacity_input"+data.id+"' name='capacity_input' onchange='disableInput(&#x27;edit_capacity_"+data.id+"&#x27;, "+data.id+")' type='checkbox' value='1' />";
+
+               content += "<div style='display:inline-block'><b>&nbsp;Limit The Number Of Tickets Sold For This Ticket Type</b></div><input disabled='disabled' id='edit_capacity_"+data.id+"' min='1' name='edit_capacity' style='display:inline-block;width:50px' type='number' value='1' /></div>" ;
+
+               content+="<div style='color:#000;width:500px; margin-bottom:10px; margin-left:30px; display:none' id='show_remaining"+data.id+"'><input id='edit_show_remain"+data.id+"' name='show_remaining' type='checkbox' value='1' /><div style='display:inline-block'><b>&nbsp;Show remaining Tickets</b></div></div>"; 
+
+               content += "<div style='width:430px'><div style='color:#000'><input id='edit_groupable_"+data.id+"' name='edit_groupable' style='width:18px' type='checkbox' value='1' /><span style='display:inline-block'><b>&nbsp;This Ticket Is Groupable</b></span><div  class='tooltip' style='opacity:1;display:inline-block;margin-left:8px' title='A Groupable ticket is one which, when sent to the buyer, will be redeemable for multiple items with one barcode (Eg. Ten drink tickets can be emailed as one ticket redeemable for ten drinks to a guest rather than sending 10 individual tickets.)'><img src='/images/button-info.png' width='15px' style='float:left' ></div></div><!--Colr div --></div><!-- Width div -->";
+
+              content += "<center><p style='font-size: 8pt;color:#000'>*Organizers & Guests are subject to the fees outlined in Eventastics <a href='/terms_of_service#fees'><u>Terms Of Service</u></a></p></center><br><center><input type='button' value='Cancel' onclick='editSectionToggle("+data.id +")' class='btn btn-success' style='display:inline-block;width:130px'>";
+
+               content += "<input type='button' value='Submit' id='updateTicket"+data.id+"' class='btn btn-success' style='display:inline-block;width:130px;margin-left:20px'></center></div><!--Bottom three lines --></div></div><!-- Entire Edit Ticket Section -->";
+
+                 $(content).hide().appendTo('#ticket_container').fadeIn();
+
+                  $('#edit_sell_from'+data.id).datepicker({
+                    dateFormat:'yy-mm-dd',
+                    minDate: 0
+                });
+                $('#edit_sell_to'+data.id).datepicker({
+                  dateFormat:'yy-mm-dd',
+                  minDate: 1
+                });
+
+               /* clear form */
+               document.getElementById('type_name').value = '';
+               document.getElementById('type_price').value = '0.00';
+               document.getElementById('type_description').value = '';
+               document.getElementById('type_limit_size').value = '0';
+               document.getElementById('group_size').value = '0';
+                $('#count_towards_occupancy').attr('checked',false);
+                 $('#type_limit_input').attr('checked',false);
+                  $('#type_groupable').attr('checked',false);
+               
+               $('#new_ticket').slideToggle();
+           },
+           error: function() {
+            alert("Please fill out all required information")
+           }
+         });
+  }
+
+  function editSectionToggle(ID){
+    $('#editSection' + ID).slideToggle();
+  }
+
+  function disableInput(el, id) {
+    elem = $('#' + el);
+    elem.prop("disabled",!elem.prop("disabled"))
+    if (elem.prop("disabled")) {
+      document.getElementById(el).value = 1;
+    }
+
+    if ($('#capacity_input' + id).prop('checked')) {
+      $('#show_remaining' + id).slideDown();
+    } else {
+      $('#show_remaining' + id).slideUp();
+    }
+    
+    if ($('#type_limit_input').prop('checked')) {
+      $('#show_remaining').slideDown();
+    } else {
+      $('#show_remaining').slideDown();
+    }
+
+  }
+
+  function deletePerson(contract, len) {
+    if (confirm("This action will remove this sales person, as well as disallow them from receiving any commission.  This cannot be undone.  Continue?")) {
+
+      var formdata = new FormData();
+
+      formdata.append("id", contract);
+      $.ajax({
+          url:"/contracts/" + contract,
+          type:"DELETE",
+          data:formdata,
+          "dataType":"json",
+          processData:false,
+          contentType:false
+      });
+
+      for (i = 0; i < len; i++) {
+        $(".sales_" + contract + i).fadeOut(500, function() { $(this).remove() });
+      }
+      $('#person' + contract).fadeOut(500, function() { $(this).remove() });
+    }
+  }
+
+  function newTicketForm() {
+
+    if (document.getElementById('new_ticket').style.display == "none") {
+      $('#new_ticket').slideToggle();
+    }
+  }
+
+  function newSalesForm() {
+    if (document.getElementById('new_salesPerson').style.display == "none") {
+      $('#new_salesPerson').slideToggle();
+    }
+  }
+
+  function newDonationForm() {
+    if (document.getElementById('new_donation').style.display == "none") {
+      $('#new_donation').slideToggle();
+    }
+  }
+  function editTicket(id, name, price, currency, description, groupable, count_towards_occupancy, capacity, sell_from, sell_to, group_size, show_remain) {
+    
+    document.getElementById("edit_name_" + id).value = name;
+    document.getElementById("edit_price_" + id).value = price;
+
+    $('#edit_currency_' + id).val(currency);
+
+    document.getElementById("edit_description_" + id).value = description;
+
+    $('#edit_sell_from' + id).val(sell_from);
+    $('#edit_sell_to' + id).val(sell_to);
+
+    if (String(count_towards_occupancy) == "true") {
+      $('#edit_count_towards_occupancy_' + id).attr('checked',true);
+      group = document.getElementById("edit_group_size_" + id);
+      group.disabled = false;
+      group.value = group_size;
+    } else {
+      $('#edit_count_towards_occupancy_' + id).attr('checked',false);
+      group = document.getElementById("edit_group_size_" + id);
+      group.value = 1;
+      group.disabled = true;
+      
+    }
+
+    if (String(groupable) == "true") {
+      $('#edit_groupable_' +  id).attr('checked',true);
+    } else {
+      $('#edit_groupable_' + id).attr('checked',false);
+    }
+
+    if (capacity > 0) {
+      $('#capacity_input' + id).attr('checked',true);
+      cap = document.getElementById("edit_capacity_" + id);
+      cap.disabled = false;
+      cap.value = capacity;
+    } else {
+      $('#capacity_input' + id).attr('checked',false);
+      cap = document.getElementById("edit_capacity_" + id);
+      cap.value = capacity;
+      cap.disabled = true;
+      show_remain = false;
+    }
+
+    
+    if (String(show_remain) == "true") {
+      $('#edit_show_remain' +  id).attr('checked',true);
+    } else {
+      $('#edit_show_remain' + id).attr('checked',false);
+    }
+
+    if ($('#capacity_input' + id).prop('checked')) {
+      $('#show_remaining' + id).slideDown();
+    } else {
+      $('#show_remaining' + id).slideUp();
+    }
+
+    document.getElementById("updateTicket" + id).setAttribute("onclick", "updateTicket2('" + id +"')");
+
+     el = $('#editSection' + id);
+
+    <% @ticket_types.each do |type| %>
+      if ($('#editSection<%=type.id%>') != el){
+        $('#editSection<%=type.id%>').slideUp();
+      }
+    <% end %> 
+
+        
+    if (el[0].style.display != "none") {
+      el.slideUp(1400);
+    } 
+    else {
+      el.slideDown(1400);
+    }
+  }
+
+  function deleteTicket(ID) {
+    if (confirm('Are you sure you would like to delete this ticket type?')) {
+      $('#ticketType' + ID).fadeOut(600, function() { $(this).remove() });
+      $.ajax({
+           type: "DELETE",
+           url: "/ticket_types/" + ID,
+           dataType: "json",
+           data: formdata,
+           processData: false,
+           contentType:false
+      })
+    }
+  }
+
+  function updateTicket2(ID) {
+    formdata = new FormData();
+    start =  $('#edit_sell_from' + ID).val();
+    end = $('#edit_sell_to' + ID).val();
+    
+    formdata.append("name", $('#edit_name_' + ID).val());
+    formdata.append("price", $('#edit_price_' + ID).val());
+    formdata.append("description", $('#edit_description_' + ID).val());
+    formdata.append("currency", $('#edit_currency_' + ID).val());
+
+ /*   console.log(document.getElementById("edit_currency_" + ID));
+
+    e = document.getElementById("edit_currency_" + ID);
+    cur = e.options[e.selectedIndex].value;
+
+    formdata.append("currency", cur);*/
+    
+    startdate = start.split('-');
+    enddate = end.split('-');
+
+    formdata.append("sell_from(1i)", startdate[0]);
+    formdata.append("sell_from(2i)", startdate[1]);
+    formdata.append("sell_from(3i)", startdate[2]);
+
+    formdata.append("sell_to(1i)", enddate[0]);
+    formdata.append("sell_to(2i)", enddate[1]);
+    formdata.append("sell_to(3i)", enddate[2]);
+
+    formdata.append("count_towards_occupancy", $('#edit_count_towards_occupancy_' + ID).prop('checked'));
+    formdata.append("show_remaining", $('#edit_show_remain' + ID).prop('checked'));
+
+    if ($('#edit_count_towards_occupancy_' + ID).prop('checked')) {
+      formdata.append("group_size", $('#edit_group_size_' + ID).val());
+    } else {
+      formdata.append("group_size", 0);
+    }
+
+    if ($('#capacity_input' + ID).prop('checked')) {
+      formdata.append("capacity", $('#edit_capacity_' + ID).val());
+    } else {
+      formdata.append("capacity", 0);
+      formdata.append("show_remaining", false);
+    }
+    formdata.append("groupable", $('#edit_groupable_'+  ID).prop('checked'));
+
+    $.ajax({
+           type: "PUT",
+           url: "/ticket_types/" + ID,
+           dataType: "json",
+           data: formdata,
+           processData: false,
+           contentType:false,
+           success: function(data) {
+              ID = data.id;
+              document.getElementById("name" + ID).innerHTML = data.name;
+              document.getElementById("price" + ID).innerHTML = "$" + data.price + " " + data.currency;
+              document.getElementById("description" + ID).innerHTML = data.description;
+
+              if (data.groupable == true) {
+                document.getElementById("group" + ID).innerHTML = 'Groupable';
+              } else {
+                document.getElementById("group" + ID).innerHTML = '';
+              }
+
+              if (data.count_towards_occupancy == true) {
+                document.getElementById("occupancy" + ID).innerHTML = 'Occupancy';
+              } else {
+                document.getElementById("occupancy" + ID).innerHTML = '';
+              }
+
+              document.getElementById('edit' + ID).setAttribute("onclick", "editTicket("+data.id+", '"+data.name+"', "+data.price+", '"+data.currency+"', '"+data.description+"', '"+data.groupable+"', '"+data.count_towards_occupancy+"', '"+data.capacity+"', '"+data.sell_from+"', '"+data.sell_to+"', '"+data.group_size+"')");
+              $('#editSection' + ID).slideToggle();
+
+           },
+           error: function() {
+            alert("Please fill out all required information")
+           }
+         });
+  }
+
+  function changeframe(input,frame) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById(frame).setAttribute("src", e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function edit_donation(id, value, field) {
+        formdata = new FormData();
+
+        formdata.append(field, value);
+
+        $.ajax({
+            type: "PUT",
+            url: "/cashgifttypes/" + id,
+            dataType: "json",
+            data: formdata,
+            processData: false,
+            contentType: false
+        });
+
+    }
+
+
+function create_donation() {
+           var goal = document.getElementById("goal").value;
+           var description = document.getElementById("description").value;
+           var e = document.getElementById("currency");
+           var currency = e.options[e.selectedIndex].value;
+           var title = document.getElementById("title").value;
+           var file = document.getElementById('picture').files[0];
+           var filepath = document.getElementById('picture');
+
+           formdata = new FormData();
+
+           formdata.append("event_id", "<%=@event.id%>");
+           formdata.append("is_donation", 'true');
+           formdata.append("title", title);
+           formdata.append("currency", currency);
+           formdata.append("goal", goal);
+           formdata.append("description", description);
+           if (file) {
+               formdata.append("cgp", file);
+           }
+
+            if(title != ''){
+              document.getElementById('loaderCG').style.display = 'block';
+           $.ajax({
+               type: "POST",
+               url: "/cashgifttypes",
+               dataType: "json",
+               data: formdata,
+               processData: false,
+               contentType: false,
+               success: function (data) {
+                    content = "";
+
+                   content += '<div class="ticketBar" style="width:50px;margin-right:10px;margin-left:27px"><img id="optionFrame' + data.id + '" alt="Missing" src="' + data.url + '"><input type="button" value="Choose File" style="width:107px;margin-left:-30px" onclick="$(\'#choosefile' + data.id + '\').click()" class="btn btn-success" ><input id="choosefile' + data.id + '" type="file" style="display:none" onchange="edit_donation(' + data.id + ',this.files[0],\'cgp\'), changeframe(this,\'optionFrame' + data.id + '\')"></div>';
+                   content += '<div class="ticketBar" style="width:155px; margin-bottom:30px"><textarea rows="1" cols="24" style="width:150px; margin: 2px" >' + data.title + '</textarea></div>';
+                   content += '<div class="ticketBar" style="width:50px"><input type="number" style="width:50px" value=' + data.goal + ' onchange="edit_donation(' + data.id + ', this.value, \'goal\')"></div>';
+
+                   if (data.shown == true) {
+                     content += '<div class="ticketBar" style="width:70px"><input type="checkbox" checked="checked" onchange="edit_donation(' + data.id + ', this.checked, \'shown\')"></input>Include as Option</div>';
+                   } else {
+                     content += '<div class="ticketBar" style="width:70px"><input type="checkbox" onchange="edit_donation(' + data.id + ', this.checked, \'shown\')"></input>Include as Option</div>';
+                   }
+
+                   content += '<div class="ticketBar" style="width:100px"><textarea cols="25" id="descrpit" rows="2" style="max-width:150px; margin-left:5px">' + data.description + '</textarea></div><br />';
+
+                   $(content).hide().appendTo('#donation_container').fadeIn();
+
+                   /* clear form */
+                   document.getElementById('title').value = '';
+                   document.getElementById('goal').value = '';
+                   document.getElementById('description').value = '';
+                   document.getElementById('loader').style.display = 'none';
+                   document.getElementById('frame').src = '/images/cgp/newsfeed/missing.jpg';
+                   filepath.parentNode.removeChild(filepath);
+                   $('#picture2').append('<input type="file" id="picture" onchange="changeframe(this, \'frame\')">');
+               }
+           });
+           }
+           else{
+             alert("Please fill in the required fields");
+           }
+
+
+       }
+
+       function create_cg() {
+           var goal = document.getElementById("goalCG").value;
+           var description = document.getElementById("descriptionCG").value;
+
+           var e = document.getElementById("currencyCG");
+           var currency = e.options[e.selectedIndex].value;
+
+           var title = document.getElementById("titleCG").value;
+
+           var filepath = document.getElementById('pictureCG');
+           file = filepath.files[0];
+
+           formdata = new FormData();
+
+           formdata.append("event_id", "<%=@event.id%>");
+           formdata.append("is_donation", 'false');
+           formdata.append("title", title);
+           formdata.append("currency", currency);
+           formdata.append("goal", goal);
+           formdata.append("description", description);
+           if (file) {
+               formdata.append("cgp", file);
+           }
+
+             if(title != ''){
+              document.getElementById('loaderCG').style.display = 'block';
+           $.ajax({
+               type: "POST",
+               url: "/cashgifttypes",
+               dataType: "json",
+               data: formdata,
+               processData: false,
+               contentType: false,
+               success: function (data) {
+                   content = "";
+
+                   content += '<div class="ticketBar" style="width:50px;margin-right:10px;margin-left:27px"><img id="optionFrame' + data.id + '" alt="Missing" src="' + data.url + '"><input type="button" value="Choose File" style="width:107px;margin-left:-30px" onclick="$(\'#choosefile' + data.id + '\').click()" class="btn btn-success" ><input id="choosefile' + data.id + '" type="file" style="display:none" onchange="edit_donation(' + data.id + ',this.files[0],\'cgp\'), changeframe(this,\'optionFrame' + data.id + '\')"></div>';
+                   content += '<div class="ticketBar" style="width:155px; margin-bottom:30px"><textarea  rows="1" cols="1" style="width:150px; margin: 2px;" >' + data.title + '</textarea></div>';
+                   content += '<div class="ticketBar" style="width:50px"><input type="number" style="width:50px" value=' + data.goal + ' onchange="edit_donation(' + data.id + ', this.value, \'goal\')"></div>';
+
+                   if (data.shown == true) {
+                     content += '<div class="ticketBar" style="width:70px"><input type="checkbox" checked="checked" onchange="edit_donation(' + data.id + ', this.checked, \'shown\')"></input>Include as Option</div>';
+                   } else {
+                     content += '<div class="ticketBar" style="width:70px"><input type="checkbox" onchange="edit_donation(' + data.id + ', this.checked, \'shown\')"></input>Include as Option</div>';
+                   }
+
+                   content += '<div class="ticketBar" style="width:100px"><textarea cols="25" id="descrpit" rows="2" style="max-width:150px; margin-left:5px">' + data.description + '</textarea></div><br />';
+
+                   $(content).hide().appendTo('#cg_container').fadeIn();
+
+                   /* clear form */
+                   document.getElementById('titleCG').value = '';
+                   document.getElementById('goalCG').value = '';
+                   document.getElementById('descriptionCG').value = '';
+                   document.getElementById('loaderCG').style.display = 'none';
+                   document.getElementById('frameCG').src = '/images/cgp/newsfeed/missing.jpg';
+                   filepath.parentNode.removeChild(filepath);
+                   $('#picture2CG').append('<input type="file" id="pictureCG" onchange="changeframe(this, \'frameCG\')">');
+               }
+           });
+           }
+           else{
+             alert("Please fill in the required fields");
+           }
+
+
+       }
+
+  function checkTime(el, that) {
+    if (that.value.length > 15) {
+      el.val(that.value);
+    } else {
+      that.value = el[0].value;
+    }
+  }
+
+  function showAttendeesAfter() {
+    $('#display_after').slideToggle(function() {
+      document.getElementById('event_show_attendees_at').value = 0
+    })
+  }
+
+  function deleteDisplayPic() {
+    document.getElementById('profile_avatar').setAttribute('src', '/images/event_image/feed/missing.jpg');
+    fileInput = document.getElementById('event_image_container');
+    fileInput.removeChild(document.getElementById('event_event_image'));
+    document.getElementById('hoverGarbage2').style.display = "none";
+    
+    $('#event_image_container').append($('<input id="event_event_image" label="false" name="event[event_image]" onchange="readAvatar(this)" style="display:none" type="file">'));
+  }
+
+    function show_page(page){
+        $('#options').hide();
+        $('#details').hide();
+        $('#tickets').hide();
+        $('#sales').hide();
+        $('#donations').hide();
+        $('#cg').hide();
+        $('#social').hide();
+        $('#video').hide();
+        $('#photo').hide();
+        $('#file').hide();
+        $('#eventsales').hide();
+        $('#metric').hide();
+
+        if (page == "complete"){
+          $('#details').slideToggle('slow');
+          $('#approvePopup').hide();
+        } else {
+          $('#' + page).slideToggle('slow');
+          $('#approvePopup').hide();
+        }
+
+        if (page == "photo") {
+          if (countTheKids() > 0) {
+            $('#approvePopup').show();
+          }
+        }
+    }
+
+    function showDescription(ID) {
+        $("#right" + ID).fadeToggle();
+        $("#down" + ID).fadeToggle();
+        $("#description" + ID).slideToggle();
+    }
+    function showMsg(ID) {
+        $("#rightmsg" + ID).fadeToggle();
+        $("#downmsg" + ID).fadeToggle();
+        $("#msg" + ID).slideToggle();
+    }
+
+    function showPanel(next) {
+
+        panel = $('#details');
+        if (panel[0].style.display != "none") {
+            panel.slideToggle();
+            document.getElementById('detailPanel').setAttribute("class", "detail able");
+        }
+        panel = $('#options');
+        if (panel[0].style.display != "none") {
+            panel.slideToggle();
+            document.getElementById('optionPanel').setAttribute("class", "detail able");
+        }
+        panel = $('#tickets');
+        if (panel[0].style.display != "none") {
+            panel.slideToggle();
+            document.getElementById('ticketPanel').setAttribute("class", "detail able");
+        }
+
+        document.getElementById(next + "Panel").setAttribute("class", "detail detailActive");
+        $('#' + next + "s").slideToggle();
+
+    }
+
+    function createTicket() {
+        var formdata = new FormData();
+
+        formdata.append("name", $('#ticket_name').val());
+        formdata.append("count_towards_occupancy", $('#ticket_counts').prop('checked'));
+        formdata.append("groupable", $('#ticket_group').prop('checked'));
+        formdata.append("price", $('#ticket_price').val());
+        formdata.append("event_id", <%=@event.id%>);
+
+        e = document.getElementById("ticket_currency");
+        cur = e.options[e.selectedIndex].value;
+
+        formdata.append("currency", cur);
+        formdata.append("sell_from", $('#ticket_from').val());
+        formdata.append("sell_to", $('#ticket_to').val());
+        $.ajax({
+            url:"/ticket_types",
+            type:"POST",
+            data:formdata,
+            "dataType":"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+
+            }
+        });
+    }
+
+
+    function updateDetails() {
+        $('#details').slideToggle();
+        $('#options').slideToggle();
+        document.getElementById('optionPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('optionPanel_icon').setAttribute("class", "icon-check green");
+
+        var formdata = new FormData();
+
+        formdata.append("name", $('#event_name').val());
+        formdata.append("venue_name", $('#event_venue_name').val());
+
+        e = document.getElementById("event_category");
+        category = e.options[e.selectedIndex].value;
+
+        formdata.append("category", category);
+        formdata.append("url_handle", $('#url_handle').val());
+        formdata.append("address", $('#event_address').val());
+        formdata.append("city", $('#event_city').val());
+        formdata.append("province", $('#event_province').val());
+        formdata.append("postal", $('#event_postal').val());
+
+        e = document.getElementById("event_country");
+        country = e.options[e.selectedIndex].value;
+
+        formdata.append("country", country);
+        formdata.append("startTime", $('#startTime').val());
+        formdata.append("endTime", $('#endTime').val());
+
+
+        $.ajax({
+            url:"/events/<%=@event.id%>",
+            type:"PUT",
+            data:formdata,
+            "dataType":"json",
+            processData:false,
+            contentType:false
+        });
+    }
+
+    function updateOptions() {
+        $('#options').slideToggle();
+        $('#tickets').slideToggle();
+        document.getElementById('ticketPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('ticketPanel_icon').setAttribute("class", "icon-check green");
+
+        var formdata = new FormData();
+
+        formdata.append("description", $('#event_description').val());
+        formdata.append("details", $('#event_details').val());
+        formdata.append("allow_comments", $('#event_allow_comments').prop('checked'));
+        formdata.append("show_promotor", $('#event_show_promotor').prop('checked'));
+        formdata.append("max_capacity", $('#event_max_capacity').val());
+        formdata.append("show_attendees", $('#event_show_attendees').prop('checked'));
+        formdata.append("show_attendees_at", $('#event_show_attendees_at').val());
+        if (document.getElementById('event_event_image').files[0]){
+          formdata.append("event_image", document.getElementById('event_event_image').files[0]);
+        } else if (document.getElementById('profile_avatar').src.indexOf('event_image/feed/missing.jpg') > -1 ){
+          formdata.append("delete_event_image", 1);
+        }
+
+        formdata.append("set_options", true);
+        formdata.append("include_fees", $('#event_include_fees').prop('checked'));
+
+
+        $.ajax({
+            url:"/events/<%=@event.id%>",
+            type:"PUT",
+            data:formdata,
+            "dataType":"json",
+            processData:false,
+            contentType:false
+        });
+    }
+
+
+    function updateTickets() {
+        $('#tickets').slideToggle();
+        $('#donations').slideToggle();
+        document.getElementById('donationPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('donationPanel_icon').setAttribute("class", "icon-check green");
+
+        var formdata = new FormData();
+        formdata.append("set_tickets", true);
+        formdata.append("has_registration", $('#has_registration').prop('checked'));
+                formdata.append("has_ticketing", $('#has_ticketing').prop('checked'));
+        $.ajax({
+            url:"/events/<%=@event.id%>",
+            type:"PUT",
+            data:formdata,
+            "dataType":"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+
+            }
+        });
+    }
+    function updateSales() {
+        $('#sales').slideToggle();
+        $('#donations').slideToggle();
+        document.getElementById('donationPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('donationPanel_icon').setAttribute("class", "icon-check green");
+
+        var formdata = new FormData();
+        formdata.append("set_sales", true);
+        $.ajax({
+            url:"/events/<%=@event.id%>",
+            type:"PUT",
+            data:formdata,
+            "dataType":"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+
+            }
+        });
+    }
+    function updateDonations() {
+        $('#donations').slideToggle();
+        $('#cg').slideToggle();
+        document.getElementById('cgPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('cgPanel_icon').setAttribute("class", "icon-check green");
+
+        var formdata = new FormData();
+        formdata.append("set_donations", true);
+        formdata.append("has_donations", $('#event_has_donations').prop('checked'));
+
+
+        $.ajax({
+            url:"/events/<%=@event.id%>",
+            type:"PUT",
+            data:formdata,
+            "dataType":"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+
+            }
+        });
+    }
+    function updateCG() {
+        $('#cg').slideToggle();
+        $('#video').slideToggle();
+        document.getElementById('videoPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('videoPanel_icon').setAttribute("class", "icon-check green");
+
+        var formdata = new FormData();
+        formdata.append("set_cg", true);
+        formdata.append("has_cash_gifting", $('#event_has_cash_gifting').prop('checked'));
+
+        $.ajax({
+            url:"/events/<%=@event.id%>",
+            type:"PUT",
+            data:formdata,
+            "dataType":"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+
+            }
+        });
+    }
+    function updateSocial() {
+        $('#social').slideToggle();
+        $('#file').slideToggle();
+        document.getElementById('filePanel').setAttribute("class", "detail detailActive");
+        document.getElementById('filePanel_icon').setAttribute("class", "icon-check green");
+
+        var formdata = new FormData();
+        formdata.append("set_social", true);
+
+        formdata.append("has_social_facebook", $('#event_has_social_facebook').prop('checked'));
+        formdata.append("has_social_pinterest", $('#event_has_social_pinterest').prop('checked'));
+        formdata.append("has_social_twitter", $('#event_has_social_twitter').prop('checked'));
+        formdata.append("has_social_youtube", $('#event_has_social_youtube').prop('checked'));
+        formdata.append("has_social_website", $('#event_has_social_website').prop('checked'));
+        formdata.append("has_social_email", $('#event_has_social_email').prop('checked'));
+        formdata.append("has_social_message", $('#event_has_social_message').prop('checked'));
+        formdata.append("has_social_hastag", $('#event_has_social_hastag').prop('checked'));
+
+        formdata.append("social_facebook", $('#event_social_facebook').val());
+        formdata.append("social_pinterest", $('#event_social_pinterest').val());
+        formdata.append("social_twitter", $('#event_social_twitter').val());
+        formdata.append("social_youtube", $('#event_social_youtube').val());
+        formdata.append("social_website", $('#event_social_website').val());
+        formdata.append("social_email", $('#event_social_email').val());
+        formdata.append("social_message", $('#event_social_message').val());
+        formdata.append("social_hastag", $('#event_social_hastag').val());
+
+        $.ajax({
+            url:"/events/<%=@event.id%>",
+            type:"PUT",
+            data:formdata,
+            "dataType":"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+
+            }
+        });
+    }
+    function updateVideo() {
+        $('#video').slideToggle();
+        $('#photo').slideToggle();
+        document.getElementById('photoPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('photoPanel_icon').setAttribute("class", "icon-check green");
+
+        var formdata = new FormData();
+        formdata.append("set_video", true);
+        formdata.append("has_youtube", $('#video_check2').prop('checked'));
+        formdata.append("show_video_message", $('#video_check').prop('checked'));
+        formdata.append("youtube", $('#event_youtube').val());
+        formdata.append("video", $('#event_video').val());
+        formdata.append("has_videos", $('#event_has_videos').prop('checked'));
+
+
+        $.ajax({
+            url:"/events/<%=@event.id%>",
+            type:"PUT",
+            data:formdata,
+            "dataType":"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+
+            }
+        });
+    }
+    function updatePhoto() {
+        $('#photo').slideToggle();
+        $('#social').slideToggle();
+        //$('#file').slideToggle();
+        document.getElementById('socialPanel').setAttribute("class", "detail detailActive");
+        document.getElementById('socialPanel_icon').setAttribute("class", "icon-check green");
+
+        var formdata = new FormData();
+        formdata.append("set_photo", true);
+        formdata.append("allow_photo_sharing", $('#photo_check').prop('checked'));
+        formdata.append("auto_approve_photos", $('#event_auto_approve_photos').prop('checked'));
+
+        $.ajax({
+            url:"/events/<%=@event.id%>",
+            type:"PUT",
+            data:formdata,
+            "dataType":"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+
+            }
+        });
+    }
+    function updateFile() {
+      $('#file').slideToggle();
+      //$('#eventsales').slideToggle();
+      $('#metric').slideToggle();
+
+      document.getElementById('eventsalesPanel').setAttribute("class", "detail detailActive");
+      document.getElementById('eventsalesPanel_icon').setAttribute("class", "icon-check green");
+
+      var formdata = new FormData();
+      formdata.append("set_file", true);
+
+      $.ajax({
+          url:"/events/<%=@event.id%>",
+          type:"PUT",
+          data:formdata,
+          "dataType":"json",
+          processData:false,
+          contentType:false
+        });
+    }
+    function updateEventSales() {
+      $('#metric').slideToggle();
+      $('#eventsales').slideToggle();
+      document.getElementById('metricPanel').setAttribute("class", "detail detailActive");
+      document.getElementById('metricPanel_icon').setAttribute("class", "icon-check green");
+
+      var formdata = new FormData();
+        formdata.append("set_event_sales", true);
+
+        $.ajax({
+            url:"/events/<%=@event.id%>",
+            type:"PUT",
+            data:formdata,
+            "dataType":"json",
+            processData:false,
+            contentType:false
+        });
+    }
+
+    function updateMetric() {
+        $('#metric').slideToggle();
+
+        var formdata = new FormData();
+        formdata.append("set_metric", true);
+        formdata.append("is_private", $('#event_is_private').prop('checked'));
+
+        $.ajax({
+            url:"/events/<%=@event.id%>",
+            type:"PUT",
+            data:formdata,
+            "dataType":"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+
+            }
+        });
+    }
+
+    function flipCapacity(el) {
+        elem = $("#event_max_capacity");
+        elem.prop("disabled",!elem.prop("disabled"));
+        if (elem.prop("disabled")) {
+          elem.val(0);
+        }
+    }
+
+    function readAvatar(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                document.getElementById("profile_avatar").setAttribute("src", e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function addTheme() {
+        val = $("#theme option:selected")[0].value;
+
+        $.ajax({
+            url:"/add_theme",
+            type:"POST",
+            data:{'theme':val, 'event_id':'<%= @event.id %>'},
+            "dataType":"json",
+            success:function (res) {
+                //showUploadedItem();
+                appendImage(res);
+            }
+        });
+    }
+
+
+    function appendImage(res) {
+        slider = $('#flexslider').data('flexslider');
+        slider.addSlide('<li id="' + res.id + '"><div class="product-img slide2" style="max-width:none"><img src="' + res.url + '" alt="Eventastic"/></div></li>');
+        
+        if (slider.slides[0].id == "default_paper") {
+          slider.flexAnimate(1);
+          slider.removeSlide(0);
+          $('#hoverGarbage').show();
+        }
+
+        if (slider.count > 1) {
+          $('#flexslider .flex-direction-nav').show();
+        }
+    }
+
+function deletePaper(index, id) {
+  slider = $('#flexslider').data('flexslider');
+  
+  if (slider.count == 1) {    
+    slider.addSlide('<li id="default_paper"><div class="product-img slide2" style="max-width:none"><img src="/images/wallpaper/missing/missing_wallpaper.jpg" alt="Eventastic"/></div></li>');
+    $('#hoverGarbage').hide();
+    document.getElementById("uploadText").innerHTML = "Upload New Cover Photo";
+    
+  }
+
+  if (slider.count <= 2) {
+    $('#flexslider .flex-direction-nav').hide();
+  }
+
+  slider.flexAnimate(slider.getTarget("next"));
+  slider.removeSlide(index);
+
+  $.ajax({
+        url: "/wallpapers/" + id,
+        type: "DELETE",
+        "dataType":"json",
+        processData: false,
+        contentType: false
+  });
+}
+
+
+    var paperCounter = <%if @all_wallpapers %><%= @all_wallpapers.length %><% else %> 0<% end %>;
+
+    function uploadPaper(evt) {
+        //file = this.files[0];
+        file = document.getElementById("noFlashfile").files[0];
+
+        if (file != undefined) {
+
+            document.getElementById("loading").style.display = "block";
+            var formdata = new FormData();
+
+            var img, reader, file;
+
+            if (!!file.type.match(/image.*/)) {
+                if (window.FileReader) {
+                    reader = new FileReader();
+                    reader.onloadend = function (e) {
+                       // showUploadedItem(e.target.result, file.fileName);
+                    };
+                    reader.readAsDataURL(file);
+                }
+                if (formdata) {
+                    formdata.append("wallpaper", file);
+                    formdata.append("event_id", "<%= @event.id %>")
+                }
+            }
+
+
+            if (formdata) {
+                $.ajax({
+                    url:"/wallpapers",
+                    type:"POST",
+                    data:formdata,
+                    "dataType":"json",
+                    processData:false,
+                    contentType:false,
+                    success:function (res) {
+                        cross = document.getElementById("cross" + parseInt(paperCounter - 1))
+                        index = cross.getAttribute("onclick");
+                        cross.setAttribute("onclick", "deletePaper(" + index + ", " + res.id + ")");
+
+                        document.getElementById("loading").style.display = "none";
+                        document.getElementById("paper" + parseInt(paperCounter - 1)).src = res.url;
+                        document.getElementById("paperContainer" + parseInt(paperCounter - 1)).style.display = "block";
+                        <% unless @all_wallpapers %>
+                        document.getElementById("missingPaper").style.display = "none";
+                        <% else %>
+                        <% if @all_wallpapers.length == 0 %>
+                        document.getElementById("missingPaper").style.display = "none";
+                        <% end %>
+                        <% end %>
+                    }
+                });
+            }
+        }
+    }
+
+
+    var API_KEY = "<%= OPENTOK_API_KEY %>";
+    var TOKEN = "<%= OPENTOK_MODERATOR_TOKEN %>";
+    var VIDEO_HEIGHT = 240;
+    var VIDEO_WIDTH = 320;
+
+    var player = [];
+    var videoCount = <%=@videos.length - 1 %>;
+    var recImgData;
+
+    function init() {
+        initRecorder();
+    }
+
+    function initRecorder() {
+        recorderManager = TB.initRecorderManager(API_KEY);
+        createRecorder();
+    }
+
+    function createRecorder() {
+        var recDiv = document.createElement('div');
+        recDiv.setAttribute('id', 'recorderElement');
+        document.getElementById('recorderContainer').appendChild(recDiv);
+        recorder = recorderManager.displayRecorder(TOKEN, recDiv.id);
+        recorder.addEventListener('recordingStarted', recStartedHandler);
+        recorder.addEventListener('archiveSaved', archiveSavedHandler);
+    }
+
+    function recStartedHandler(revent) {
+        document.getElementById("posterurl").setAttribute('value', recorder.getImgData());
+    }
+
+    function archiveSavedHandler(event) {
+        $("#event_video").val(event.archives[0].archiveId);
+        //show a loading gif here maybe?
+
+        formdata = new FormData();
+        formdata.append('event_id', <%=@event.id%>);
+        formdata.append('has_youtube', false);
+        formdata.append('video', $('#event_video').val());
+        formdata.append('default', false);
+        formdata.append('poster', $('#posterurl').val())
+
+        $.ajax({
+            url:"/videos",
+            type:"post",
+            data:formdata,
+            dataType:"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+              setTimeout(function() {
+
+                showPreview($("#event_video").val(), res.id);
+              }, 3000);
+            },
+        });
+    }
+
+    function showPreview(opentok_video_id, id) {
+        if (opentok_video_id == undefined || opentok_video_id == null || opentok_video_id == "") {
+            alert("A video has not been saved yet!");
+        } else {
+            loadArchiveInPlayer(opentok_video_id, id);
+        }
+    }
+
+    function loadArchiveInPlayer(archiveId, id) {
+        videoCount++;
+        $('#videoContainer').append('<div id="videoContainer' + id + '" class="videoContainer"><div id="video' + id + '" style="width:200px;height:150px;border:solid"></div><input type="button" value="Delete" style="width:70px" class="btn btn-danger" onclick="deleteVideo(' + id +')"><input type="button" value="Select As Featured" class="btn btn-success" style="width:155px" onclick="featureVideo(' + id + ', this)"></div>');
+        player[videoCount] = recorderManager.displayPlayer(archiveId, TOKEN, 'video' + id, {width: 230, height: 230});
+
+
+    }
+
+    function createYoutube() {
+        formdata = new FormData();
+        yt = $('#event_youtube').val();
+        formdata.append('event_id', <%=@event.id%>);
+        formdata.append('has_youtube', true);
+        formdata.append('youtube', yt);
+        formdata.append('default', false);
+
+        $.ajax({
+            url:"/videos",
+            type:"post",
+            data:formdata,
+            dataType:"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+              $('#youtubeContainer').append('<div class="youtubeContainer" id="videoContainer' + res.id + '"><embed width="230" height="170" src="http://www.youtube.com/v/' + yt.split('/')[3] + '" type="application/x-shockwave-flash"></embed><input type="button" value="Delete" class="btn btn-danger" style="width:70px" onclick="deleteVideo(' + res.id + ')"><input type="button" value="Select As Featured" class="btn btn-success" style="width:155px" onclick="featureVideo(' + res.id + ', this)"></div>')
+              $('#event_youtube').val('');
+            },
+        });
+    }
+
+    function featureVideo(id, el) {
+      if (el.value == 'Select As Featured') {
+        el.value = "Deselect Featured";
+
+        featured = document.getElementsByClassName('featured');
+        for (i = 0; i < featured.length; i++) {
+          featured[i].value="Select As Featured";
+          featured[i].setAttribute('class', 'btn btn-success');
+        }
+
+        el.setAttribute('class', 'btn btn-success featured');
+        def = true;  
+      } else {
+        el.value = 'Select As Featured';
+        el.setAttribute('class', 'btn btn-success');
+        def = false;
+      }
+      
+      formdata = new FormData();
+      formdata.append('default', def);
+
+      $.ajax({
+            url:"/videos/" + id,
+            type:"put",
+            data:formdata,
+            dataType:"json",
+            processData:false,
+            contentType:false
+        });
+    }
+
+    function showCash() {
+        el = $('#cashgift');
+         var filepath = document.getElementById('pictureCG');
+
+        if (el[0].style.display != "none") {
+            el.slideUp(1400);
+            document.getElementById('titleCG').value = '';
+            document.getElementById('goalCG').value = '';
+            document.getElementById('descriptionCG').value = '';
+            document.getElementById('loaderCG').style.display = 'none';
+            document.getElementById('frameCG').src = '/images/cgp/newsfeed/missing.jpg';
+            filepath.parentNode.removeChild(filepath);
+            $('#picture2CG').append('<input type="file" id="pictureCG" onchange="changeframe(this, \'frameCG\')">');
+        } else {
+            el.slideDown(1400);
+        }
+    }
+
+    function showDon() {
+        el = $('#don');
+          var filepath = document.getElementById('picture');
+
+        if (el[0].style.display != "none") {
+            el.slideUp(1400);
+             document.getElementById('title').value = '';
+                document.getElementById('goal').value = '';
+                document.getElementById('description').value = '';
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('frame').src = '/images/cgp/newsfeed/missing.jpg';
+                if(filepath != null){
+                filepath.parentNode.removeChild(filepath);
+                $('#picture2').append('<input type="file" id="picture" onchange="changeframe(this, \'frame\')">');
+                }
+        } else {
+            el.slideDown(1400);
+        }
+    }
+
+    var MyCheck = $("#video_check");
+
+    MyCheck.change(function () {
+        $("#video_message_panel").toggle(MyCheck.is(":checked"));
+    });
+
+    init();
+
+    $('[class^=is]').hide();
+
+    $("#theOption").change(function () {
+            var value = $("#theOption option:selected").val();
+            var theDiv = $(".is" + value);
+
+            if (value == "Tickets") {
+                document.getElementById("has_ticketing").checked = true;
+                document.getElementById("has_registration").checked = false;
+            }
+
+            if (value == "Register") {
+                document.getElementById("has_ticketing").checked = false;
+                document.getElementById("has_registration").checked = true;
+            }
+
+            if (value == "Nothing") {
+                document.getElementById("has_ticketing").checked = false;
+                document.getElementById("has_registration").checked = false;
+            }
+            theDiv.slideDown().removeClass("hidden");
+            theDiv.siblings('[class*=is]').slideUp(function () {
+                $(this).addClass("hidden");
+            });
+        });
+
+    function urlConfirm(e) {
+      success = false;
+      input = e;
+      spaceType = 0;
+      textLength = e.length - 1;
+
+      if(e.charAt(textLength) == " ") {
+        spaceType++;
+      } else {
+        for(var i = 0; i < e.length; i++) {
+          if(e.charAt(i) == " ") {
+            spaceType++;
+          }
+        }
+      }
+
+      if(spaceType > 0) {
+        document.getElementById("notuniqueurl").style.display = "block";
+        document.getElementById("uniqueurl").style.display = "none";
+        document.getElementById("saveButton").disabled = true;
+      } else if(input == '') {
+        document.getElementById("notuniqueurl").style.display = "block";
+        document.getElementById("uniqueurl").style.display = "none";
+        document.getElementById("saveButton").disabled = true;
+      } else if(input == " ") {
+        document.getElementById("notuniqueurl").style.display = "block";
+        document.getElementById("uniqueurl").style.display = "none";
+        document.getElementById("saveButton").disabled = true;
+      } else {
+        //NEED TO CALL TO SERVER FOR INFO
+
+        var formdata = new FormData();
+
+        formdata.append("urlHandle", $('#url_handle').val());
+
+        $.ajax({
+            url:"/checkURL",
+            type:"post",
+            data:formdata,
+            dataType:"json",
+            processData:false,
+            contentType:false,
+            success:function (res) {
+              if(res == true)
+              {
+                document.getElementById("notuniqueurl").style.display = "none";
+                document.getElementById("uniqueurl").style.display = "block";
+                document.getElementById("saveButton").disabled = false;
+              }
+              else
+              {
+                document.getElementById("notuniqueurl").style.display = "block";
+                document.getElementById("uniqueurl").style.display = "none";
+                document.getElementById("saveButton").disabled = true;
+              }
+            },
+        });
+
+      }
+    }
+    function ticketClick(id) {
+     updateTickets();
+     setTimeout(function(){window.location='/event/' + id + '/ticket_types/new';}, 2000);
+    }
+
+    function derp(){
+    if ($('#event_has_social_facebook').is(':checked')) {
+        $("#event_social_facebook").show();
+    } else {
+        $("#event_social_facebook").hide();
+    }
+
+    if ($('#event_has_social_twitter').is(':checked')) {
+        $("#event_social_twitter").show();
+    } else {
+        $("#event_social_twitter").hide();
+    }
+
+    if ($('#event_has_social_youtube').is(':checked')) {
+        $("#event_social_youtube").show();
+    } else {
+        $("#event_social_youtube").hide();
+    }
+
+    if ($('#event_has_social_pinterest').is(':checked')) {
+        $("#event_social_pinterest").show();
+    } else {
+        $("#event_social_pinterest").hide();
+    }
+
+    if ($('#event_has_social_website').is(':checked')) {
+        $("#event_social_website").show();
+    } else {
+        $("#event_social_website").hide();
+    }
+
+    if ($('#event_has_social_email').is(':checked')) {
+        $("#event_social_email").show();
+    } else {
+        $("#event_social_email").hide();
+    }
+
+    if ($('#event_has_social_message').is(':checked')) {
+        $("#event_social_message").show();
+    } else {
+        $("#event_social_message").hide();
+    }
+
+    if ($('#event_has_social_hastag').is(':checked')) {
+        $("#event_social_hastag").show();
+    } else {
+        $("#event_social_hastag").hide();
+    }
+    }
+
+
+
+    /*******
+    ** upload files javascript
+    ********/
+
+     if (!FlashDetect.installed) {
+      $(document).ready(function() {
+        document.getElementById("flashUpload").style.display = "none";
+        document.getElementById("noflashbtn").style.display = "block";
+        document.getElementById("noflashUpload").onchange = uploadFile;
+      })
+    } else {      
+      $(document).ready(function() {
+
+  $('#attached_attached').click(function(event){ 
+    event.preventDefault();
+  }); 
+  
+  $('#attached_attached').uploadify({
+    'wmode' : 'transparent',
+    hideButton: true,
+    buttonImage : " ",
+    width : 155,
+    height : 30,
+    uploader : '/uploadify/uploadify.swf',
+    cancelImg : '/uploadify/cancel.png',
+    multi : false,
+    auto : true,
+    script : '/attacheds',
+    onComplete : function(event, queueID, fileObj, response, data) { 
+      $('#loaderGlobal').hide();
+      obj = JSON.parse(response);
+      addFile(obj);
+    },
+    onSelect:function (){
+      $('#loaderGlobal').show();
+    },
+    scriptData : {
+          '_http_accept': 'application/javascript',
+          'format'   : 'json',
+          '_method'  : 'post',
+          'event_id' : '<%= @event.id %>',
+          'flash'    : 'true'
+        }
+  });
+    
+}); 
+    }
+
+
+    function deleteFile(id) {
+      $.ajax({
+            url: "/attacheds/" + id,
+            type: "DELETE",
+            "dataType":"json",
+            processData: false,
+            contentType: false,
+            success: function (res) {
+              row = document.getElementById("attached" + id);
+              row.parentNode.removeChild(row);
+            }
+          });
+    }
+
+
+    function uploadFile(evt) {
+      //filename = this.value;
+      file = this.files[0];
+
+      if (file != undefined) {
+
+        document.getElementById("loading").style.display = "block";
+        var formdata = new FormData();
+
+        if (formdata) {
+          formdata.append("attached", file);
+          formdata.append("event_id", "<%=@event.id%>");
+        }     
+  
+        if (formdata) {
+          $.ajax({
+            url: "/attacheds",
+            type: "POST",
+            data: formdata,
+            "dataType":"json",
+            processData: false,
+            contentType: false,
+            success: function (res) {
+              document.getElementById("loading").style.display = "none";
+              addFile(res);
+              
+            },
+            error: function(res) {
+              document.getElementById("loading").style.display = "none";          
+              response = JSON.parse(res.responseText);
+
+              if (response["attached_file_size"]) {
+                flash_notice("File is larger than 5MB");
+              } else {
+                flash_notice("There was a problem uploading the file");
+              }
+            }
+          });
+        }
+      }
+    }
+
+    function addFile(res) {
+      filesTable = document.getElementById("filesTable");
+      row = document.createElement("tr");
+      row.id = "attached" + res.id;
+      cell = document.createElement("td");
+      cell.setAttribute("style", "width:430px;padding:10px");
+      link = document.createElement("a");
+      link.setAttribute("href", "/attacheds/" + res.id);
+      link.setAttribute("class", "fileOpen");
+      link.setAttribute("target", "_blank");
+      link.innerHTML = res.name;
+
+      del = document.createElement("td");
+      del.innerHTML = "Delete";
+      del.setAttribute("onclick", "deleteFile(" + res.id + ")");
+      del.setAttribute("class", "btn btn-danger");
+
+      filesTable.appendChild(row);
+      row.appendChild(cell);
+      row.appendChild(del);
+      cell.appendChild(link);
+    }
+
+    /*****************
+    ** Manage sales people javascript
+    ******************/
+
+    prices = new Object();
+<% @ticket_types.each do |type| %>
+  prices["<%=type.id%>"] = <%=type.price%>;
+<% end %>
+
+$(document).ready(function() {
+  totalSales = 0;
+  <% @info.each do |person| %>
+    totalSales += <%=person[:total_sold]%>;
+    updateNumber(<%= person[:commission] %>, 'number', <%=person[:contract_id]%>);    
+  <% end %>
+  document.getElementById("totalSalesFromPeople").innerHTML = totalSales;
+ 
+ updateTotalsFromPeople();
+
+ <% @ticket_types.each do |type| %>
+    els = document.getElementsByClassName("total<%=type.id%>");
+
+    total = 0;
+    for (i = 0; i < els.length; i++) {
+      total += parseInt(els[i].innerHTML);
+    }
+    document.getElementById("salesTotal<%=type.id%>").innerHTML = total;
+ <% end %>
+})
+
+function updateTotalsFromPeople() {
+  total = 0;
+  <% @info.each do |person| %>    
+     dollarVal = document.getElementById("totalAmt<%=person[:contract_id]%>").innerHTML;
+     total += parseFloat(dollarVal.substring(1));
+  <% end %>
+
+  total = (Math.round(total*100)/100).toFixed(2);
+  document.getElementById("totalMoneyFromPeople").innerHTML = "$" + total;
+  plannerMoney = (Math.round((<%=@globalTicketAmount%> - total)*100)/100).toFixed(2);
+  document.getElementById("plannerTotal").innerHTML = "$" + plannerMoney;
+
+  <% @ticket_types.each do |type| %>
+    tickets = document.getElementsByClassName("ticket<%=type.id%>");
+    total = 0;
+    for (i = 0; i < tickets.length; i++) {
+      dollarVal = tickets[i].innerHTML;
+      total += parseFloat(dollarVal.substring(1));
+    }
+    total = (Math.round(total*100)/100).toFixed(2);
+    document.getElementById("salesTicket<%=type.id%>").innerHTML = "$" + total;
+  <% end %>
+
+}
+
+function showStats(ID, current) {
+    fadeStats(ID, current);
+    $("#right" + ID).fadeToggle(400);
+    $("#down" + ID).fadeToggle(400);
+}
+
+function fadeStats(ID, current) {
+  if (current >= 0) {
+        el = $(".sales_" + ID + current);
+        el.fadeToggle(400, function() {
+            fadeStats(ID, current - 1);
+        })
+    }
+}
+
+
+
+function updateNumber(val, type, id) {
+  amt = Math.round(val*10)/10;
+  document.getElementById(type + id).value = amt;
+
+  total = 0;
+  for (key in prices) {
+    process_fee = 0.0
+
+    if (prices[key] == 0) {
+      process_fee = 0
+    } else if (prices[key] < 5.0) {
+      process_fee = 0.25
+    } else if (prices[key] < 10.0) {
+      process_fee = 0.5
+    } else if (prices[key] < 20.0) {
+      process_fee = 0.75
+    } else {
+      process_fee = 0.99
+    }
+
+    sales = parseInt(document.getElementById("total" + id + key).innerHTML);
+
+    fee = ((prices[key] * sales) * 0.025) + (process_fee * sales);
+
+    newAmount = ((sales * prices[key]) - fee) * (val / 100);
+    newAmount = (Math.round(newAmount*100)/100).toFixed(2);
+
+    total = total + parseFloat(newAmount);
+    document.getElementById("amount" + id + key).innerHTML = "$" + newAmount;
+  }
+
+  total = (Math.round(total*100)/100).toFixed(2);
+  document.getElementById("totalAmt" + id).innerHTML = "$" + total;
+
+  updateTotalsFromPeople();
+
+  formdata = new FormData();
+  formdata.append("commission", val);
+
+  $.ajax({
+      url: "/contracts/" + id,
+      type: "PUT",
+      data: formdata,
+      "dataType":"json",
+      processData: false,
+      contentType: false
+  });
+
+  return total;
+}
+
+Object.size = function(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
+};
+</script>

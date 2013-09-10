@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  paypal_transaction_ID: MyString
+  amount: 9.99
+  from: MyString
+  to: MyString
+  response: MyString
+
+two:
+  paypal_transaction_ID: MyString
+  amount: 9.99
+  from: MyString
+  to: MyString
+  response: MyString

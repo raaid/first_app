@@ -1,0 +1,251 @@
+<section>
+  <div class="container" style="margin-top:20px">
+<h1>Search Events</h1><input type="button" onclick="history.go(-1);" value="Back" class="btn btn-primary" style="float:right;position:relative;top:5px;"></input>
+<div class="clearfloat"></div>
+  <br>
+<br/>  
+
+
+
+  <center>
+  <%= form_tag(search_events_path) do |form| %>
+      <div style="display:inline-block">
+        <span style="font-size:14pt;">Category:</span><br />
+        <%= select_tag :category, options_for_select([ "All", Event::CATEGORY_ENTERTAINMENT, Event::CATEGORY_PERSONAL, Event::CATEGORY_BUSINESS, Event::CATEGORY_CHARITY], "All"), style: "margin-top:10px" %>
+      </div>
+      <div style="display:inline-block">
+        <span style="font-size:14pt;margin-top:10px">Event Name or Venue Name:</span><br />
+                  <%= text_field_tag :name, params[:name], placeholder: "Search By Event Name/Venue", class: "searchFormSize2", style: "margin-top:10px"%>
+      </div>
+      <br />
+        <button type="submit" class="btn btn-large btn-success" style="width:170px;"><i class="icon-search icon-white"></i><span>Search</span></button>
+  <% end %>
+  </center>
+
+  <div class="choose" id="choose">
+     <select id="choice" class="choice" onchange="content_change()">
+       <option value="near_you">Events Near You</option>
+       <option value="recently_added">Recently Added</option>
+     </select>
+  </div>
+
+  <div id="closeEventsOutter" class="closeEventsOutter" style="overflow:hidden">
+    <div class="titleHeight">
+      <h1 style="font-size:25pt;font-weight:bold;float:left">Events Near You</h1>
+      <select id="selectkm" class="selectkm" onchange="changeKM(this)">
+        <option value="25">Within 25 km</option>
+        <option value="50">Within 50 km</option>
+        <option value="100" selected="true">Within 100 km</option>
+        <option value="150">Within 150 km</option>
+        <option value="200">Within 200 km</option>
+        <option value="300">Within 300 km</option>
+        <option value="500">Within 500 km</option>
+      </select>
+    </div>
+      <div class="clearfloat"></div>
+      <br>
+      
+      <div class="closeEvents" id="closeEvents">
+        <div id="eventList"></div>
+      </div>
+      
+    </div>
+    <br>
+
+    <div id="closeEventsOutter2" class="closeEventsOutter2" style="overflow:hidden; display:none;">
+      <div class="titleHeight">
+         <h1 style="font-size:25pt;font-weight:bold;float:left">Recently Added:</h1>
+         <select id="selecttype" class="selectkm">
+           <option value="<%= Event::CATEGORY_ENTERTAINMENT %>" selected="true"><%= Event::CATEGORY_ENTERTAINMENT %></option>
+           <option value="<%= Event::CATEGORY_PERSONAL %>"><%= Event::CATEGORY_PERSONAL %></option>
+           <option value="<%= Event::CATEGORY_BUSINESS %>"><%= Event::CATEGORY_BUSINESS%></option>
+           <option value="<%= Event::CATEGORY_CHARITY %>"><%= Event::CATEGORY_CHARITY%></option>
+         </select>
+       </div>
+         <div class="clearfloat"></div>
+         
+         <div class="closeEvents" id="closeEvents2">
+         <div id="eventListType"></div>
+         </div>
+       </div>
+
+<script>
+    function lightup1(){//document.getElementById('lightsright').className = 'animate';//
+    //
+    }
+    function lightoff1(){//document.getElementById('lightsright').className = 'lightsout';
+    }
+    function lightup2(){//document.getElementById('lightsright2').className = 'animate';
+    }
+    function lightoff2(){//document.getElementById('lightsright2').className = 'lightsout';
+    }
+    function lightup3(){//document.getElementById('lightsright3').className = 'animate';
+    }
+    function lightoff3(){//document.getElementById('lightsright3').className = 'lightsout';
+    }
+
+    var cur_position;
+    var all_events = [];
+    $(document).ready(function() {
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(initialize, fail);
+      } else {
+        document.getElementById("map").innerHTML = "Geolocation is not supported by this browser.";
+      }
+
+      $('#selecttype').change(function() {
+        type = $("#selecttype option:selected").val();
+          clearDiv(document.getElementById("eventListType"));
+          for (i = 0; i < all_events.length; i ++) {
+            if (all_events[i][5] == type) {
+              addEvent2(all_events[i][0], all_events[i][1], all_events[i][3], all_events[i][4]);
+            }
+        }
+
+      });
+
+      $('#selectkm').change(function(e) {
+        distance = e.target.value;
+        clearDiv(document.getElementById("eventList"));
+          for (i = 0; i < all_events.length; i ++) {
+            if (parseInt(all_events[i][2]) < distance) {
+              addEvent(all_events[i][0], all_events[i][1], all_events[i][3], all_events[i][4]);
+            }
+        }
+      })
+
+
+    })
+
+    function changeKM(e) {
+      distance = e.value;
+        clearDiv(document.getElementById("eventList"));
+          for (i = 0; i < all_events.length; i ++) {
+            if (parseInt(all_events[i][2]) < distance) {
+              addEvent(all_events[i][0], all_events[i][1], all_events[i][3], all_events[i][4]);
+            }
+        }
+    }
+
+    function clearDiv(a) {
+      while (a.hasChildNodes()) {
+        a.removeChild(a.lastChild)
+      }
+     // a.parentNode.removeChild(a);
+    }
+
+    function initialize(position) {
+      <% if @events%>
+        <% @events.each_with_index do |event, i| %>
+
+          <% if event.category ==  Event::CATEGORY_ENTERTAINMENT %>
+            addEvent2("<%= escape_javascript event.name %>", "<%= event.startTime.strftime('%Y-%m-%d %-I:%M %P') %> to <%= event.endTime.strftime('%Y-%m-%d %-I:%M %P') %>", <%= event.id %>, "<%= event.event_url(:feed) %>");
+          <% end %>
+
+          if (position != "fail") {
+            dist = getDistance(position.coords.latitude, position.coords.longitude, parseFloat("<%=event.lat%>"), parseFloat("<%=event.lon%>"));
+            all_events[<%= i %>] = ["<%= escape_javascript event.name %>", "<%= event.startTime.strftime('%Y-%m-%d %-I:%M %P') %> to <%= event.endTime.strftime('%Y-%m-%d %-I:%M %P') %>", dist, <%= event.id %>, "<%= event.event_url(:feed) %>", "<%= event.category %>"];
+
+            if (dist < 100) {
+              addEvent("<%= escape_javascript event.name %>", "<%= event.startTime.strftime('%Y-%m-%d %-I:%M %P') %> to <%= event.endTime.strftime('%Y-%m-%d %-I:%M %P') %>", <%= event.id %>, "<%= event.event_url(:feed) %>");
+            }
+          }
+
+
+        <% end %>
+      <% end %>
+    }
+
+    function fail(error) {
+      list = document.getElementById("eventList").innerHTML = "Please turn on location services to use this feature";
+      closeEvents = document.getElementById("closeEvents");
+      closeEvents.style.height = "50px";
+      closeEvents.style.overflow = "hidden";
+      document.getElementById("selectkm").removeAttribute("onchange");
+      initialize("fail");
+          error_msg = "";
+          switch (error.code) {
+              case error.PERMISSION_DENIED:
+                  error_msg = "User denied the request for Geolocation."
+                  break;
+              case error.POSITION_UNAVAILABLE:
+                  error_msg = "Location information is unavailable."
+                  break;
+              case error.TIMEOUT:
+                  error_msg = "The request to get user location timed out."
+                  break;
+              case error.UNKNOWN_ERROR:
+                  error_msg = "An unknown error occurred."
+                  break;
+          }
+          console.log(error_msg);
+      }
+
+      function addEvent(name, date, id, source) {
+        if ($('#eventList div').length < 11) {
+          if (source == '') {
+            source = '/images/event_image/feed/missing.jpg';
+          }
+          $('#eventList').append('<div style="float:left;width:100%" onclick="window.location=\'/events/' + id + '\'"><img src="' + source + '" class="event_thumb" style="float:left;width:80px"><div style="float:left;margin-left:10px"><span class="red"><h1>' + name + '</h1></span><p><span class="red"><b>Date:</b></span><i>' + date + '</i></p></div></div>');
+        }
+      }
+
+    function addEvent2(name, date, id, source) {
+      if ($('#eventListType div').length < 11) {
+        if (source == '') {
+          source = '/images/event_image/feed/missing.jpg';
+        }
+        $('#eventListType').append('<div style="float:left;width:100%" onclick="window.location=\'/events/' + id + '\'"><img src="' + source + '" class="event_thumb" style="float:left;width:80px"><div style="float:left;margin-left:10px"><span class="red"><h1>' + name + '</h1></span><p><span class="red"><b>Date:</b></span><i>' + date + '</i></p></div></div>');
+      }
+    }
+
+    function getDistance(lat1,lon1,lat2,lon2) {
+      var R = 6371; // km
+      var dLat = (lat2-lat1).toRad();
+      var dLon = (lon2-lon1).toRad();
+      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    if (typeof(Number.prototype.toRad) === "undefined") {
+      Number.prototype.toRad = function() {
+        return this * Math.PI / 180;
+      }
+    }
+
+    function content_change(){
+      var d = document.getElementById("choice").value;
+      var near = document.getElementById('closeEventsOutter');
+      var added = document.getElementById('closeEventsOutter2');
+      if (d == "recently_added")
+      {
+        near.style.display = 'none';
+        added.style.display = 'block';
+      }
+      else
+      {
+          near.style.display = 'block';
+          added.style.display = 'none';
+      }
+    }
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+</section>

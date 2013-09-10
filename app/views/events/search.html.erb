@@ -1,0 +1,422 @@
+<%#= stylesheet_link_tag 'gridNavigation.css' %>
+
+<section>
+  <div class="container">
+<h1>Search Results</h1>
+
+<br/>
+
+<center>
+  <%= form_tag(search_events_path) do |form| %>
+      <div style="display:inline-block;">
+        <span style="font-size:11pt;margin-top:10px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Event Name/Venue Name:</span><br />
+          <%= text_field_tag :name, params[:name], placeholder: "Search By Event Name/Venue", class: "searchFormSize2", style: "margin-top:10px"%>
+      </div>
+      <div class="filterDate" style="display:inline-block; margin-left:0;">
+        <div class="filterTitle" style="font-size:11pt;margin-top:10px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">After Date: </div><br>
+        <%= text_field_tag :after, params[:after], class: "afterDate", style: "margin-top:10px;width:100px", id: "dateAfter"%>
+      </div>
+      <div class="filterDate" style="display:inline-block; margin-left:0;">
+        <div class="filterTitle" style="font-size:11pt;margin-top:10px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Before Date: </div><br>
+        <%= text_field_tag :before, params[:before], class: "beforeDate", style: "margin-top:10px;width:100px", id: "dateBefore"%>
+      </div>
+      <div style="display:inline-block">
+        <span style="font-size:11pt;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Distance (km):</span><br />
+        <%= select_tag :distance, options_for_select([ "Show All", "25", "50", "100", "150", "200", "300", "500"], "Show All"), style: "margin-top:10px;width:100px" %>
+      </div>
+      <div style="display:inline-block">
+        <span style="font-size:11pt;">Category:</span><br />
+        <%= select_tag :category, options_for_select([ "All", Event::CATEGORY_ENTERTAINMENT, Event::CATEGORY_PERSONAL, Event::CATEGORY_BUSINESS, Event::CATEGORY_CHARITY], "All"), style: "margin-top:10px;width:100px" %>
+      </div>
+      <br />
+        <button type="submit" class="btn btn-large btn-success" style="width:170px;"><i class="icon-search icon-white"></i><span>Search</span></button>
+  <% end %>
+</center>
+
+    <div class="filter">
+      <div class="filterDate">
+        <h1 style="font-size:25pt;font-weight:bold;float:left">Location:</h1>
+        <select id="selectDist" style="width:150px;margin-top:18px;">
+          <option value="0" selected="true">Show All</option>
+          <option value="25">Within 25 km</option>
+          <option value="50">Within 50 km</option>
+          <option value="100">Within 100 km</option>
+          <option value="150">Within 150 km</option>
+          <option value="200">Within 200 km</option>
+          <option value="300">Within 300 km</option>
+          <option value="500">Within 500 km</option>
+        </select> 
+      </div>
+    </div>
+
+    <div class="clearfloat"></div>
+    <br>
+
+    
+    <div id="resultsList">
+      <% @events_results.each do |event| %>
+      <div style="float:left;width:100%;margin-top:10px;cursor:pointer" onclick="window.location='/events/<%=event.id%>'">
+
+        <img src="<%=event.event_url(:feed) || "/images/event_image/feed/missing.jpg"%>" class="event_thumb" style="float:left;width:50px">
+
+        <div style="float:left;margin-left:10px">
+            <h1 style="font-size:18px!important;"><%=event.name%></h1>
+          <p><span class="orange" style="font-size:16px!important;margin-top:10px;"><b>Date: </b></span><i><%=event.startTime.strftime('%B %d, %Y %-I:%M %P') %></i></p>
+        </div>
+      </div> 
+      <%end%>
+    </div>
+
+
+
+      <!--
+    <div id="tj_container" class="tj_container">
+      <div class="tj_nav">
+        <span id="tj_prev" class="tj_prev">Previous</span>
+        <span id="tj_next" class="tj_next">Next</span>
+      </div>  
+      <div class="tj_wrapper">
+        <ul class="tj_gallery" id="tj_gallery">
+          <% @events_results.each_with_index do |event, i| %>
+            <li id="event<%= event.id %>">
+              <a href="/events/<%=event.id%>">
+                <% if event.event_url(:feed) %>
+                  <img src="<%=event.event_url(:feed)%>" style="width:190px;height:190px;" alt="<%=event.name%>"/>
+                <% else %>
+                  <img src="images/event_image/feed/missing.jpg" style="width:190px;height:190px;" alt="<%=event.name%>"/>
+                <% end %>
+                <span style="position:absolute;top:5px;left:5px;width:150px;color:#fff;font-size: 10pt;font-weight: bolder;font-style: italic;background:rgba(0,0,0,0.75);padding:4px;padding-top:1px;padding-bottom:1px;overflow:hidden;border-top-right-radius: 5px;border-bottom-right-radius: 5px;border:1px solid #000">Event Date - <%=event.startTime.strftime('%B %d, %Y %-I:%M %P')%></span>
+              </a>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  -->
+    
+  
+  </div>
+  </section>
+<div class="clearfloat"></div>
+<br>
+
+<%= javascript_include_tag 'jquery-ui-1.9.2.min.js' %>
+<%#= javascript_include_tag 'jquery.gridnav.js' %>
+
+<script>
+var globalEvents = [];
+var beforeSet = 0;
+var afterSet = 0;
+var distSet = 0;
+var beforeDate = new Date();
+var afterDate = new Date();
+var afterFilter = [];
+var beforeFilter = [];
+var distFilter = [];
+
+
+$(document).ready(function() {
+    $( "#dateBefore" ).datepicker();
+    $( "#dateAfter" ).datepicker();
+
+    <% @events_results.each do |event| %>
+      elem = $('<div style="float:left;width:100%;margin-top:10px;cursor:pointer" onclick="window.location=\'/events/<%=event.id%>\'"><img src="<%= event.event_url(:feed) || "/images/event_image/feed/missing.jpg" %>" class="event_thumb" style="float:left;width:50px"><div style="float:left;margin-left:10px"><h1 style="font-size:18px!important"><%=event.name%></h1><p style="font-size:16px!important;margin-top:10px;"><span class="orange"><b>Date: </b></span><i><%= event.startTime.strftime('%B %d, %Y %-I:%M %P') %></i></p></div></div>');
+      globalEvents.push([<%= event.id %>, "<%= event.startTime.strftime('%B %d, %Y %-I:%M %P') %>", 0, elem]);
+    <% end %>
+
+     //after date has been changed
+  $('#dateAfter').change(function(e) {
+    afterSet = 1;
+    afterDate = new Date(e.target.value);
+    afterFilter.length = 0;
+    
+      for (i = 0; i < globalEvents.length; i++) {
+        eventDate = new Date(globalEvents[i][1]);
+        if (eventDate < afterDate) {
+          afterFilter.push(globalEvents[i][0]); 
+        } 
+      }
+
+      refreshResults();
+  });
+
+  //before date filter has been changed
+  $('#dateBefore').change(function(e) {
+    beforeSet = 1;
+    beforeDate = new Date(e.target.value);
+    beforeFilter.length = 0;
+
+      for (i = 0; i < globalEvents.length; i++) {
+        eventDate = new Date(globalEvents[i][1]);
+        if (eventDate > beforeDate) {
+          //document.getElementById("event" + globalEvents[i][0]).style.display = "none";
+          beforeFilter.push(globalEvents[i][0])
+        }
+      }
+      refreshResults();
+  });
+
+
+  //Distance filter has been changed
+  $('#selectDist').change(function(e) {
+    distSet = e.target.value;
+    distFilter.length = 0;
+    
+    //distance has been set to all, only filter by date if it's set
+    if (e.target.value > 0) {
+      for (i = 0; i < globalEvents.length; i++) {
+        if (globalEvents[i][2] > e.target.value) {
+          distFilter.push(globalEvents[i][0]);
+        }
+      }
+    }
+
+    refreshResults();
+  })
+
+ if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(setDistances, fail);
+  } else {
+    //document.getElementById("map").innerHTML = "Geolocation is not supported by this browser.";
+    console.log("Geolocation is not supported by this browser.");
+  }
+
+});
+
+function refreshResults() {
+  list = document.getElementById("resultsList");
+  clearDiv(list);
+
+  gallery = $("#resultsList");
+
+  for (i = 0; i < globalEvents.length; i++) {
+    if ((beforeSet == 1 ? beforeFilter.indexOf(globalEvents[i][0]) < 0 : true) && (afterSet == 1 ? afterFilter.indexOf(globalEvents[i][0]) < 0 : true) && (distSet > 0 ? distFilter.indexOf(globalEvents[i][0]) < 0 : true)) {
+      gallery.append(globalEvents[i][3]);
+    } 
+  }
+}
+
+  function setDistances(position) {
+      <% @events_results.each_with_index do |event, i| %>
+        dist = getDistance(position.coords.latitude, position.coords.longitude, parseFloat("<%=event.lat%>"), parseFloat("<%=event.lon%>"));
+        globalEvents[<%=i%>][2] = dist;
+      <% end %>
+    }
+
+function clearDiv(a) {
+  while (a.hasChildNodes()) {
+    a.removeChild(a.lastChild)
+  }
+}
+
+    function getDistance(lat1,lon1,lat2,lon2) {
+      var R = 6371; // km
+      var dLat = (lat2-lat1).toRad();
+      var dLon = (lon2-lon1).toRad(); 
+      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * 
+            Math.sin(dLon/2) * Math.sin(dLon/2); 
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+      return R * c;
+    }
+
+    if (typeof(Number.prototype.toRad) === "undefined") {
+      Number.prototype.toRad = function() {
+        return this * Math.PI / 180;
+      }
+    }
+
+    function fail(error) {
+          x = document.getElementById("map");
+          switch (error.code) {
+              case error.PERMISSION_DENIED:
+                  x.innerHTML = "User denied the request for Geolocation."
+                  break;
+              case error.POSITION_UNAVAILABLE:
+                  x.innerHTML = "Location information is unavailable."
+                  break;
+              case error.TIMEOUT:
+                  x.innerHTML = "The request to get user location timed out."
+                  break;
+              case error.UNKNOWN_ERROR:
+                  x.innerHTML = "An unknown error occurred."
+                  break;
+          }
+      }
+
+
+
+
+
+/*
+var globalEvents = [];
+var beforeSet = 0;
+var afterSet = 0;
+var distSet = 0;
+var beforeDate = new Date();
+var afterDate = new Date();
+
+$(document).ready(function() {
+    $( "#dateBefore" ).datepicker();
+    $( "#dateAfter" ).datepicker();
+
+    initGridNav();
+});
+
+
+function refreshGridNav() {
+  gallery = document.getElementById("tj_gallery");
+  clearGallery(gallery);
+  repopulateGallery();
+  initGridNav();   
+}
+
+function initGridNav() {
+  $('#tj_container').gridnav({
+      rows: 2,
+      type  : {
+        mode    : 'sequpdown',  // use def | fade | seqfade | updown | sequpdown | showhide | disperse | rows
+        speed   : 400,      // for fade, seqfade, updown, sequpdown, showhide, disperse, rows
+        easing    : '',     // for fade, seqfade, updown, sequpdown, showhide, disperse, rows 
+        factor    : 50,     // for seqfade, sequpdown, rows
+        reverse   : false     // for sequpdown
+      }
+    });
+}
+
+function clearGallery(a) {
+  while (a.hasChildNodes()) {
+    a.removeChild(a.lastChild)
+  }
+}
+
+function repopulateGallery() {
+  gallery = $("#tj_gallery");
+
+  for (i = 0; i < globalEvents.length; i++) {
+    if ((beforeSet == 1 ? beforeFilter.indexOf(globalEvents[i][0]) < 0 : true) && (afterSet == 1 ? afterFilter.indexOf(globalEvents[i][0]) < 0 : true) && (distSet > 0 ? distFilter.indexOf(globalEvents[i][0]) < 0 : true)) {
+      gallery.append(globalEvents[i][3]);
+    } 
+
+    globalEvents[i][3].removeAttr("style");
+    globalEvents[i][3].removeAttr("class");
+  }
+}
+
+var afterFilter = [];
+var beforeFilter = [];
+var distFilter = [];
+
+$(document).ready(function () {
+  <% @events_results.each do |event| %>
+    elem = $('<li id="event<%= event.id %>"><a href="/events/<%=event.id%>"><% if event.event_url(:feed) %><img src="<%=event.event_url(:feed)%>" style="width:190px;height:190px;" alt="<%=event.name%>"/><% else %><img src="images/event_image/feed/missing.jpg" style="width:190px;height:190px;" alt="<%=event.name%>"/><% end %><span style="position:absolute;top:5px;color:#fff;font-size: 10pt;font-weight: bolder;font-style: italic;background:rgba(0,0,0,0.75);padding:4px;padding-top:1px;padding-bottom:1px;overflow:hidden;border-top-right-radius: 5px;border-bottom-right-radius: 5px;border:1px solid #000">Event Date - <%=event.startTime.strftime('%B %d, %Y %-I:%M %P') %></span></a></li>');
+    globalEvents.push([<%= event.id %>, "<%= event.startTime.strftime('%B %d, %Y %-I:%M %P') %>", 0, elem]);
+  <% end %>
+//  document.getElementById("tj_container").removeAttribute("style");
+  
+
+  //after date has been changed
+  $('#dateAfter').change(function(e) {
+    afterSet = 1;
+    afterDate = new Date(e.target.value);
+    afterFilter.length = 0;
+    
+      for (i = 0; i < globalEvents.length; i++) {
+        eventDate = new Date(globalEvents[i][1]);
+        if (eventDate < afterDate) {
+          afterFilter.push(globalEvents[i][0]); 
+        } 
+      }
+
+      refreshGridNav();
+
+
+  });
+
+  //before date filter has been changed
+  $('#dateBefore').change(function(e) {
+    beforeSet = 1;
+    beforeDate = new Date(e.target.value);
+    beforeFilter.length = 0;
+
+      for (i = 0; i < globalEvents.length; i++) {
+        eventDate = new Date(globalEvents[i][1]);
+        if (eventDate > beforeDate) {
+          //document.getElementById("event" + globalEvents[i][0]).style.display = "none";
+          beforeFilter.push(globalEvents[i][0])
+        }
+      }
+      refreshGridNav();
+  });
+
+
+  //Distance filter has been changed
+  $('#selectDist').change(function(e) {
+    distSet = e.target.value;
+    distFilter.length = 0;
+    
+    //distance has been set to all, only filter by date if it's set
+    if (e.target.value > 0) {
+      for (i = 0; i < globalEvents.length; i++) {
+        if (globalEvents[i][2] > e.target.value) {
+          distFilter.push(globalEvents[i][0]);
+        }
+      }
+    }
+
+    refreshGridNav();
+
+  })
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(setDistances, fail);
+  } else {
+    //document.getElementById("map").innerHTML = "Geolocation is not supported by this browser.";
+    console.log("Geolocation is not supported by this browser.");
+  }
+
+});
+
+  function setDistances(position) {
+      <% @events_results.each_with_index do |event, i| %>
+        dist = getDistance(position.coords.latitude, position.coords.longitude, parseFloat("<%=event.lat%>"), parseFloat("<%=event.lon%>"));
+        globalEvents[<%=i%>][2] = dist;
+      <% end %>
+    }
+
+    function getDistance(lat1,lon1,lat2,lon2) {
+      var R = 6371; // km
+      var dLat = (lat2-lat1).toRad();
+      var dLon = (lon2-lon1).toRad(); 
+      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) * 
+            Math.sin(dLon/2) * Math.sin(dLon/2); 
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+      return R * c;
+    }
+
+    if (typeof(Number.prototype.toRad) === "undefined") {
+      Number.prototype.toRad = function() {
+        return this * Math.PI / 180;
+      }
+    }
+
+    function fail(error) {
+          x = document.getElementById("map");
+          switch (error.code) {
+              case error.PERMISSION_DENIED:
+                  x.innerHTML = "User denied the request for Geolocation."
+                  break;
+              case error.POSITION_UNAVAILABLE:
+                  x.innerHTML = "Location information is unavailable."
+                  break;
+              case error.TIMEOUT:
+                  x.innerHTML = "The request to get user location timed out."
+                  break;
+              case error.UNKNOWN_ERROR:
+                  x.innerHTML = "An unknown error occurred."
+                  break;
+          }
+      }
+*/
+</script>

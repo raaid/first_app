@@ -1,0 +1,7 @@
+DTSTART:<%= @event.startTime.utc.strftime("%Y%m%dT%H%M%SZ") %>  <br>
+DTEND:<%= @event.endTime.utc.strftime("%Y%m%dT%H%M%SZ") %>  <br>
+URL:http://www.eventastic.com/events/<%= @event.id %><br>
+DESCRIPTION:<%=h @event.description %>\n<%=h @event.details %>  <br>
+LOCATION;ENCODING=QUOTED-PRINTABLE:<%= @event.address %>  <br>
+END:VEVENT  <br>
+END:VCALENDAR  <br>

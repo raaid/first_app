@@ -1,0 +1,79 @@
+<%= form_for(@cash_gift) do |f| %>
+            <div class="purchaseTicketContainer">
+              <% if @cash_gift.errors.any? %>
+                  <div id="error_explanation">
+                    <h2><%= pluralize(@cash_gift.errors.count, "error") %> prohibited this ticket_instance from being
+                      saved:</h2>
+                    <ul>
+                      <% @cash_gift.errors.full_messages.each do |msg| %>
+                          <li><%= msg %></li>
+                      <% end %>
+                    </ul>
+                  </div>
+              <% end %>
+              <center>
+                <%= f.hidden_field :guest_id %>
+                <%= f.hidden_field :user_id %>
+                <% unless @event.cg_message.nil? or @event.cg_message.blank? %>
+                    <div class="purchaseTickets">
+                      <p>Some Words From The Couple:</p>
+                      <hr/>
+                      <p><%= @event.cg_message %></p>
+                    </div>
+                    <br/>
+                <% end %>
+                <div style="margin-left: 20px;">
+                  <center>
+                    <%= f.label :guest_name %>
+                    <%= f.text_field :guest_name, :size => "18" %>
+
+                    <%= f.label :guest_email %>
+                    <%= f.text_field :guest_email, :size => "18" %>
+
+                    <%= f.label :amount %>
+                    <%= f.text_field :amount, :size => "18" %>
+                  </center>
+
+                  <br />
+                  <center><p>Make this contribution Anonymously</p><%= f.check_box  :privacy, label: false,:input_html => {:style => ""} %></center>
+                  <br />
+                  <% if @cashgifttypes.count > 0%>
+                      <center>
+                       <br />
+
+                      <p>Choose A Financial Gift To Contribute Towards!</p>
+                      <%= select(:cash_gift, :cashgifttype_id, @cashgifttypes.collect { |l| [l.title, l.id] }, {}, html_options={:onchange=>"updateGift()"}) %>
+                        <br />
+                        <br />
+                         <% @cashgifttypes.each do |c| %>
+                                <div class="purchaseTickets" id="cashgifttype_<%=c.id%>">
+                                  <%= image_tag c.cgp_url(:newsfeed),:class=>'avatarphoto', :id=>"cashGiftImage" %>
+                                  <br />
+                                  <br />
+                                  <p><%= c.description %></p>
+                                </div>
+                         <% end %>
+                      </center>
+                  <% end %>
+
+                </div>
+                <br/>
+              </center>
+              <div class="purchaseTickets">
+                <center>
+                  <p><b>Provide A Custom Message Here:</b></p>
+                  <%= f.text_area :message, :size => "60x2" %>
+                </center>
+              </div>
+              <div class="actions">
+                <center>
+                  <%= image_tag "https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/paypal2s.png" %>
+                  <center><p style="font-size: 8pt;">*All cash gifts are subject to standard Paypal processing fees</p>
+                  </center>
+                  <br/>
+                  <%= f.submit "Give", :class => "btn btn-success", :style=>"width:250px;" %>
+                </center>
+              </div>
+            </div>
+            <br/>
+        <% end %>

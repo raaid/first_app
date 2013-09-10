@@ -1,0 +1,289 @@
+<div id="content_outter" class="main_content_pane_outter">
+<div id="content_inner" class="main_content_pane">
+<h1 style="font-size: 25pt;float:left;">Edit Contact List & Add Members</h1><input type="button" value="Back To Contact Lists" onclick="window.location='<%=contact_lists_path(:event_id => @event.id)%>'" class="btn btn-success" style="margin-top: 5px;float:right;"></input>
+<div class="clearfloat"></div>
+  <br>
+<div class="contentarea">
+  <p style="color:#474747;width:70%;position:relative;display:inline-block;"><b>List Name: <%= @contact_list.name %></b></p>
+  <input type="button" value="Delete Contact List" onclick="deleteList()" class="btn btn-danger" style="position:relative;float:right"/>
+  <hr/>
+  <div style="display:inline-block;margin-left: 35px;">
+    <div style="float:left;">
+      <div style="width:250px">
+        <center><h3>Manually Add A Contact</h3></center>
+        <hr/>
+        <div id='new_element_container'>
+          <center>
+            Guest Name:<br/><input style='line-height: 20px;height:20px;padding:5px;' type='text' id='new_element_name'>
+            <br/>
+            Guest Email:<br/><input style='line-height: 20px;height:20px;padding:5px;' type='text' id='new_element_email'>
+            <br>
+            <input type="button" class="btn btn-success" value="Add A Guest To The List" onclick='create_new_element_click();' style="margin-top:2px"></input>
+          </center>
+        </div>
+      </div>
+    </div>
+
+      <div style="float:right;margin-left: 5px;">
+        <span onclick="window.location='/contact_lists/<%= @contact_list.id %>/import_from_google'" class="btn btn-success" style="width:75px;height:200px;margin-right: 5px;">Import From<br />GMail<br /><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/googleimport.png" style="width:85px;height:85px;margin-top: 20px;margin-bottom: 20px;"></span>
+       <!-- <span onclick="window.location='/contact_lists/<%= @contact_list.id %>/import_from_facebook'" class="btn btn-success" style="width:120px;margin-right: 5px;">Import From<br />Facebook<br /><img src="/images/facebookimport.png" style="width:90px;height:90px;margin-top: 30px;margin-bottom: 20px;"></span>  -->
+        <span onclick="toggle_csv2()" class="btn btn-success" style="width:75px;height:200px;margin-right: 5px;">Import From<br />Yahoo Mail<br /><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/yahooimport.png" style="width:85px;height:85px;margin-top: 20px;margin-bottom: 20px;"></span>
+        <span onclick="toggle_csv3()" class="btn btn-success" style="width:75px;height:200px;margin-right: 5px;">Import From<br />MS Hotmail<br /><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/hotmailimport.png" style="width:85px;height:85px;margin-top: 20px;margin-bottom: 20px;"></span>
+        <span onclick="toggle_vcf()" class="btn btn-success" style="width:75px;height:200px;margin-right: 5px;">Import From<br />Apple Mail<br /><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/appleimport.png" style="width:85px;height:85px;margin-top: 20px;margin-bottom: 20px;"></span>
+        <span onclick="toggle_csv()" class="btn btn-success" style="width:75px;height:200px;margin-right: 5px;">Import From<br />MS Outlook<br /><img src="https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/outlookimport.png" style="width:85px;height:85px;margin-top: 20px;margin-bottom: 20px;"></span>
+      </div>
+  </div>
+
+    <br/>
+    <hr />
+    <br/>
+ <center>
+   <div style="width:95%">
+     <h3>List Members</h3>
+     <hr />
+    <div id='list_elements'></div>
+   </div>
+   <br />
+   <br />
+ </center>
+</div>
+
+<!-- Partials for Apple Mail and Outlook popup -->
+<% @partial_is_popup = true %>
+<div class="popup" id="pop_vcf"><%= render partial: "import_from_apple_mail" %></div>
+
+<script>
+
+  function deleteList() {
+    if (confirm("Are you sure you would like to delete this contact list?") == true) {
+     // window.location = "<%= delete_list_path(:id => @contact_list.id, :event_id => @event.id) %>"
+      window.location = "/delete_list?event_id=<%=@event.id%>&id=<%=@contact_list.id%>";
+    }
+  }
+
+  var vcf_popped = false;
+
+  $('#pop_vcf').hide();
+
+  function toggle_vcf() {
+      vcf_popped = !vcf_popped;
+
+      if (vcf_popped) {
+	  $('#pop_vcf').fadeIn('slow');
+      } else {
+	  $('#pop_vcf').fadeOut('slow');
+      }
+  }
+
+  function close_vcf() {
+      if (vcf_popped) {
+	  toggle_vcf();
+      }
+  }
+
+  //onClickOutside("#pop_vcf", close_vcf);
+</script>
+
+<% @partial_is_popup = true %>
+<div class="popup" style="width:90%" id="pop_csv"><%= render partial: "import_from_outlook" %></div>
+
+<script>
+  var csv_popped = false;
+
+  $('#pop_csv').hide();
+
+  function toggle_csv() {
+      csv_popped = !csv_popped;
+
+      if (csv_popped) {
+	  $('#pop_csv').fadeIn('slow');
+      } else {
+	  $('#pop_csv').fadeOut('slow');
+      }
+  }
+
+  function close_csv() {
+      if (csv_popped) {
+	  toggle_csv();
+      }
+  }
+
+  //onClickOutside("#pop_csv", close_csv);
+</script>
+
+
+<% @partial_is_popup = true %>
+<div class="popup" style="width:90%" id="pop_csv2"><%= render partial: "import_from_yahoo" %></div>
+
+<script>
+  var csv_popped2 = false;
+
+  $('#pop_csv2').hide();
+
+  function toggle_csv2() {
+      csv_popped2 = !csv_popped2;
+
+      if (csv_popped2) {
+	  $('#pop_csv2').fadeIn('slow');
+      } else {
+	  $('#pop_csv2').fadeOut('slow');
+      }
+  }
+
+  function close_csv2() {
+      if (csv_popped2) {
+	  toggle_csv2();
+      }
+  }
+
+</script>
+
+  <% @partial_is_popup = true %>
+  <div class="popup" style="width:90%" id="pop_csv3"><%= render partial: "import_from_hotmail" %></div>
+
+  <script>
+    var csv_popped3 = false;
+
+    $('#pop_csv3').hide();
+
+    function toggle_csv3() {
+        csv_popped3 = !csv_popped3;
+
+        if (csv_popped3) {
+  	  $('#pop_csv3').fadeIn('slow');
+        } else {
+  	  $('#pop_csv3').fadeOut('slow');
+        }
+    }
+
+    function close_csv3() {
+        if (csv_popped3) {
+  	  toggle_csv3();
+        }
+    }
+  //onClickOutside("#pop_csv2", close_csv2);
+</script>
+
+
+
+<script>
+    var contact_list_id = <%= @contact_list.id %>;
+    var existing_elements = {};
+
+    function add_existing_element(element) {
+        $('#list_elements').append(existing_element_html(element));
+        existing_elements[element['id']] = element;
+    }
+
+    function existing_element_html(element) {
+        return "<div id='existing_element_" + element['id'] + "_container'>"
+                + "<input style='line-height: 20px;height:20px;padding:5px;' id='existing_element_" + element['id'] + "_name' value= '" + element['name']
+                + "' onchange='save_element(refresh_existing_element(" + element['id'] + "));'/>"
+           //     + " ("
+                + "<input style='line-height:20px;height:20px;padding:5px;margin-left:20px' id='existing_element_" + element['id'] + "_email' value= '" + element['email']
+                + "' onchange='save_element(refresh_existing_element(" + element['id'] + "));'/>"
+             //   + ")"
+                + "<input type='button' value='Remove Contact From List' class='btn btn-danger' style='margin-left: 20px;'onclick='delete_element(existing_elements[" + element['id'] + "])'></input><br />"
+                + "<br>"
+                + "</div>";
+    }
+
+    function create_new_element_click() {
+        // The element can support a user reference as well, we don't know it here so we leave it blank.
+        create_new_element({"name":$("#new_element_name").val(),
+            "email":$("#new_element_email").val(),
+            "contact_list_id":contact_list_id});
+    }
+
+    function refresh_existing_element(element_id) {
+        var existing_element = existing_elements[element_id];
+
+        existing_element['name'] = $('#existing_element_' + element_id + '_name').val();
+        existing_element['email'] = $('#existing_element_' + element_id + '_email').val();
+
+        existing_elements[element_id] = existing_element;
+
+        return existing_element;
+    }
+
+    function create_new_element(element) {
+        start_pending('#new_element_container');
+
+        $.ajax({ "url":"/contact_list_members",
+            "type":"post",
+            "data":{"contact_list_member":element},
+            "dataType":"json",
+            "success":function (data) {
+                // If data is null, then the "new" element already existed.
+                if (data == null) {
+                    alert("The new element was not added, because you already have someone with that email in the contact list!");
+                } else {
+                    document.getElementById("new_element_name").value = "";
+                    document.getElementById("new_element_email").value = "";
+                    add_existing_element(data);
+                }
+            },
+            "failure":function () {
+                alert("The contact failed to save! It is a safe to retry.");
+            },
+            "complete":function () {
+                // Redisplay the element.
+                stop_pending('#new_element_container');
+            }});
+    }
+
+    function save_element(element) {
+        // Disable the element once it has been clicked.
+        start_pending('#existing_element_' + element['id'] + '_container');
+
+        // Get the latest from the web forms.
+        element = refresh_existing_element(element['id']);
+
+        $.ajax({ "url":"/contact_list_members/" + element['id'],
+            "type":"put",
+            "data":{"contact_list_member":element},
+            "dataType":"json",
+            "success":function () {
+            },
+            "failure":function () {
+                alert("The contact failed to save! It is a safe to retry.");
+            },
+            "complete":function () {
+                // Redisplay the element.
+                stop_pending('#existing_element_' + element['id'] + '_container');
+            }});
+    }
+
+    function delete_element(element) {
+        // Disable the element once it has been clicked.
+        start_pending('#existing_element_' + element['id'] + '_container');
+
+        $.ajax({ "url":"/contact_list_members/" + element['id'],
+            "type":"delete",
+            "dataType":"json",
+            "success":function () {
+                delete existing_elements[element['id']];
+                $('#existing_element_' + element['id'] + '_container').html("");
+            },
+            "failure":function () {
+                alert("The contact failed to delete! It is still saved, and it is a safe to retry.");
+
+                // Redisplay the element, since it failed.
+                stop_pending('#existing_element_' + element['id'] + '_container');
+            }});
+    }
+
+    function start_pending(container_name) {
+        $(container_name).attr('disabled', 'disabled');
+    }
+
+    function stop_pending(container_name) {
+        $(container_name).removeAttr('disabled');
+    }
+</script>
+</div>
+</div>
+
+<% @contact_list.contact_list_members.each do |element| %>
+<script>add_existing_element({"name":"<%= element.name %>", "email":"<%= element.email %>", "id": <%= element.id %>}); </script>
+<% end %>

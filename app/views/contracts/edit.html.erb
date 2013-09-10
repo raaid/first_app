@@ -1,0 +1,45 @@
+<h1>Editing contract</h1>
+
+<%= render 'form' %>
+
+<%= link_to 'Show', @contract %> |
+<%= link_to 'Back', contracts_path %>
+
+<!-- 
+
+<div style="float:left">
+<%= form_for(@sales_person) do |f| %>
+  <% if @sales_person.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@sales_person.errors.count, "error") %> prohibited this sales_person from being saved:</h2>
+
+      <ul>
+      <% @sales_person.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+
+  
+  <div style="position:relative;display:inline-block">
+    <%= f.label :fname, "First Name" %>
+    <%= f.text_field :fname  %>
+  </div><br>
+  <div style="position:relative;display:inline-block">
+    <%= f.label :lname, "Last Name" %>
+    <%= f.text_field :lname %>
+  </div>
+  <br>
+  <div style="position:relative;display:inline-block">
+    <%= f.label :email %>
+    <%= f.text_field :email %>
+  </div>
+
+  <br>
+    <%= f.submit "Update", class: "btn btn-success", style: "font-size:14pt;width:200px"%>
+
+<% end %>
+</div>
+-->

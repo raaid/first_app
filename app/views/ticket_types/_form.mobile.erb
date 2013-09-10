@@ -1,0 +1,61 @@
+<span class="main_content_partial" style="display:inline-block;width:90%;">
+   <div style="display:inline-block;">
+<%= form_for(@ticket_type) do |f| %>
+  <% if @ticket_type.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@ticket_type.errors.count, "error") %> prohibited this ticket_type from being saved:</h2>
+
+      <ul>
+      <% @ticket_type.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field" <% if not @admin then %> style="display:none" <% end %> >
+    <%= f.label :event_id %><br />
+    <%= f.text_field :event_id %>
+  </div>
+
+  <center><h1><%= @ticket_type.event_name %></h1></center>
+    <hr />
+    <center>
+    <%= f.hidden_field :event_name %>
+      <%= f.hidden_field :event_id %>
+    <p><b>Ticket Name</b></p>
+    <%= f.text_field :name, :class=>"loginFormSize"  %>
+    <br />
+    <p><b>Ticket Price</b></p>
+    <%= f.text_field :price, :class=>"loginFormSize"  %>
+    <br />
+    <p><b>Currency</b></p>
+    <%= f.select(:currency, options_for_select([["US Dollars", "USD"], ["Canadian Dollars", "CAD"]], selected: @ticket_type.currency)) %>
+    </center>
+<br />
+    <center>
+    <div class="purchaseTicketContainer">
+  <span style="float:left;">
+    <p><b>Sell From:</b></p>
+    <%= f.date_select :sell_from %>
+  </span>
+  <span style="float:right;">
+    <p><b>Sell Until:</b></p>
+    <%= f.date_select :sell_to %>
+  </span>
+    </div>
+    </center>
+    <div class="clearfloat"></div>
+    <br />
+    <center><p><b>This Ticket Is Groupable:</b></p>
+      <p style="font-size:8pt">A Groupable ticket is one which, when sent to the buyer, will be redeemable for multiple items with one barcode (Eg. Ten drink tickets can be emailed as one ticket redeemable for ten drinks to a guest rather than sending 10 individual tickets.)</p>
+      <%= f.check_box :groupable %></center>
+
+  <div class="actions">
+    <center><p style="font-size: 8pt;">*Organizers & Guests are subject to the fees outlined in TheWeddingRegistries <a href="/terms_of_service#fees"><u>Terms Of Service</u></a></p></center>
+    <br />
+    <center><%= f.submit :class=>"btn btn-success", :style=>"width:200px;"%></center>
+  </div>
+<% end %>
+ </div>
+</span>

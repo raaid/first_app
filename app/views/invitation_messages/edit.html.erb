@@ -1,0 +1,18 @@
+<div id="content_outter" class="main_content_pane_outter">
+<div id="content_inner" class="main_content_pane">
+  <h1 style="font-size:25pt;float:left;">EditVideo Message</h1><input type="button" value="Back To Video Message Manager"  onclick="window.location='<%=invitation_messages_path(:event_id => @event.id)%>'" class="btn btn-success" style="float:right;position:relative;top:6px;"></input>
+<div class="clearfloat"></div>
+  <br>
+<div class="contentarea">
+<%= render 'form' %>
+<br />
+</div>
+
+<%= button_to "Delete Message", {:controller => :invitation_messages, :action => 'destroy', :id => @invitation_message.id, :event_id => @event.id }, :method => :delete, class: "btn btn-danger", style: "position:absolute;right:40px;bottom:30px;" %>
+<!-- <input type="button" value="Delete Message" class="btn btn-danger" style="position:absolute;right:40px;bottom:30px;" onclick = "deletemsg()"/> -->
+
+</div>
+</div>
+<script>
+    init();
+</script>

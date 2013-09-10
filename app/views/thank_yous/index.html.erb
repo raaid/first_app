@@ -1,0 +1,493 @@
+<script>
+    $(document).ready(function () {
+        init();
+    });
+
+    if (!FlashDetect.installed) {
+        alert("We're sorry! Flash is required to use this feature. Please download the newest version of Adobe Flash to continue!");
+    } else {
+        if (FlashDetect.major < 11) {
+            alert("Please upgrade your version of flash to at least version 11!");
+        }
+    }
+
+    var thanks;
+    var unthanked;
+    var thanked;
+    var unsentThanks;
+    var to_email_div;
+    var to_name_div;
+    var note_div;
+    var gift_name_div;
+
+    function init() {
+        thanks = {};
+        unthanked = $("#unthanked_gifts");
+        thanked = $("#thanked_gifts");
+        unsentThanks = $("#unsent_thanks");
+        to_email_div = $("#thank_you_to_email");
+        to_name_div = $("#thank_you_to_name");
+        note_div = $("#thank_you_to_note");
+        gift_name_div = $("#thank_you_gift_name");
+
+    <% @thanks.each do |thank| %>
+        initThank(<%= thank.to_json.html_safe %>);
+    <% end %>
+
+        for (thank in thanks) {
+            addSelector(thanks[thank]);
+        }
+
+        initRecorder();
+    }
+
+    function initThank(thank) {
+        thanks[thank_li_id(thank)] = thank;
+    }
+
+    function save_thanks(thank) {
+        removeThank(thank);
+        addSelector(thank);
+    }
+
+    function addSelector(thank) {
+        removeThank(thank);
+        if (!thank.thanked) {
+            // Thanks that aren't associated with a gift do not appear on the queue.
+            if (thank.gift_name != null) {
+                addUnthankedSelector(thank);
+            }
+        } else if (!thank.sent) {
+            addUnsentThanksSelector(thank);
+        } else {
+            addThankedSelector(thank);
+        }
+    }
+
+    function addUnthankedSelector(thank) {
+        unthanked.append(unthankedSelectorHTML(thank));
+    }
+
+    function addUnsentThanksSelector(thank) {
+        document.getElementById('archiveList').style.display = 'block';
+        unsentThanks.append(unsentThanksSelectorHTML(thank));
+    }
+
+    function addThankedSelector(thank) {
+        document.getElementById('archiveList2').style.display = 'block';
+        thanked.append(thankedSelectorHTML(thank));
+    }
+
+    function unthankedSelectorHTML(thank) {
+        return '<li id="' + thank_li_id(thank) + '" class="ui-state-default2 ui-corner-all" onclick="makeselection(this);">'
+                + '<span style="padding:10px;">'
+                + '<span style="width: 215px;overflow:hidden;float:left;white-space: nowrap;font-size: 7pt;">'
+                + thank.gift_name
+                + '</span><br ><span style="width: 215px;overflow:hidden;float:left;white-space: nowrap;font-size: 7pt;">Name: '
+                + thank.to_name
+                + '</span><br ><span style="width: 215px;overflow:hidden;float:left;white-space: nowrap;font-size: 7pt;">Price Paid: '
+                + thank.gift_price
+                + '</span></span><span class="li-arrow"></span><span style="display:none;">'
+                + thank.to_email
+                + '</span><span style="display:none;">'
+                + thank.to_name
+                + '</span>'
+                + '</li>';
+    }
+
+    function unsentThanksSelectorHTML(thank) {
+        return '<div id="' + thank_li_id(thank) + '" class="ui-state-default2 ui-corner-all" style="width:200px;height:auto;display:inline-block;overflow:hidden;padding:10px;font-size:9pt;>'
+                + '<p style="margin-bottom: 5px;"><b>' + thank.to_name + '</b>'
+                + '<br />' + thank.gift_name + '</p><center>'
+                + playButtonSelectorHTML(thank)
+                + '<a href="javascript:send_thanks(thanks[\'' + thank_li_id(thank) + '\'])">'
+                + '<img src="/images/send_email.png" alt="Send The Video Message!" style="margin-left:7px;height:25px;width:25px;float:right;">'
+                + '</a>'
+                + '<a href="javascript:cancel_thanks(thanks[\'' + thank_li_id(thank) + '\'])">'
+                + '<img src="/images/remove-icon.png" alt="Remove & Delete This Video Message!" style="margin-left:7px;height:25px;width:25px;float:right;">'
+                + '</a>'
+                + '</div></center>';
+    }
+
+    function thankedSelectorHTML(thank) {
+        return '<div id="' + thank_li_id(thank) + '" class="ui-state-default2 ui-corner-all" style="width:200px;height:auto;display:inline-block;overflow:hidden;padding:10px;font-size:9pt;>'
+                + '<p style="margin-bottom: 5px;"><b>' + thank.to_name + '</b>'
+                + '<br />' + thank.gift_name + '</p><center>'
+                + playButtonSelectorHTML(thank)
+                + '<a href="javascript:send_thanks(thanks[\'' + thank_li_id(thank) + '\'])">'
+                + '<img src="/images/send_email.png" alt="Send The Video Message!" style="margin-left:7px;height:25px;width:25px;float:right;">'
+                + '</a>'
+                + '</div></center>';
+    }
+
+    function playButtonSelectorHTML(thank) {
+        if (thank.opentok_video_id != undefined && thank.opentok_video_id != null) {
+            return '<a href="javascript:preview_recorded_thank(\'' + thank.opentok_video_id + '\')">'
+                    + '<img src="/images/play-icon.png" alt="Playback & Review The Video Message!" style="margin-left:7px;height:25px;width:25px;float:right;" />'
+                    + '</a>'
+        } else {
+            return ""
+        }
+    }
+
+    function preview_recorded_thank(opentok_video_id) {
+        loadArchiveInPlayer(opentok_video_id);
+    }
+
+    function removeThank(thank) {
+        $('#' + thank_li_id(thank)).remove();
+    }
+
+    function makeselection(item) {
+        // The parameter is a DOM event, we can retrieve the gift using its ID as a hash.
+
+        var unthanked = document.getElementsByClassName("thank_you_selection ui-corner-all");
+        var flash = document.getElementsByClassName("li-arrow2");
+        for (var i = unthanked.length - 1; i >= 0; i--) {
+            unthanked[i].className = "ui-state-default2 ui-corner-all";
+        }
+        for (var i = flash.length - 1; i >= 0; i--) {
+            flash[i].className = "li-arrow";
+        }
+        var ele = item.childNodes;
+        el = ele.item(1);
+        el.className = "li-arrow2";
+        item.className = "thank_you_selection ui-corner-all";
+        select_thanks(thanks[item.id]);
+    }
+
+    var internal_selected_thank = null;
+    function selected_thank() {
+        // Returns the "working" thank, i.e. the "currently selected" one.
+        return internal_selected_thank;
+    }
+
+    function select_thanks(selection) {
+        if (selected_thank() != selection) {
+            deselect();
+            internal_selected_thank = selection;
+            if (!selection.thanked) {
+                selectUnthanked(selection);
+            } else if (!thank.sent) {
+                selectUnsentThanks(selection);
+            } else {
+                selectThanked(selection);
+            }
+        }
+    }
+
+    function deselect() {
+        $(".thanksSelector").className = "li-arrow";
+        internal_selected_thank = null;
+    }
+
+    function selectUnthanked(selection) {
+        $("#" + thank_li_id(selection)).className = "thank_you_selection ui-corner-all";
+        $("#" + thank_li_id(selection) + "_arrow").className = "li-arrow2"
+        to_email_div.val(selection.to_email);
+        to_name_div.val(selection.to_name);
+        note_div.val(selection.to_note);
+        gift_name_div.val(selection.gift_name);
+        alert("Press the record button in the middle of the screen when your ready to start recording your video message for this attendant!");
+    }
+
+    function selectUnsentThanks(selection) {
+        selectUnthanked(selection);
+    }
+
+    function selectThanked(selection) {
+        selectUnthanked(selection);
+    }
+
+    function send_thanks(thank) {
+        var r = confirm("Would you like to send this video message?");
+        if (r == true) {
+            if (thank.id == null) {
+                alert("I tried to send a video with no id!");
+            } else {
+                $.ajax({ "url":"/thank_yous/" + thank.id + "/send",
+                    "dataType":"json",
+                    "success":function () {
+                        thank.thanked = true;
+                        thank.sent = true;
+                        save_thanks(thank);
+                    },
+                    "failure":function () {
+                        alert("The video failed to send! It is still saved, and it is a safe to retry.");
+                    }});
+            }
+        } else {
+        }
+    }
+
+    function cancel_thanks(thank) {
+        var r = confirm("Would you like to delete & cancel this video message?");
+        if (r == true) {
+
+            if (thank.id == null) {
+                alert("I tried to cancel a video with no id!");
+            } else {
+                $.ajax({ "url":"/thank_yous/" + thank.id,
+                    "type":"delete",
+                    "dataType":"json",
+                    "success":function () {
+                        thank.thanked = false;
+                        thank.sent = false;
+                        save_thanks(thank);
+                    },
+                    "failure":function () {
+                        alert("The video failed to cancel! It is still saved, and it is a safe to retry.");
+                    }});
+            }
+        }
+        else {
+        }
+    }
+
+    function thank_li_id(thank) {
+        return "thank_li_" + thank["client_id"];
+    }
+
+
+    function closePreview() {
+        $('#playerContainer').hide();
+    }
+
+
+    var recorderManager;
+    var recorder;
+    var player;
+    var recImgData;
+
+    var API_KEY = "<%= OPENTOK_API_KEY %>";
+    var TOKEN = "<%= OPENTOK_MODERATOR_TOKEN %>";
+    var VIDEO_HEIGHT = 240;
+    var VIDEO_WIDTH = 320;
+
+    // Un-comment either of the following to set automatic logging and exception handling.
+    // See the exceptionHandler() method below.
+    // TB.setLogLevel(TB.DEBUG);
+    // TB.addEventListener('exception', exceptionHandler);
+
+    function initRecorder() {
+        recorderManager = TB.initRecorderManager(API_KEY);
+        createRecorder();
+    }
+
+    function createRecorder() {
+        var recDiv = document.createElement('div');
+        recDiv.setAttribute('id', 'recorderElement');
+        document.getElementById('recorderContainer').appendChild(recDiv);
+        recorder = recorderManager.displayRecorder(TOKEN, recDiv.id);
+        recorder.addEventListener('recordingStarted', recStartedHandler);
+        recorder.addEventListener('archiveSaved', archiveSavedHandler);
+    }
+
+    function getImg(imgData) {
+        var img = document.createElement('img');
+        img.setAttribute('src', 'data:image/png;base64,' + imgData);
+        return img;
+    }
+
+    function loadArchiveInPlayer(archiveId) {
+        if (!player) {
+            $("#playerContainer").append("<div id='playerElement'></div>");
+            player = recorderManager.displayPlayer(archiveId, TOKEN, 'playerElement');
+            document.getElementById('playerContainer').style.display = 'block';
+        } else {
+            player.loadArchive(archiveId);
+        }
+        $('#playerContainer').show();
+    }
+
+    //--------------------------------------
+    //  OPENTOK EVENT HANDLERS
+    //--------------------------------------
+
+    function recStartedHandler(revent) {
+        recImgData = recorder.getImgData();
+    }
+
+    function archiveSavedHandler(event) {
+        queue_current_thank_to_send(event.archives[0].archiveId);
+    }
+
+    function queue_current_thank_to_send(archiveId) {
+        thank = selected_thank();
+        if (thank == null) {
+            thank = {};
+            initThank(thank);
+        }
+
+        thank.to_email = to_email_div.val();
+        thank.to_name = to_name_div.val();
+        thank.to_note = note_div.val();
+        thank.gift_name = gift_name_div.val();
+        thank.opentok_video_id = archiveId;
+
+        if (thank.id == null) {
+            $.ajax({ "url":"/thank_yous",
+                "type":"POST",
+                "dataType":"json",
+                "data":thank,
+                "success":function (result) {
+                    save_thanks(thank);
+
+                    result.client_id = thank.client_id;
+                    initThank(result);
+
+                    result.thanked = true;
+                    result.sent = false;
+
+                    save_thanks(result);
+                },
+                "failure":function () {
+                    alert("The video failed to save! It is a safe to retry.");
+                }});
+        } else {
+            alert("I tried to create a new video, but one had already been created!");
+            // $.ajax({ "url": "/thank_yous/" + thank.id,
+            //        "type": "PUT",
+            //        "data": thank,
+            //        "success": function() {
+            // 	   thank.thanked = true;
+            // 	   thank.sent = false;
+
+            // 	   save_thanks(thank);
+            //        },
+            //        "failure": function() {
+            // 	   alert("The thanks failed to save! It is a safe to retry.");
+            //        }});
+        }
+    }
+
+    function archiveLoadedHandler(event) {
+        archive = event.archives[0];
+        archive.startPlayback();
+    }
+
+    /*
+     If you un-comment the call to TB.addEventListener('exception', exceptionHandler) above, OpenTok calls the
+     exceptionHandler() method when exception events occur. You can modify this method to further process exception events.
+     If you un-comment the call to TB.setLogLevel(), above, OpenTok automatically displays exception event messages.
+     */
+    function exceptionHandler(event) {
+        alert('Exception: ' + event.code + '::' + event.message);
+    }
+
+    onload = function () {
+        if (document.getElementsByClassName == undefined) {
+            document.getElementsByClassName = function (className) {
+                var hasClassName = new RegExp("(?:^|\\s)" + className + "(?:$|\\s)");
+                var allElements = document.getElementsByTagName("*");
+                var results = [];
+
+                var element;
+                for (var i = 0; (element = allElements[i]) != null; i++) {
+                    var elementClass = element.className;
+                    if (elementClass && elementClass.indexOf(className) != -1 && hasClassName.test(elementClass))
+                        results.push(element);
+                }
+
+                return results;
+            }
+        }
+    }
+    // e = document.getElementById('unthanked_items');
+    // e.firstElementChild.className="thank_you_selection ui-corner-all";
+</script>
+<div id="content_outter" class="main_content_pane_outter">
+  <div id="content_inner" class="main_content_pane">
+    <h1 style="font-size: 25pt;">Video Message Console</h1>
+
+    <div class="clearfloat"></div>
+    <br>
+    
+    <div style="display:inline-block;">
+    <div>
+      <div id="unthanked_gifts_container" class="thankyouContainer" style="float:left">
+        <center>
+          <h3>Guests To Be Thanked</h3>
+          <hr/>
+        </center>
+        <ul id="unthanked_gifts"></ul>
+      </div>
+
+      <div id="thank_controls" class="thankyouContainerCenter" style="float:left">
+        <div style="display:inline-block;">
+        <%= form_for(@thank_you) do |f| %>
+            <% if @thank_you.errors.any? %>
+                <div id="error_explanation">
+                  <h2><%= pluralize(@thank_you.errors.count, "error") %> prohibited this message from being saved:</h2>
+                  <ul>
+                    <% @thank_you.errors.full_messages.each do |msg| %>
+                        <li><%= msg %></li>
+                    <% end %>
+                  </ul>
+                </div>
+            <% end %>
+            <center>
+              <div id="recorderContainer" style=" height:265px; width 300px;margin-top: 5px;"></div>
+              <div class="clearfloat"></div>
+              <br/>
+
+              <!--  <a href="javascript:queue_current_thank_to_send(null)">Test Save</a>  -->
+
+              <table width="90%">
+                <tr>
+                  <td width="45%">
+                    <center><p style="color:#474747;">Guests Email</p></center>
+                  </td>
+                  <td width="10%"></td>
+                  <td width="45%">
+                    <center><p style="color:#474747;">Guests Name</p></center>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="45%">
+                    <center><%= f.text_field(:to_email, :placeholder => 'Email', :style=>"width:130px;margin-right:5px;") %></center>
+                  </td>
+                  <td width="10%"></td>
+                  <td width="45%">
+                    <center><%= f.text_field(:to_name, :placeholder => 'Name', :style=>"width:130px;margin-left:5px;") %></center>
+                  </td>
+                </tr>
+              </table>
+
+              <input type="hidden" id="thank_you_gift_name" name="thank_you[gift_name]" placeholder="Ticket Name" size="34" type="text" disabled=true>
+              <%= f.hidden_field(:to_note) %>
+              <br/><br/>
+              <!-- <%= button_to_function 'Save', "", :onclick => 'save_thanks(working_gift())', :class => 'weddingbutton2' %>   -->
+            </center>
+        <% end %>
+        </div>
+      </div>
+
+      <div id="thanked_container" class="thankyouContainer" style="float:left">
+    <span id="unsent_thanks">
+      <center>
+        <h3>Videos Ready To Send</h3>
+        <hr/>
+
+        <div id="archiveList" style="display:none"></div>
+      </center>
+    </span>
+    <span id="thanked_gifts">
+      <center>
+        <h3>Recently Sent</h3>
+        <hr/>
+
+        <div id="archiveList2" style="display:none"></div>
+      </center>
+
+    </span>
+      </div>
+      <div id="playerContainer" style="position:absolute; height:340px; top:20px;width 350px;margin-left: 50%;left:-210px;z-index:9999999999;background:#000;padding:25px;border:1px solid #fff; display:none"><%= button_to_function 'Close Preview', "", :onclick => 'closePreview()', :class => 'weddingbutton2', :style => 'position:absolute;bottom:25px;left:60px;' %></div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    alert("Please press 'allow' in the center widget, so that Ticketacular can access your webcam to help you send your video messages!");
+</script>

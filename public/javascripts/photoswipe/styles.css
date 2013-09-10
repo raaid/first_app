@@ -1,0 +1,50 @@
+
+
+#MainContent { background: #ffffff; padding-bottom: 30px; }
+
+.gallery { list-style: none; padding: 0; margin: 0; }
+.gallery:after { clear: both; content: "."; display: block; height: 0; visibility: hidden; }
+.gallery li { float: left; width: 50%; }
+.gallery li a { display: block; margin: 5px; border: 1px solid #3c3c3c; }
+.gallery li img { display: block; width: 100%; height: auto; }
+
+.garbage {
+	width: 44px;
+height: 44px;
+margin: 0 auto 0;
+background-image: url("/images/garbage.png");
+background-size: 20px 32px;
+background-repeat: no-repeat;
+}
+.aprImgContainer {
+	float:left;
+	width:46%;
+	border: 1px solid #3c3c3c;
+	margin-left:7px;
+	margin-top:7px;
+	position:relative;
+}
+
+.approvebtn, .remove {
+	background: rgba(0,0,0, 0.5);
+position: absolute;
+color: #fff;
+width: 96%;
+text-align: center;
+font-size: 19pt;
+font-weight: bolder;
+padding:2%;
+}
+
+.remove {
+	bottom:0;
+	z-index:99;
+}
+
+
+/* For inline examples only */
+#PhotoSwipeTarget { width: 100%; height: 200px; }
+
+#Indicators { text-align: center; margin-top: 20px; }
+#Indicators span { display: inline-block; height: 10px; width: 10px; margin: 0 10px 0 0; padding: 0; -webkit-border-radius:5px; -moz-border-radius:5px; -o-border-radius:5px; border-radius:5px; background: #c5c5c5; overflow:hidden; }
+#Indicators span.current{ background: #EEBF02; }

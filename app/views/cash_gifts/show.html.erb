@@ -1,0 +1,40 @@
+<div id="content_outter" class="main_content_pane_outter">
+<div id="content_inner" class="main_content_pane">
+<h1 style="font-size: 25pt;float:left;">Cash Gift / Donation Details</h1><input type="button" onclick="history.go(-1);" value="Back" class="btn btn-primary" style="float:right;position:relative;top:5px;"></input>
+<div class="clearfloat"></div>
+  <br>
+<center>
+<div style="width:65%">
+<br />
+<p style="color:#000;" id="notice"><%= notice %></p>
+<p style="color:#000;">
+  <b>Title:</b>
+  <%= @cash_gift.title %>
+</p>
+<hr />
+<br />
+<p style="color:#000;">
+  <b>Guest name:</b>
+  <%= @cash_gift.guest_name %>
+</p>
+<br />
+<p style="color:#000;">
+  <b>Guest email:</b>
+  <%= @cash_gift.guest_email %>
+</p>
+<br />
+<p style="color:#000;">
+  <b>Amount:</b>
+  <%= @cash_gift.amount %>
+</p>
+<br />
+<p style="color:#000;">
+  <b>Message:</b>
+  <%= @cash_gift.message %>
+</p>
+<br />
+</div>
+</center>
+
+</div>
+</div>

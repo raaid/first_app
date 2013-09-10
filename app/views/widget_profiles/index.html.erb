@@ -1,0 +1,27 @@
+<h1>Listing widget_profiles</h1>
+
+<table>
+  <tr>
+    <th>Tickets background</th>
+    <th>Events background</th>
+    <th>User</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @widget_profiles.each do |widget_profile| %>
+  <tr>
+    <td><%= widget_profile.tickets_background %></td>
+    <td><%= widget_profile.events_background %></td>
+    <td><%= widget_profile.user_id %></td>
+    <td><%= link_to 'Show', widget_profile %></td>
+    <td><%= link_to 'Edit', edit_widget_profile_path(widget_profile) %></td>
+    <td><%= link_to 'Destroy', widget_profile, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Widget profile', new_widget_profile_path %>

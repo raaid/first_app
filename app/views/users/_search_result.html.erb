@@ -1,0 +1,46 @@
+  <div class="contactlayout">
+  <div class="contactlayoutavater"><%= image_tag user.avatar.url(:avatar), size: "100x100" %></div>
+  <div class="contactlayoutright"><p class="contactsuggestname"><b><%= user.display_name %></b></p>
+  <br />
+   <% if current_user.friends_with? user %>
+        Already In Your Participant List
+        <% association = Association.find_by_user_id_and_contact_id(user.id, current_user.id) %>
+        <%= form_for association, url: association_path(association.id), method: :delete, remote: true do |form| %>
+	  <%= form.hidden_field :user_id %>
+	  <%= form.hidden_field :contact_id %>
+	  <%= form.hidden_field :id %>
+          <%= form.submit "Remove Participant" ,class: "btn btn-danger"%>
+        <% end %>
+      <% elsif current_user.has_contacted? user %>
+        Participant Request Sent
+        <% association = Association.find_by_user_id_and_contact_id(current_user.id, user.id) %>
+        <%= form_for association, url: association_path(association.id), method: :delete, remote: true do |form| %>
+	  <%= form.hidden_field :user_id %>
+	  <%= form.hidden_field :contact_id %>
+	  <%= form.hidden_field :id %>
+            <%= form.submit "Cancel" ,class: "weddingbutton3"%>
+        <% end %>
+      <% elsif current_user.has_contact_from? user %>
+        Participant Request Received
+        <% association = Association.find_by_user_id_and_contact_id(user.id, current_user.id) %>
+        <%= form_for Association.new(contact_id: association.user_id), remote: true do |form| %>
+	  <%= form.hidden_field :contact_id %>
+            <%= form.submit "Accept", style: "display:inline-block", class: "weddingbutton3"%>
+        <% end %>
+        <%= form_for association, url: association_path(association.id), method: :delete, remote: true do |form| %>
+	  <%= form.hidden_field :user_id %>
+	  <%= form.hidden_field :contact_id %>
+	  <%= form.hidden_field :id %>
+            <%= form.submit "Decline", style: "display:inline-block", class: "weddingbutton3" %>
+        <% end %>
+      <% else %>
+        <%= button_to "Add As Participant", associate_path(:contact_id => user.id), method: :post, :class=> "btn btn-primary", :style=>"float:left;margin-right:20px;width:200px;"%>
+     <!--   <%= form_for Association.new(contact_id: user.id), remote: true do |form| %>
+	  <%= form.hidden_field :contact_id %>
+          <div class="clearfloat"></div><br /><%= form.submit "Add as contact" ,class: "weddingbutton3"%>
+        <% end %>  -->
+      <% end %>
+  </div>
+  </div>
+  <div class="clearfloat"></div>
+  <hr />

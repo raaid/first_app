@@ -1,0 +1,16 @@
+
+<% @registration_members.each do |rm| %>
+    <div style="color:#000;font-size:12pt;float:left;display:block;min-width:250px"><%= rm.name %></div>
+    <div style="color:#000;font-size:12pt;float:left;display:block"><%= rm.email %></div>
+    <% if rm.message %>
+    	<br>
+    	<div style="color:#000;font-size:11pt;margin-left:20px">Message: <%= rm.message %></div>
+    <%else%>
+    	<br>
+    <% end %>
+    <br>
+<% end %>
+
+<h4>Total: <%=@registration_members.length%></h4>
+
+<a class="btn btn-success" href="/registration_download/<%=@event.id%>">Download As CSV</a>

@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  event_id: 
+  sales_person_id: 
+  commission: 9.99
+
+two:
+  event_id: 
+  sales_person_id: 
+  commission: 9.99

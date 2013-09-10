@@ -1,0 +1,31 @@
+<script>
+  $('#clipcontrol').hide();
+  $('#pags').hide();
+  $('#foreground').hide();
+  $('#maincontentdiv').hide();
+  $('#maincontentdiv').fadeIn(1500);
+</script>
+<div class="contentarea">
+<h1>Invitation Response</h1>
+<hr />
+<br />
+  <center>
+  <p>
+    <b>Guest Name:</b>
+    <%= @invitation_response.invitation.name %>
+  </p>
+  <p>
+    <b>Guest Email:</b>
+    <%= @invitation_response.invitation.email %>
+  </p>
+<p>
+  <b>Status:</b>
+  <%= @invitation_response.status %>
+</p>
+<p>
+  <b>Response:</b>
+  <%= @invitation_response.description %>
+</p>
+<input type="button" value="Back" onclick="window.location='<%=invitation_responses_path%>'" class="btn btn-success"></input>
+</center>
+</div>

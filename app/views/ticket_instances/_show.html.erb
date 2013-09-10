@@ -1,0 +1,109 @@
+<style>
+  .ticketSale {background:url('https://s3.amazonaws.com/storage.production.ticketacular.me/site_images/ticket_background.png') no-repeat;width:624px;height:302px;background-size:100% 100%;position:relative}
+  .ticketTitle {display: inline-block;position: absolute;top: 31px;left: 145px;width:280px;font-size:9pt;}
+  .ticketInfoContainer {width: 370px;height: 170px;position: absolute;top: 89px;font-size:8pt;}
+  .ticketVenue {width: 300px;
+padding: 2px;
+float: left;
+text-align: left;
+display: inline-block;
+top: 5px;
+position: relative;
+left: 59px;
+height: 37px;
+overflow: hidden;
+font-size:8pt;
+  }
+  .ticketAddress {width: 300px;
+padding: 2px;
+float: left;
+text-align: left;
+display: inline-block;
+top: 17px;
+position: relative;
+left: 59px;
+height: 39px;
+overflow: hidden;
+font-size:8pt;
+  }
+  .ticketSummary {width: 300px;
+text-align: left;
+padding: 2px;
+float: left;
+display: inline-block;
+height: 65px;
+left: 59px;
+top: 20px;
+position: relative;
+overflow: hidden;
+line-height:17px;
+}
+  .ticketBarcodeContainer {width: 150px;
+height: 155px;
+float: right;
+text-align: center;
+position: relative;
+top: 110px;
+left: 50px;}
+  .ticketBarcode {width: 130px;height: 130px;margin-left: 25px;}
+  .ticketBarcode img {width:90%;height:90%;}
+  .ticketTime {
+    position: relative;
+float: right;
+top: 40px;
+right: 45px;
+font-size:9pt;
+  }
+</style>
+
+<center><h1>Here Are Your Tickets</h1></center>
+<hr />
+<br />
+<center>
+Exciting News <%= @base_ticket.guest_name %>! Your tickets for <%= @base_ticket.event_name %> are ready!
+
+<!--<%# if @tickets.where(:status =>"paid").count < 1 %>
+<br />
+<p> Sorry but all of your purchased tickets have been redeemed!</p>
+<br />
+<%# end %> -->
+
+  <% for ticket in @tickets %>
+      <% if ticket.status == "paid" %>
+        <div class="ticketSale">
+
+          <div class="ticketTitle">
+            <div style="position:relative;float:left">Event: <%= @base_ticket.event_name %></div><br>
+            <div style="position:relative;float:left">Good For <%= ticket.quantity %> <%= ticket.ticket_type.name %></div>
+          </div>
+
+          <div class="ticketTime"><%= @event.startTime.strftime("%I:%M %p %b %d")  %></div>
+
+          <div class="ticketInfoContainer">
+            <div class="ticketVenue"><u>Name:</u>  <%= ticket.guest_name %><br /><u>Email:</u>  <%= ticket.guest_email %></div>
+            <div class="ticketAddress"><u>Address:</u> <% if @event.venue_name %>(<%=@event.venue_name%>)<% end %><%=@event.address%> <%=@event.city%></div>
+            <div class="ticketSummary"><u>Details:</u> <%= @event.details%></div>
+          </div>
+          <div class="ticketBarcodeContainer">
+            <div class="ticketBarcode"><%= TicketInstancesController.generate_barcode(ticket.id).html_safe %></div>
+            <div style="position:relative;top:5px;left:7px">ID: <%= ticket.id %></div>
+          </div>
+
+        </div>
+
+      <!-- 
+    <hr />
+    <br />
+    <p>Event Name: <%= @base_ticket.event_name %></p>
+    <p>Good For <%= ticket.quantity %> <%= ticket.ticket_type.name %> Tickets</p>
+    <br />
+    <br />
+    <%= TicketInstancesController.generate_barcode(ticket.id).html_safe %>
+    <br />
+    <br />
+    <p>ID: <%= ticket.id %></p>
+  	<p>Total Price Paid: <%= number_to_currency ticket.price_paid %></p>
+    </br> -->
+      <% end %>
+  <% end %>
+</center>

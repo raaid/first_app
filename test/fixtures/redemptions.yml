@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user: john_doe
+  points: 1
+  privacy: 1
+
+two:
+  user: john_doe
+  points: 1
+  privacy: 1

@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Eventastic</title>
+        <script type="text/javascript" charset="utf-8" src="js/cordova-1.5.0.js"></script>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="viewport" content="width=device-width,height=device-height,user-scalable=no,target-densitydpi=250,initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <script type="text/javascript" src="js/zepto.js"></script>
+        <script type="text/javascript" src="js/redeem.js"></script>
+        <script type="text/javascript" src="js/barcodescanner.js"></script>
+        <title>Eventastic</title>
+        <script>
+</script>
+	</head>
+<body>
+    <header>
+<img src="img/back.png" class="backbtn" id="backbtn" onclick="hideResults()" style="display:none"/>
+        <center><img src="img/logo.png" class="logo" /></center></header>
+<div id="wrapper">
+    <center>
+                           <div id="scanbtn" class="btn scan" style="margin-bottom:10px;" onclick="getBarcode()">Scan Ticket</div>
+                           <div id="manual" class="container">
+                               <b>Redeem A Guests Ticket By ID</b>
+                               <hr />
+                               <input type="text" id="input" placeholder="Ticket ID Number" class="inputBox" />
+                               <br />
+                               <input class="btn" type="button" value="Redeem" onclick="manualInput()"/>
+                           </div>
+                           <div id="search" class="container" style="margin-top:30px">
+                               <b>Look up Tickets For Guest By E-mail<b/>
+                                   <hr />
+                                   <input type="text" id="searchInput" placeholder="Guests E-Mail" class="inputBox" />
+                                   <br />
+                                   <input class="btn" type="button" value="Search" onclick="searchEmail()"/>
+                                   </div>
+                       </center>
+                       <center>
+                           <div id="searchResults" class="container" style="display:none">
+                               <div id="name" class="name"></div>
+                               <div id="results" class="results"></div>
+                               <div id="noresults" class="container" style="display:none">Sorry, No Tickets Were Found.</div>
+
+                               <div style="text-align:center">
+                                   <input type="button" onclick="redeemAll()" value="Redeem" class="btn" id="redeemAll" />
+                               </div>
+                           </div>
+                       </center>
+</div>
+</div>
+    </body>
+</html>

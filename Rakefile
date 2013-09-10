@@ -3,5 +3,6 @@
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
 require File.expand_path('../config/application', __FILE__)
-
-FirstApp::Application.load_tasks
+require 'rake/dsl_definition'
+require 'rake'
+Ticketacular::Application.load_tasks

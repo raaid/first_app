@@ -1,0 +1,22 @@
+<p id="notice"><%= notice %></p>
+
+<%= link_to "Download File", @document.attached.url %>
+
+<p>
+  <b>Attached file name:</b>
+  <%= @attached.attached_file_name %>
+</p>
+
+<p>
+  <b>Attached content type:</b>
+  <%= @attached.attached_content_type %>
+</p>
+
+<p>
+  <b>Attached file size:</b>
+  <%= @attached.attached_file_size %>
+</p>
+
+
+<%= link_to 'Edit', edit_attached_path(@attached) %> |
+<%= link_to 'Back', attacheds_path %>

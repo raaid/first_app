@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+johns_gift_post:
+  user: john_doe
+  category: "gift"
+  gift_id: 1
+
+johns_association_post:
+  user: john_doe
+  category: "contact"
+  contact: joe_blow
+
+johns_invalid_category_post:
+  user: john_doe
+  category: "Flubber"

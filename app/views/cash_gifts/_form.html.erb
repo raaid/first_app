@@ -1,0 +1,62 @@
+<%= form_for(@cash_gift) do |f| %>
+  <% if @cash_gift.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@cash_gift.errors.count, "error") %> prohibited this cash_gift from being saved:</h2>
+
+      <ul>
+      <% @cash_gift.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
+  </div>
+  <div class="field">
+    <%= f.label "Amount (#{@cash_gift.currency})" %><br />
+    <%= f.text_field :amount %>
+    <%= f.hidden_field :currency %>
+  </div>
+  <div class="field">
+    <%= f.label :status %><br />
+    <%= f.text_field :status %>
+  </div>
+  <div class="field">
+    <%= f.label :guest_email %><br />
+    <%= f.text_field :guest_email %>
+  </div>
+  <div class="field">
+    <%= f.label :guest_name %><br />
+    <%= f.text_field :guest_name %>
+  </div>
+  <div class="field">
+    <%= f.label :guest_id %><br />
+    <%= f.number_field :guest_id %>
+  </div>
+  <div class="field">
+    <%= f.label :user_id %><br />
+    <%= f.number_field :user_id %>
+  </div>
+  <div class="field">
+    <%= f.label :paypal_transaction_id %><br />
+    <%= f.text_field :paypal_transaction_id %>
+  </div>
+  <div class="field">
+    <%= f.label :message %><br />
+    <%= f.text_area :message %>
+  </div>
+  <div class="field">
+    <%= f.label :payout_fee_transaction_id %><br />
+    <%= f.number_field :payout_fee_transaction_id %>
+  </div>
+  <div class="field">
+    <%= f.label :payout_user_transaction_id %><br />
+    <%= f.number_field :payout_user_transaction_id %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

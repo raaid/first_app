@@ -1,0 +1,22 @@
+<div id="content_outter" class="main_content_pane_outter">
+  <div id="content_inner" class="main_content_pane">
+    <h1 style="font-size: 25pt;">Ticket Sales</h1>
+
+    <div class="clearfloat"></div>
+    <br>
+
+    <% @tickets.each do |ticket| %>
+      <table width="95%">
+        <tr>
+          <td width="55%"><%= ticket.guest_name %> (<%= ticket.guest_email %>) X <%= ticket.quantity %></td>
+          <td width="5%"></td>
+          <td width="10%">Paid: $</td>
+          <td width="20%"><%= ticket.price_paid %></td>
+          <td width="5%"></td>
+          <td width="10%"><%= link_to 'Resend Ticket', controller: :ticket_instances, action: :resend, id: ticket.id, :class=>"btn btn-primary"%></td>
+        </tr>
+      </table>
+    <% end %>
+    
+  </div>
+</div>

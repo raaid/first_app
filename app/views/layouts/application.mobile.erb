@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=0.5">
+    <title><%= content_for?(:title) ? yield(:title) : "Eventastic" %></title>
+    <%= csrf_meta_tags %>
+    <%#= For third-generation iPad with high-resolution Retina display: %>
+    <%#= Size should be 144 x 144 pixels %>
+    <%= favicon_link_tag '/images/strapicons/apple-touch-icon-144x144-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '144x144' %>
+    <%#= For iPhone with high-resolution Retina display: %>
+    <%#= Size should be 114 x 114 pixels %>
+    <%= favicon_link_tag '/images/strapicons/apple-touch-icon-114x114-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '114x114' %>
+    <%#= For first- and second-generation iPad: %>
+    <%#= Size should be 72 x 72 pixels %>
+    <%= favicon_link_tag '/images/strapicons/apple-touch-icon-72x72-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '72x72' %>
+    <%#= For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: %>
+    <%#= Size should be 57 x 57 pixels %>
+    <%= favicon_link_tag '/images/strapicons/apple-touch-icon-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png' %>
+    <%#= For all other devices %>
+    <%#= Size should be 32 x 32 pixels %>
+    <%= favicon_link_tag '/images/strapicons/favicon.ico', :rel => 'shortcut icon' %>
+    <%#= stylesheet_link_tag 'bootstrap.min.css' %>
+
+    <link href='http://fonts.googleapis.com/css?family=Fenix' rel='stylesheet' type='text/css'>
+    <%#= stylesheet_link_tag 'jquery-ui-date.css', 'mobile.css' %>
+    <%= stylesheet_link_tag 'mobile.min.css' %>
+
+    <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+    <%= javascript_include_tag 'mobile.min.js' %>
+    <%#= javascript_include_tag "application" %>
+
+    <%#= javascript_include_tag 'jquery-ui.js', 'mobile.js' %>
+   <!-- <script type="text/javascript" src="html5gallery/html5gallery.js"></script> -->
+  </head>
+
+  <body data-spy="scroll" data-target=".bs-docs-sidebar">
+    <%= yield %>
+    <!-- Footer
+    ================================================== -->
+    <footer class="footer">
+      <div class="container">
+        <center>
+          <ul class="bs-docs-social-buttons">
+                <li class="follow-btn">
+                  <a href="https://twitter.com/eventasticme" class="twitter-follow-button" data-link-color="#0069D6" data-show-count="true">Follow @eventasticme</a>
+                </li>
+              </ul>
+        <p class="pull-right"><a href="#">Back to top</a></p>
+        <p>Copyright 2013 Giftopia Inc.</p>
+        <ul class="footer-links">
+            <li><a href="<%=terms_of_service_path%>">Terms Of Service</a></li>
+            <li><a href="<%=privacy_path%>">Privacy Policy</a></li>
+        </ul>
+        </center>
+      </div>
+    </footer>
+
+    <div class="flashNotice" id="flashnotice" onclick="hideflashnotice()">
+      <div style="font-weight:bolder;position:absolute;right:30px">X</div>
+      <div id="flashNoticeText" style="margin-top:15px;text-align:center;float:left;width:90%;"></div>
+    </div>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-40285300-1', 'eventastic.com');
+      ga('send', 'pageview');
+
+
+     $('#flashnotice').hide();
+      $('#flashnotice').animate({bottom: "-100px"}, 0 );
+      <% notice_text = ""
+     if flash[:notice]
+notice_text = notice_text + " " unless notice_text == ""
+notice_text = notice_text + flash[:notice]
+end
+     if params[:notice]
+notice_text = notice_text + " " unless notice_text == ""
+notice_text = notice_text + params[:notice]
+end
+     if notice_text != "" %>
+       flash_notice("<%= notice_text.gsub('\\', '\\\\').gsub('\"', '\"') %>")
+
+  <% end %>
+
+    function flash_notice(text) {
+      $(document).ready(function() {
+        $("#flashNoticeText").html(text);
+        $("#flashnotice").show();
+        $("#flashnotice").animate({bottom: "0"}, 1000 );
+      })   
+    }
+
+    function hideflashnotice(){
+      $('#flashnotice').animate({bottom: "-100px"}, 1000 );
+    }
+    </script>
+  </body>
+</html>

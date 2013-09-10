@@ -1,14 +1,206 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>FirstApp</title>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
-  <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
+  <meta charset="utf-8">
+  <title>Eventastic</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Le styles -->
+  <link href="/css_temp/bootstrap.min.css" rel="stylesheet">
+  <link href="/css_temp/flexslider.css" rel="stylesheet">
+  <link href="/css_temp/styles.css" rel="stylesheet">
+  <link href="/css_temp/bootstrap-responsive.min.css" rel="stylesheet">
+  <link href="/css_temp/magnific-popup.css" rel="stylesheet">
+  <%= stylesheet_link_tag '/css_temp/new_style.css' %>
+  <link href="/css_temp/tooltipster.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/font/css/font-awesome.min.css">
+  <!--[if IE 7]><link rel="stylesheet" href="/font/css/font-awesome-ie7.min.css"><![endif]-->
+
+  <%= stylesheet_link_tag '/css_temp/override.css' %>
+
+  <!-- Fav and touch icons -->
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/img/ico/apple-touch-icon-144-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/img/ico/apple-touch-icon-114-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/img/ico/apple-touch-icon-72-precomposed.png">
+  <link rel="apple-touch-icon-precomposed" href="/img/ico/apple-touch-icon-57-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico" type="image/png"/>
+
+<%= csrf_meta_tag %>
+  <%#= javascript_include_tag 'js_bundle.js' %>
+  <!-- <script src="/javajquery.min.js"></script> -->
+  <%= javascript_include_tag 'jquery-2.0.1.min.js' %>
+  <%= javascript_include_tag :defaults %>
 </head>
 <body>
+<header>
+<nav>
+  <div class="navbar navbar-inverse navbar-sd navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a style="position:absolute;top:-23px;" href="/"><img src="/img/eventastic_mobile.png" alt="Eventastic" style="width:160px"/></a>
+        <div class="nav-collapse collapse">
+          <ul class="nav pull-right">
+            <% if authenticated? %>
+            <% if current_user.accounttype == 0 %>
+            <li><a href="/" class="scroll home_scroll" id="home"></a></li>
+            <li><a href="/events/new" class="scroll" id="create">Create Event</a></li>
+            <li><a href="/events" class="scroll" id="create">My Events</a></li>
+            <li><a href="/search" class="scroll" id="search">Find Event</a></li>
+            <li><a href="/landing1" class="scroll" id="howitworks">How It Works</a></li>
+            <!--<li><a href="/pricing" class="scroll" id="pricing">Pricing</a></li>-->
+            <li><a href="http://eventasticme.wordpress.com" class="scroll" id="blog">Tips</a></li>
+            <li><a href="/user/edit" class="scroll" id="profile">Profile</a></li>
+            <li><a href="/logout" class="scroll" id="logout">Sign Out</a></li>
+            <% else %>
 
+            <li><%= link_to "Tools", tools_url %></li>
+            <li><%= link_to "Profile", edit_user_url %></li>
+             <li><%= link_to "Dashboard", dashboard_url %></li>
+                    <li><a href="/logout" class="scroll" id="logout">Sign Out</a></li>
+            <% end %>
+            <% else %>
+            <li><a href="/" class="scroll" id="home"></a></li>
+            <li><a href="/events" class="scroll" id="create">Create Event</a></li>
+            <li><a href="/search" class="scroll" id="search">Find Event</a></li>
+            <li><a href="/landing1" class="scroll" id="howitworks">How It Works</a></li>
+            <!--<li><a href="/pricing" class="scroll" id="pricing">Pricing</a></li>-->
+            <li><a href="http://eventasticme.wordpress.com" class="scroll" id="blog">Tips</a></li>
+            <li><a href="/user/new" class="scroll" id="sign_in">Sign In</a></li>
+            <% end %>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+    <%= render 'layouts/messages' %>
+  </div>
+</nav>
+  </header>
 <%= yield %>
 
+
+  <footer>
+
+  <div class="footer row">
+    <div class="container">
+      <div class="row highlights" style="margin-top: 5px;">
+        <div class="span2 box" >
+          <h2 style="color:#fff !important">Attending</h2>
+          <!--<a href="/help">Get Help</a><br />-->
+          <a href="/check_in">Mobile app check-in</a><br />
+          <a href="/resend_tickets">Resend Your Tickets</a><br />
+          <a href="/attendees_f">FAQ (Attendees)</a><br />
+          <a href="/upload_photo">Uploading Photos</a>
+        </div>
+        <div class="span2 box">
+          <h2 style="color:#fff !important">Organizing</h2>
+          <a href="/mobile">Mobile App</a><br />
+          <a href="/online_event">Online Event Registration</a><br />
+          <a href="/sell_tickets_f">Sell Tickets Fast</a><br />
+          <a href="/event_ticketing">Event Ticketing</a><br />
+          <a href="/party_planning">Party Planning</a><br />
+          <a href="/concert_planning">Concert Planning</a><br />
+          <a href="/concert_planning">Performance Planning</a><br />
+          <a href="/planning_fundraiser">Planning A Fundraiser</a><br />
+          <a href="/money_gifts">Collect Money Gifts</a><br />
+          <a href="/post_events_online">Post Events Online</a><br />
+          <a href="/online_event_management">Online Event Management</a><br />
+        </div>
+        <div class="span2 box" >
+          <h2 style="color:#fff !important">Need Help?</h2>
+         <!-- <a href="">Online Demos</a><br />-->
+          <a href="/get_started">Getting Started</a><br />
+          <a href="http://eventasticme.wordpress.com" target="_blank">Ideas & Tips</a><br />
+          <!--<a href="">Help Guide</a><br />-->
+          <a href="/pricing_f">Pricing</a><br />
+          <a href="/redemption">Collecting Your Money</a><br />
+          <a href="/creators">FAQ (Organizers)</a><br />
+          <a href="/feedback">Submit Feedback</a><br />
+          <a href="/submit_testimonial">Submit A Testimonial</a><br />
+          <a href="/gethelp">Get Help!</a><br />
+          
+        </div>
+        
+        <div class="span2 box" >
+          <h2 style="color:#fff !important">About</h2>
+          <!--<a href="/contact">Contact Us</a><br /> -->
+          <a href="/about_foot">About</a><br />
+          <a href="/affiliates">Affiliate Program</a><br />
+          <a href="/sales">Sales Rep(s) Program</a><br />
+          <a href="<%=terms_of_service_affiliates_path%>">Affiliates Terms Of Service</a><br />
+          <!--<a href="">Site Map</a><br />-->
+          <a href="/terms_of_service">General Terms Of Service</a><br />
+          <a href="/privacy">Privacy Policy</a><br />
+          <a href="/contact">Contact Us</a>
+        </div>
+
+        <div class="span2 box">
+          <h2 style="color:#fff !important">Connecting</h2>
+          <a href="mailto:support@eventastic.com"><img src="/img/social-icons/white_email.png" alt="Email" /> Email</a><br />
+          <a href="https://twitter.com/eventasticme"><img src="/img/social-icons/white_twitter_bird.png" alt="Twitter" /> Twitter</a><br />
+          <a href="https://www.facebook.com/pages/Eventastic/487978684591977?ref=hl"><img src="/img/social-icons/white_facebook.png" alt="Facebook" /> Facebook</a><br />
+          <a href="http://pinterest.com/eventasticme/"><img src="/img/social-icons/white_pinterest.png" alt="Pinterest" /> Pinterest</a><br />
+          <a href="http://www.youtube.com/user/Giftopia"><img src="/img/social-icons/white_youtube.png" alt="Youtube"> Youtube</a><br />
+          </ul>
+        </div>
+      </div>
+    </div>
+    </div>
+  </footer><!-- /footer -->
+
+
+  <a href="#" class="scrollup">ScrollUp</a>
+
+  <script src="/js/app.min.js"></script>
+  <script type="text/javascript" src="/js/jquery.tooltipster.min.js"></script>
+  <script src="/js/jquery.flexslider.js"></script>
+  <script>
+    $('.tooltip').tooltipster({
+   animation: 'fade',
+  arrow: true,
+  arrowColor: '',
+  content: '',
+  delay: 0,
+  fixedWidth: 0,
+  maxWidth: 0,
+  functionBefore: function(origin, continueTooltip) {
+     continueTooltip();
+  },
+  functionReady: function(origin, tooltip) {},
+  functionAfter: function(origin) {},
+  icon: '(?)',
+  iconDesktop: false,
+  iconTouch: false,
+  iconTheme: '.tooltipster-icon',
+  interactive: false,
+  interactiveTolerance: 350,
+  offsetX: 0,
+  offsetY: 0,
+  onlyOne: true,
+  position: 'top',
+  speed: 0,
+  timer: 0,
+  theme: '.tooltipster-default',
+  touchDevices: true,
+  trigger: 'hover',
+  updateAnimation: true
+});
+
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-40285300-1', 'eventastic.com');
+  ga('send', 'pageview');
+</script>
 </body>
 </html>

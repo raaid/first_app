@@ -1,0 +1,69 @@
+<style>
+  a {color:#000}
+  a:hover {color:#000;font-weight: bold}
+</style>
+<section>
+  <div class="container">
+<h1>Sales Person Portal</h1>
+<input type="button" onclick="history.go(-1);" value="Back" class="btn btn-primary" style="position:absolute;top:75px;right:25px;" />
+<br/>
+<h1 style="font-size: 25pt;"><%=@sales_person.fname%> <%= @sales_person.lname%></h1>
+<%=link_to "Edit Profile", edit_sales_person_path(@sales_person, :pass => @pass), class: "btn btn-success", style: "position:absolute;right:67px;top:67px;width:140px" %>
+<div class="clearfloat"></div>
+  <br>
+
+  <div style="font-size:14pt;color:#fff;padding-left: 10px;padding-bottom: 15px;">
+    <h3>
+      <div style="display:inline-block;width:36%;margin-left:17px">Event Name</div>
+      <div style="display:inline-block;width:15%">Date</div>
+      <div style="display:inline-block;width:24%">Owner</div>
+      <div style="display:inline-block;width:20%">Commission</div>
+    </h3>
+    <% @contracts.each do |contract| %>
+      <div style="width:100%;color:#000;cursor:pointer;cursor:hand;margin-top:8px" onclick="slideout('<%=contract[:id]%>')">
+        <div style="position:relative;display:inline-block;width:17px;top:4px"%>
+          <img id="right<%=contract[:id]%>" src="/images/right.png" style="width:17px;position:absolute"/>
+          <img id="down<%=contract[:id]%>" src="/images/next.png" style="width:17px;position:absolute;display:none"/>
+        </div>
+        <div style="display:inline-block;width:36%"><%= contract[:event_name]%></div>
+        <div style="display:inline-block;width:15%"><%= contract[:event_date] %></div>
+        <div style="display:inline-block;width:24%"><%= contract[:owner] %></div>
+        <div style="display:inline-block;width:20%"><%= contract[:commission] %>%</div>
+      </div>
+
+      <div id="hide<%=contract[:id]%>" class="hideContract" style="display:none;">
+        <div style="display:inline-block;width:60%">Ticket</div>
+        <div style="display:inline-block;width:20%">Amount</div>
+        <div style="display:inline-block">Tickets Sold</div>
+        <br>
+
+        <% contract[:tickets].each do |ticket| %>
+          <div style="display:inline-block;width:60%;font-weight:normal"><%= ticket[:name]%>($<%=ticket[:ticket_price]%>)</div>
+          <div style="display:inline-block;width:20%;font-weight:normal">$<%=number_with_precision(ticket[:amount], :precision => 2)%></div>
+          <div style="display:inline-block;font-weight:normal"><%= ticket[:quantity]%></div>
+          <br>
+        <% end %>
+
+        <br>
+        Sales Link<br>
+        <a href="<%=contract[:link]%>"><%=contract[:link]%></a>
+        <!-- http://eventastic.com/blah/blah -->
+      </div>      
+
+    <% end %>
+  </div>
+  <br>
+  <!-- <h3>Link to Sale Site: http://eventastic.com/blah/blah</h3> -->
+  <p style="color:#000">share your sales link to make your commission</p>
+
+</div>
+</section>
+
+<script>
+
+function slideout(ID) {
+  $('#hide' + ID).slideToggle(600);
+  $("#right" + ID).fadeToggle(400);
+  $("#down" + ID).fadeToggle(400);
+}
+</script>

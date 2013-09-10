@@ -1,0 +1,40 @@
+<script>
+  $('#clipcontrol').hide();
+  $('#pags').hide();
+  $('#foreground').hide();
+  $('#maincontentdiv').hide();
+ // $('#maincontentdiv').fadeIn(1500);
+
+$('#maincontentdiv').animate({top: "600px"}, 0 );
+  $('#maincontentdiv').show();
+  $('#maincontentdiv').animate({top: "101px"}, 1000 );
+
+
+  $(document).ready(function () {
+  $('#pword').val('');
+  $('#pwordc').val('');
+  });
+
+
+</script>
+<center><h1>Tickets Resent</h1></center>
+<hr />
+<br />
+<center>
+Exciting News <%= @base_ticket.guest_name %>! Your tickets for <%= @base_ticket.event_name %> are ready!
+
+  <% for ticket in @tickets %>
+    <hr />
+    <br />
+    <p>Event Name: <%= @base_ticket.event_name %></p>
+    <p>Good For <%= ticket.quantity %> <%= ticket.ticket_type.name %> Tickets</p>
+    <br />
+    <br />
+    <%= TicketInstancesController.generate_barcode(ticket.id).html_safe %>
+    <br />
+    <br />
+    <p>ID: <%= ticket.id %></p>
+  	<p>Total Price Paid: <%= number_to_currency ticket.price_paid %></p>
+    </br>
+  <% end %>
+</center>

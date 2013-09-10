@@ -1,0 +1,84 @@
+<div id="content_outter" class="main_content_pane_outter">
+<div id="content_inner" class="main_content_pane">
+<h1 style="font-size: 25pt;float:left;">Video Invites & RSVP's</h1><input type="button" onclick="window.location='<%=events_path%>'" value="Back To Events" class="btn btn-primary" style="float:right;position:relative;top:5px;"></input>
+<div class="clearfloat"></div>
+  <br>
+  <br />
+  <center><input type="button" onclick="window.location = '<%=invitation_responses_path(:event_id => @eventID)%>'" value="View RSVP List & Responses" class="btn btn-success" style="width:275px;"></input></center>
+  <br />
+  <br />
+<div class="contentarea">
+  <center>
+    <div style="display:inline-block;">
+      <input type="button" onclick="window.location = '<%=contact_lists_path(:event_id => @eventID)%>'" value="Add/Manage Contact Lists" class="btn btn-success" style="width:275px;float:left;margin-right:5px;"></input>
+      <input type="button" onclick="window.location = '<%=invitation_messages_path(:event_id => @eventID)%>'" value="Add/Manage Invitation Messages" class="btn btn-success" style="width:275px;float:right;margin-left:5px;"></input>
+    </div>
+  </center>
+  <br/>
+  <center>
+    <div>
+      <p style="color:#474747;">Once you have created both a "Contact List" as well as a "Video Invitation Message" you can now choose which message you would like to send to what list below.  Once this message is sent out the receiver will get an email with your video as well as a "confirmation" button in it, when your guest clicks confirm the RSVP will be sent back and confirmed with your account.<br /><br />You can view all of your sent out RSVPs by clicking on the button in located at the top right of this page.  From there you can also see who has confirmed for your wedding and any message they might have left wen submitting their RSVP!</p>
+      <br />
+      <div id="send_rsvps_container">
+        <table width="70%">
+          <tr>
+            <td align="center"><label for="send_rsvps_list_select"><b>Select Contact List</b></label>
+              <select id="send_rsvps_list_select">
+                <% @contact_lists.each do |element| %>
+                    <option value="<%= element.id %>"><%= element.name %></option>
+                <% end %>
+              </select></td>
+            <td align="center"><label for="send_rsvps_message_select"><b>Select Video Message</b></label>
+              <select id="send_rsvps_message_select">
+                <% @invitation_messages.each do |element| %>
+                    <option value="<%= element.id %>"><%= element.name %></option>
+                <% end %>
+              </select></td>
+          </tr>
+        </table>
+
+        <br/>
+        <input type="button" onclick="send_rsvps_click()" value="Send RSVPs" class="btn btn-success" style="width:275px;"></input>
+      </div>
+    </div>
+  </center>
+  <br/>
+
+  <script>
+
+      function send_rsvps_click() {
+          send_rsvps($('#send_rsvps_list_select').val(),
+                  $('#send_rsvps_message_select').val());
+      }
+
+      function send_rsvps(list, message) {
+          start_pending('#send_rsvps_container');
+
+          $.ajax({ "url":"/contact_lists/" + list + "/send_message",
+              "type":"post",
+              "data":{"message_id":message},
+              "dataType":"json",
+              "success":function () {
+                  alert("The send succeeded.");
+              },
+              "failure":function () {
+                  alert("The send failed! It is a safe to retry.");
+              },
+              "complete":function () {
+                  // Redisplay the element.
+                  stop_pending('#send_rsvps_container');
+              }});
+      }
+
+      function start_pending(container_name) {
+          $(container_name).attr('disabled', 'disabled');
+      }
+
+      function stop_pending(container_name) {
+          $(container_name).removeAttr('disabled');
+      }
+
+  </script>
+ </div>
+ </div>
+</div>

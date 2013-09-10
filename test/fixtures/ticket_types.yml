@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  event: 
+  price: 9.99
+  sell_from: 2012-10-16
+  sell_to: 2012-10-16
+  name: MyString
+  groupable: false
+
+two:
+  event: 
+  price: 9.99
+  sell_from: 2012-10-16
+  sell_to: 2012-10-16
+  name: MyString
+  groupable: false

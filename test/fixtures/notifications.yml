@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  user: john_doe
+  sender: joe_blow
+  status: unread
+  category: Notification::NEW_CONTACT_REQUEST
+
+two:
+  user: joe_blow
+  sender: john_doe
+  status: unread
+  category: Notification::NEW_GROUPBUY_INVITATION
+  gift_id: 1
+  purchaser: one

@@ -1,0 +1,76 @@
+<section>
+  <div class="container">
+<div class="" id="loginModal">
+<div class="modal-header">
+<h3>Register/Login - Affiliates</h3>
+</div>
+<div class="modal-body">
+<div class="well">
+<ul class="nav nav-tabs">
+  <li class="active"><a href="#pane1" data-toggle="tab">Login</a></li>
+  <li><a href="#pane2" data-toggle="tab">Create An Account</a></li>
+  <li><a href="#pane3" data-toggle="tab">Reset Your Password</a></li>
+</ul>
+  <div class="tab-content">
+    <div id="pane1" class="tab-pane active">
+      <h4>Login</h4>
+      <br/>
+      <%= simple_form_for @session || Session.new, url: sessions_path do |form| %>
+                  <label for="email">Email</label>
+            <%= form.input :email, placeholder: "Email", label: false, :input_html => {tabindex: '1'} %>
+                  <label for="password">Password</label>
+            <%= form.input :password, placeholder: "Password", label: false, :input_html => {tabindex: '2'} %>
+            <%= form.submit "Login", tabindex: '3', class: 'btn btn-success' %>
+            <!-- <%= form.input :remember_me, :as => :boolean, label: false %>-->
+            <% end %>
+    </div>
+    <div id="pane2" class="tab-pane">
+    <h4>Create An Account</h4>
+    <br />
+      <%= simple_form_for :user, :url => create_user_path do |form| %>
+             <div style="display: inline-block;">
+               <div style="float:left;margin-right: 5px;">
+                 <label  for="fname">First Name</label>
+           <%= form.input :fname, label: false, placeholder: "First Name", :input_html => {}, :error => false %>
+           <%= form.input :accounttype, :as => :hidden, :input_html => { :value => 1 }%>
+                 </div>
+               <div style="float:right;margin-left: 5px;">
+                 <label  for="lname">Last Name</label>
+           <%= form.input :lname, label: false, placeholder: "Last Name", :input_html => {}, :error => false %>
+               </div>
+             </div>
+                 <label  for="email">Email</label>
+           <%= form.input :email, label: false, placeholder: "Email", :input_html => {}, :error => false %>
+                 <div style="display: inline-block;">
+                   <div style="float:left;margin-right: 5px;">
+                     <label  for="password">Password</label>
+                                 <%= form.input :password, label: false, placeholder: "Password", :input_html => {}, :error => false %>
+                    </div>
+                   <div style="float:right;margin-left: 5px;">
+                     <label  for="password_confirmation">Password Confirmation</label>
+                   <%= form.input :password_confirmation, label: false, placeholder: "Confirm Password", :input_html => {}, :error => false %>
+                  </div>
+                 </div>
+                <br/>
+                 <input type="checkbox" name="checkbox" value="check"/> I Agree To The
+          <a href="<%=terms_of_service_affiliates_path%>">Privacy & Terms of Service</a><br/><br>
+                 <button type="submit" onclick="if(!this.form.checkbox.checked){alert('Sorry, You must agree to the terms of service before continuing!');return false}" class="btn btn-success">
+                               <i class="icon-user icon-white"></i>
+                               <span>Sign Up</span>
+                             </button>
+               <% end %>
+    </div>
+    <div id="pane3" class="tab-pane">
+      <%= form_tag password_resets_path do %>
+                  <label for="email">Email</label>
+          <%= text_field_tag "email", nil, :placeholder => "Email"%>
+          <br />
+          <br />
+          <%= submit_tag "Reset My Password", class: 'btn btn-success'  %>
+          <% end %>    </div>
+  </div>
+ </div>
+</div>
+</div>
+  </div>
+    </section>

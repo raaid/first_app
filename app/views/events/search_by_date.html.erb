@@ -1,0 +1,35 @@
+<div id="content_outter" class="main_content_pane_outter">
+<div id="content_inner" class="main_content_pane">
+<h1 style="font-size: 25pt;">Search Results</h1>
+<div class="clearfloat"></div>
+  <br>
+<div id="tj_container" class="tj_container">
+  <div class="tj_nav">
+    <span id="tj_prev" class="tj_prev">Previous</span>
+    <span id="tj_next" class="tj_next">Next</span>
+  </div>  
+  <div class="tj_wrapper">
+    <ul class="tj_gallery">
+     <!-- <%# (1..20).each do |i| %>
+          <li>
+            <a href="#"><img src="stylesheets/images/<%#= i %>.jpg" alt="image<%#= i %>"/><span style="position:absolute;top:5px;color:#fff;font-size: 10pt;font-weight: bolder;font-style: italic;background:rgba(0,0,0,0.75);padding:4px;padding-top:1px;padding-bottom:1px;overflow:hidden;border-top-right-radius: 5px;border-bottom-right-radius: 5px;border:1px solid #000">Event Date - 12/12/12</span></a>
+          </li>
+      <%# end %>   -->
+
+      <% @events_results.each do |event| %>
+          <li>
+            <a href="/events/<%=event.id%>"><img src="<%=event.event_url(:feed)%>" style="width:190px;height:190px;" alt="<%=event.name%>"/><span style="position:absolute;top:5px;color:#fff;font-size: 10pt;font-weight: bolder;font-style: italic;background:rgba(0,0,0,0.75);padding:4px;padding-top:1px;padding-bottom:1px;overflow:hidden;border-top-right-radius: 5px;border-bottom-right-radius: 5px;border:1px solid #000">Event Date - <%=event.startTime.to_date %></span></a>
+          </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+</div>
+</div>
+<script>
+
+$(document).ready(function () {
+  document.getElementById("tj_container").removeAttribute("style");
+});
+
+</script>

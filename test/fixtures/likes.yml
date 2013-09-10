@@ -1,0 +1,16 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+john_likes_starbucks:
+  user: john_doe
+  name: Starbucks
+  category: Coffee Shop
+
+john_likes_tylenol:
+  user: john_doe
+  name: Tylenol
+  category: drug store
+
+john_likes_empty:
+  user: john_doe
+  name: 
+  category: Coffee Shop

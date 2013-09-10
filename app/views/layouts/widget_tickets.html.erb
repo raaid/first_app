@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Eventastic</title>
+  <link rel="shortcut icon" href="/favicon.ico" type="image/png"/>
+  <meta name="title" content="Eventastic"/>
+  <meta name="description" content="Eventastic Description"/>
+  <meta name="author" content="Eventastic"/>
+  <meta name="keywords" content="tickets, events, hosting, ticketed, concert, charity, ticket sales"/>
+  <meta name="robots" content="index,follow"/>
+  <link href='http://fonts.googleapis.com/css?family=Fenix' rel='stylesheet' type='text/css'>
+  <%= stylesheet_link_tag 'bootstrap.min.css' %>
+  <%= javascript_include_tag 'jquery.min.js' %>
+  <%= javascript_include_tag 'rails.js' %>
+  <%= javascript_include_tag 'bootstrap.js' %>
+  <%= stylesheet_link_tag 'widget_tickets' %>
+<%= csrf_meta_tag %>
+</head>
+<body>
+<div class="body_inner">
+<%=  yield %>
+</div>
+</body>
+</html>

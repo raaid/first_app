@@ -1,0 +1,35 @@
+<div style="">
+  <% if @event.has_videos %>
+
+      <div style="float:left">
+        <% @opentokVideos.each do |video|%>
+          <video id="video<%=video[:id]%>" style="display:none" class="zoom" width="425" height="330" preload="none">
+            <source src="<%=video[:url]%>"/>
+          </video><br>
+        <%end%>
+        <% @youtubeVideos.each do |video| %>
+          <video id="video<%=video[:id]%>" class="zoom" data-youtube-id="<%= video[:yt] %>" width="530" height="420" preload="none" data-settings="overlay-opacity:0.9;" style="display:none"></video>
+        <%end%>
+        <% @opentokVideos.each do |video|%>
+          <a class='sublime' style="display:inline-block;width:200px" href='#video<%=video[:id]%>' data-settings='overlay-opacity:0.9;close-button-visibility:visible'><img src="<%=video[:poster]%>"></a>
+        <%end%>
+        <% @youtubeVideos.each do |video| %>
+          <a class="sublime" style="display:inline-block;width:200px" href='#video<%=video[:id]%>' data-settings='overlay-opacity:0.9'><img  src="http://img.youtube.com/vi/<%=video[:yt]%>/mqdefault.jpg"></a>
+        <%end%>
+      </div>
+  <% end %>
+
+  <% if @event.has_youtube and @event.youtube %>
+     <!--  <center>
+        <a class="sublime">
+                <span class="zoom_icon">
+                </span>
+        </a>
+        <% y = @event.youtube.split("/") %>
+        <video id="video1" class="zoom" data-youtube-id="<%= y.last %>" width="530" height="420" preload="none" data-settings="overlay-opacity:0.9;" style="display:none"></video>
+        <br/>
+        <br/>
+        <a id="video-anchor" class="sublime" href='#video1' data-settings='overlay-opacity:0.9;'><img src="/images/video_thumb.png"></a>
+      </center> -->
+  <% end %>
+</div>

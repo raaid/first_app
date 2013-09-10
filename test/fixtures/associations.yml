@@ -1,0 +1,16 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+john_friends_joe:
+  status: accepted
+  user: john_doe
+  contact: joe_blow
+
+joe_friends_john:
+  status: accepted
+  user: joe_blow
+  contact: john_doe
+
+the_ex_friend_request:
+  status: pending
+  user: jane_doe
+  contact: john_doe

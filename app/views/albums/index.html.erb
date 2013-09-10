@@ -1,0 +1,94 @@
+<center><h1>Albums</h1></center>
+<span class="btn btn-primary" style="width:200px;position:absolute; right:10px; top:15px;" onclick="window.location='/albums/<%=@live.id.to_s%>/edit'">
+          <i class="icon-camera icon-white"></i>
+          <span>Add To Live Stream</span>
+	</span>
+<span class="btn btn-primary" style="width:200px;position:absolute; left:10px; top:15px;" onclick="window.location='/albums/<%=@live.id.to_s%>'">
+          <i class="icon-eye-open icon-white"></i>
+          <span>View Live Stream</span>
+	</span>
+
+<% if current_user %>
+  <% if current_user.eql? @user %>
+<br />
+<p>Some of the very best photos of your wedding day will come from the candid shots taken by family and friends.  Now you'll be able to instantly share those special images with everyone - right on the day of the event with real-time photo sharing</p>
+<br />
+<p>As your special day unfolds, friends and family will be able to add pictures captured on their smartphones (no app required). With our site's live streaming feature, you can then display images captured at the ceremony and reception throughout the night.</p>
+<br />
+<p>The next day you have an amazing album of memories that will last a lifetime. Both you and your guests can easily download pictures from your image database</p>
+<br />
+<p>A simple approval function prevents abuse and will ensure that only the photos you want get displayed.  To enable "auto approve" please visit your setup tab in the menu above.</p>
+<br />
+<p>Just imagine the perfect photo of you and your spouse walking up the aisle displayed for all to see at the reception when you arrive. It's all possible with this photo gallery feature.</p>
+<br />
+<hr/>
+<% else %>
+ <br />
+ <p>Check out the photo albums below, or contribute to the couples live stream album by submitting photos above!</p>
+ <hr />
+<% end %>
+<% else %>
+<br />
+<p>Check out the photo albums below, or contribute to the couples live stream album by submitting photos above!</p>
+<hr />
+<% end %>
+
+<% @albums.each_with_index do |album, i| %>
+  <% if album.name == 'twrlive' %>
+  <div class="album_cover2" style="display:none;">
+  <% else %>
+  <div class="album_cover">
+  <% end %>
+    <div class="album_title"><%= album.name %></div>
+    <% if @first_photos[i] != "" %>
+      <div class="coverPic" onclick="window.location = '<%= url_for(@albums[i]) %>'">
+        <%= link_to image_tag(@first_photos[i].photo_url(:cover)), url_for(@albums[i]) %>        
+      </div>
+    <% else %>
+      <div class="noCover" onclick="window.location = '<%= url_for(@albums[i]) %>'"><!-- maybe put a default cover photo here? --></div>
+    <% end %>
+    <a data-remote="true" data-type="html" class="btn btn-success btnhover" href="/delete_album/<%= album.id.to_s %>" style="display:none">Delete</a>
+  </div>
+<% end %>
+
+<br />
+
+<% if current_user %>
+  <% if current_user.eql? @user %>
+    <br />
+        <center>
+                <span class="btn btn-success fileinput-button" style="width:200px;" onclick="window.location='/albums/new'">
+                  <i class="icon-picture icon-white"></i>
+                  <span>Add A New Album</span>
+        	</span>
+        </center>
+   <% end %>
+<% end %>
+
+<script>
+
+$(document).ready(function() {
+        
+  <% if current_user %>
+    <% if current_user.eql? @user %>
+      $(".album_cover").hover(function() {
+        this.getElementsByClassName("btnhover")[0].style.display = "block";
+      }, function() {
+        this.getElementsByClassName("btnhover")[0].style.display = "none";
+      });
+    <% end %>
+  <% end %>
+
+  $('.album_cover').bind('ajax:success', function(response, data) {
+      this.style.display = "none";
+    });
+
+});
+  $('#clipcontrol').hide();
+  $('#pags').hide();
+  $('#foreground').hide();
+  $('#maincontentdiv').hide();
+  $('#maincontentdiv').animate({top: "600px"}, 0 );
+  $('#maincontentdiv').show();
+  $('#maincontentdiv').animate({top: "101px"}, 1000 );
+</script>

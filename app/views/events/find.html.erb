@@ -1,0 +1,287 @@
+<section>
+  <div class="container" style="margin-top:20px">
+<h1>Search Events</h1>
+<div class="clearfloat"></div>
+  <br>
+<br/>  
+  <center>
+  <%= form_tag(search_events_path) do |form| %>
+      <div style="display:inline-block;">
+        <span style="font-size:11pt;margin-top:10px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Event Name/Venue Name:</span><br />
+          <%= text_field_tag :name, params[:name], placeholder: "Search By Event Name/Venue", class: "searchFormSize2", style: "margin-top:10px"%>
+      </div>
+      <div class="filterDate" style="display:inline-block; margin-left:0;">
+        <div class="filterTitle" style="font-size:11pt;margin-top:10px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">After Date: </div><br>
+        <%= text_field_tag :after, params[:after], class: "afterDate", style: "margin-top:10px;width:100px", id: "dateAfter"%>
+      </div>
+      <div class="filterDate" style="display:inline-block; margin-left:0;">
+        <div class="filterTitle" style="font-size:11pt;margin-top:10px;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Before Date: </div><br>
+        <%= text_field_tag :before, params[:before], class: "beforeDate", style: "margin-top:10px;width:100px", id: "dateBefore"%>
+      </div>
+      <div style="display:inline-block">
+        <span style="font-size:11pt;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif">Distance (km):</span><br />
+        <%= select_tag :distance, options_for_select([ "Show All", "25", "50", "100", "150", "200", "300", "500"], "Show All"), style: "margin-top:10px;width:100px" %>
+      </div>
+      <div style="display:inline-block">
+        <span style="font-size:11pt;">Category:</span><br />
+        <%= select_tag :category, options_for_select([ "All", Event::CATEGORY_ENTERTAINMENT, Event::CATEGORY_PERSONAL, Event::CATEGORY_BUSINESS, Event::CATEGORY_CHARITY], "All"), style: "margin-top:10px;width:100px" %>
+      </div>
+      <br />
+        <button type="submit" class="btn btn-large btn-success" style="width:170px;"><i class="icon-search icon-white"></i><span>Search</span></button>
+  <% end %>
+</center>
+
+  <div class="titleHeight">
+      <h2 style="float:left">Show:&nbsp;</h2>
+      <select id="selectEventTheme" class="selectevent" onchange="changeEventView(this)" style="margin-top:18px">
+        <option value="near_events" selected="true">Upcoming Events</option>
+        <option value="recent">Events Near You</option>
+      </select>
+    </div>
+
+  <div class="closeEventsOutter" id="closeEventsOutter" style="overflow:hidden;display:inline-block;display:none;">
+    <div class="titleHeight">
+      <h2 style="float:left">Events Within:</h2>
+      <select id="selectkm" class="selectkm" onchange="changeKM(this)">
+        <option value="25"> 25 km</option>
+        <option value="50"> 50 km</option>
+        <option value="100" selected="true"> 100 km</option>
+        <option value="150"> 150 km</option>
+        <option value="200"> 200 km</option>
+        <option value="300"> 300 km</option>
+        <option value="500"> 500 km</option>
+      </select>
+    </div>
+      <div class="clearfloat"></div>
+      <br>
+
+      <div class="closeEvents" id="closeEvents">
+        <div id="eventList"></div>
+      </div>
+
+    </div>
+    <br>
+
+    <div class="closeEventsOutter2" id="closeEventsOutter2" style="overflow:hidden;display:inline-block;">
+      <div class="titleHeight">
+         <h2 style="float:left">Filter By:</h2>
+         <select id="selecttype" class="selectkm">
+           <option value="<%= Event::CATEGORY_ENTERTAINMENT %>" selected="true"><%= Event::CATEGORY_ENTERTAINMENT %></option>
+           <option value="<%= Event::CATEGORY_PERSONAL %>"><%= Event::CATEGORY_PERSONAL %></option>
+           <option value="<%= Event::CATEGORY_BUSINESS %>"><%= Event::CATEGORY_BUSINESS%></option>
+           <option value="<%= Event::CATEGORY_CHARITY %>"><%= Event::CATEGORY_CHARITY%></option>
+         </select>
+       </div>
+         <div class="clearfloat"></div>
+
+         <div class="closeEvents">
+         <div id="eventListType"></div>
+         </div>
+       </div>
+
+<script>
+
+$(document).ready(function() {
+    $( "#dateBefore" ).datepicker();
+    $( "#dateAfter" ).datepicker();
+
+     //after date has been changed
+  $('#dateAfter').change(function(e) {
+    afterSet = 1;
+    afterDate = new Date(e.target.value);
+  });
+
+  //before date filter has been changed
+  $('#dateBefore').change(function(e) {
+    beforeSet = 1;
+    beforeDate = new Date(e.target.value);
+  });
+});
+
+$("#theOption").change(function () {
+  var value = $("#theOption option:selected").val();
+  var theDiv = $(".is" + value);
+
+  if (value == "Tickets") {
+      document.getElementById("has_ticketing").checked = true;
+      document.getElementById("has_registration").checked = false;
+  }
+
+  if (value == "Register") {
+      document.getElementById("has_ticketing").checked = false;
+      document.getElementById("has_registration").checked = true;
+  }
+
+  if (value == "Nothing") {
+      document.getElementById("has_ticketing").checked = false;
+      document.getElementById("has_registration").checked = false;
+  }
+  theDiv.slideDown().removeClass("hidden");
+  theDiv.siblings('[class*=is]').slideUp(function () {
+      $(this).addClass("hidden");
+  });
+});
+
+    function lightup1(){//document.getElementById('lightsright').className = 'animate';//
+    //
+    }
+    function lightoff1(){//document.getElementById('lightsright').className = 'lightsout';
+    }
+    function lightup2(){//document.getElementById('lightsright2').className = 'animate';
+    }
+    function lightoff2(){//document.getElementById('lightsright2').className = 'lightsout';
+    }
+    function lightup3(){//document.getElementById('lightsright3').className = 'animate';
+    }
+    function lightoff3(){//document.getElementById('lightsright3').className = 'lightsout';
+    }
+
+    var cur_position;
+    var all_events = [];
+    $(document).ready(function() {
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(initialize, fail);
+      } else {
+        document.getElementById("map").innerHTML = "Geolocation is not supported by this browser.";
+      }
+
+      $('#selecttype').change(function() {
+        type = $("#selecttype option:selected").val();
+          clearDiv(document.getElementById("eventListType"));
+          for (i = 0; i < all_events.length; i ++) {
+            if (all_events[i][5] == type) {
+              addEvent2(all_events[i][0], all_events[i][1], all_events[i][3], all_events[i][4]);
+            }
+        }
+
+      });
+
+      $('#selectkm').change(function(e) {
+        distance = e.target.value;
+        clearDiv(document.getElementById("eventList"));
+          for (i = 0; i < all_events.length; i ++) {
+            if (parseInt(all_events[i][2]) < distance) {
+              addEvent(all_events[i][0], all_events[i][1], all_events[i][3], all_events[i][4]);
+            }
+        }
+      })
+
+
+    })
+
+    function changeKM(e) {
+      distance = e.value;
+        clearDiv(document.getElementById("eventList"));
+          for (i = 0; i < all_events.length; i ++) {
+            if (parseInt(all_events[i][2]) < distance) {
+              addEvent(all_events[i][0], all_events[i][1], all_events[i][3], all_events[i][4]);
+            }
+        }
+    }
+
+    function changeEventView(e) {
+      listType = e.value;
+      console.log(listType);
+
+      if( listType == "recent") {
+        document.getElementById("closeEventsOutter").style.display = "block";
+        document.getElementById("closeEventsOutter2").style.display = "none";
+      }
+      else {
+        document.getElementById("closeEventsOutter").style.display = "none";
+        document.getElementById("closeEventsOutter2").style.display = "block";
+      }
+    }
+
+    function clearDiv(a) {
+      while (a.hasChildNodes()) {
+        a.removeChild(a.lastChild)
+      }
+     // a.parentNode.removeChild(a);
+    }
+
+    function initialize(position) {
+      <% if @events%>
+        <% @events.each_with_index do |event, i| %>
+
+          <% if event.category ==  Event::CATEGORY_ENTERTAINMENT %>
+            addEvent2("<%= escape_javascript event.name %>", "<%= event.startTime.strftime('%B %d, %Y %-I:%M %P') %> to <%= event.endTime.strftime('%B %d, %Y %-I:%M %P') %>", <%= event.id %>, "<%= event.event_url(:feed) %>");
+          <% end %>
+
+          if (position != "fail") {
+            dist = getDistance(position.coords.latitude, position.coords.longitude, parseFloat("<%=event.lat%>"), parseFloat("<%=event.lon%>"));
+            all_events[<%= i %>] = ["<%= escape_javascript event.name %>", "<%= event.startTime.strftime('%B %d, %Y %-I:%M %P') %> to <%= event.endTime.strftime('%B %d, %Y %-I:%M %P') %>", dist, <%= event.id %>, "<%= event.event_url(:feed) %>", "<%= event.category %>"];
+
+            if (dist < 100) {
+              addEvent("<%= escape_javascript event.name %>", "<%= event.startTime.strftime('%B %d, %Y %-I:%M %P') %> to <%= event.endTime.strftime('%B %d, %Y %-I:%M %P') %>", <%= event.id %>, "<%= event.event_url(:feed) %>");
+            }
+          }
+
+
+        <% end %>
+      <% end %>
+    }
+
+    function fail(error) {
+      list = document.getElementById("eventList").innerHTML = "Please turn on location services to use this feature";
+      closeEvents = document.getElementById("closeEvents");
+      closeEvents.style.height = "50px";
+      closeEvents.style.overflow = "hidden";
+      document.getElementById("selectkm").removeAttribute("onchange");
+      initialize("fail");
+          error_msg = "";
+          switch (error.code) {
+              case error.PERMISSION_DENIED:
+                  error_msg = "User denied the request for Geolocation."
+                  break;
+              case error.POSITION_UNAVAILABLE:
+                  error_msg = "Location information is unavailable."
+                  break;
+              case error.TIMEOUT:
+                  error_msg = "The request to get user location timed out."
+                  break;
+              case error.UNKNOWN_ERROR:
+                  error_msg = "An unknown error occurred."
+                  break;
+          }
+          console.log(error_msg);
+      }
+
+      function addEvent(name, date, id, source) {
+        if ($('#eventList div').length < 11) {
+          if (source == '') {
+            source = '/images/event_image/feed/missing.jpg';
+          }
+          $('#eventList').append('<div style="float:left;width:100%" onclick="window.location=\'/events/' + id + '\'"><img src="' + source + '" class="event_thumb" style="float:left;width:50px"><div style="float:left;margin-left:10px"><span class="orange"><h1 style="font-size:18px!important">' + name + '</h1></span><p><span class="orange" style="font-size:16px!important;margin-top: -10px;"><b>Date: </b></span><i>' + date + '</i></p></div></div>');
+        }
+      }
+
+    function addEvent2(name, date, id, source) {
+      if ($('#eventListType div').length < 11) {
+        if (source == '') {
+          source = '/images/event_image/feed/missing.jpg';
+        }
+        $('#eventListType').append('<div style="float:left;width:100%" onclick="window.location=\'/events/' + id + '\'"><img src="' + source + '" class="event_thumb" style="float:left;width:50px"><div style="float:left;margin-left:10px"><span class="orange"><h1 style="font-size:18px!important">' + name + '</h1></span><p><span class="orange" style="font-size:16px!important;margin-top: -10px;"><b>Date: </b></span><i>' + date + '</i></p></div></div>');
+      }
+    }
+
+    function getDistance(lat1,lon1,lat2,lon2) {
+      var R = 6371; // km
+      var dLat = (lat2-lat1).toRad();
+      var dLon = (lon2-lon1).toRad();
+      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1.toRad()) * Math.cos(lat2.toRad()) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    if (typeof(Number.prototype.toRad) === "undefined") {
+      Number.prototype.toRad = function() {
+        return this * Math.PI / 180;
+      }
+    }
+</script>
+</div>
+</section>
